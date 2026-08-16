@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Загрузка Продуктор</title>
+    
+    <!-- Подключаем Font Awesome для иконки корзины -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #f4f6f8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .loader-container {
+            position: relative;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards ease-out;
+        }
+
+        /* Контейнер логотипа */
+        .logo-wrapper {
+            width: 100px;
+            height: 100px;
+            background-color: #2563eb;
+            border-radius: 16px;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: translateY(50px);
+            
+            /* Анимация вылета + дыхание */
+            animation: flyUpLogo 0.8s forwards cubic-bezier(0.68, -0.55, 0.265, 1.55), breathe 2s infinite ease-in-out;
+            animation-delay: 0.3s;
+            position: relative;
+        }
+
+        /* Сама иконка тележки */
+        .logo-icon {
+            color: #ffffff;
+            font-size: 48px; /* Размер подобрал под контейнер 100x100 */
+            line-height: 1;
+        }
+
+        h1 {
+            color: #1e293b;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            transform: translateY(-50px);
+            animation: flyDownText 0.9s forwards ease-out;
+            animation-delay: 0.5s;
+        }
+
+        p.subtitle {
+            color: #64748b;
+            font-size: 18px;
+            transform: translateY(-50px);
+            animation: flyDownText 0.9s forwards ease-out;
+            animation-delay: 0.7s;
+        }
+
+        .version {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #94a3b8;
+            font-size: 12px;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards ease-out;
+            animation-delay: 1.5s;
+        }
+
+        .progress-wrapper {
+            width: 320px;
+            max-width: 90%;
+            margin-top: 30px;
+            transform: scaleY(0);
+            animation: slideUpBar 0.6s forwards ease-out;
+            animation-delay: 1s;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 10px;
+            background-color: #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            border-radius: 8px;
+            transition: width 0.05s linear;
+        }
+
+        .progress-text {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #475569;
+            min-height: 20px;
+            transition: color 0.3s;
+        }
+
+        @keyframes flyUpLogo {
+            to { transform: translateY(0); }
+        }
+
+        @keyframes flyDownText {
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideUpBar {
+            to { transform: scaleY(1); }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-4px) scale(1.03); }
+        }
+
+        /* Увеличено время затухания перед переходом */
+        .fade-out {
+            animation: fadeOut 1.5s forwards ease-in;
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="loader-container">
+    <div class="logo-wrapper">
+        <!-- Используем бесплатную солид-версию иконки fa-cart-shopping -->
+        <i class="fa-solid fa-cart-shopping logo-icon"></i>
+    </div>
+    <h1>Продуктор</h1>
+    <p class="subtitle">для бизнеса</p>
+    
+    <div class="progress-wrapper">
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText"></div>
+    </div>
+
+    <div class="version">Версия 26.8.16.1</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    const loaderContainer = document.querySelector('.loader-container');
+
+    const randomDuration = Math.floor(Math.random() * 24000) + 2000;
+    
+    const stages = [
+        { percent: 1, text: 'Ваш помощник в магазине!' },
+        { percent: 25, text: 'Загрузка товаров...' },
+        { percent: 50, text: 'Загрузка сессии' },
+        { percent: 75, text: 'Подготовка интерфейса...' },
+        { percent: 99, text: 'Финальные штрихи...' }
+    ];
+    
+    let currentStageIndex = 0;
+    const startTime = performance.now();
+
+    function updateProgress(currentTime) {
+        const elapsed = currentTime - startTime;
+        let progress = (elapsed / randomDuration) * 100;
+
+        if (progress >= 100) {
+            progress = 100;
+        }
+
+        const roundedProgress = Math.round(progress);
+        progressFill.style.width = roundedProgress + '%';
+
+        if (currentStageIndex < stages.length && progress >= stages[currentStageIndex].percent) {
+            progressText.textContent = stages[currentStageIndex].text;
+            currentStageIndex++;
+        }
+
+        if (progress < 100) {
+            requestAnimationFrame(updateProgress);
+        } else {
+            onLoadingComplete();
+        }
+    }
+
+    function onLoadingComplete() {
+        progressText.textContent = 'Готово!';
+        
+        setTimeout(() => {
+            loaderContainer.classList.add('fade-out');
+            
+            setTimeout(() => {
+                window.location.href = 'workspace.html';
+            }, 1500); /* Ждем новое время анимации fadeOut */
+        }, 500);
+    }
+
+    requestAnimationFrame(updateProgress);
+});
+</script>
+
+</body>
+</html>
