@@ -5,7 +5,7 @@
     <title>Продуктор для бизнеса</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
-    <!-- Google Fonts для стильных заголовков -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -31,13 +31,13 @@
             --glow-color: rgba(59, 130, 246, 0.6);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease; }
         
         body { 
             background-color: var(--bg-light); 
             color: var(--text-dark); 
-            height: 100vh; 
-            overflow: hidden; 
+            min-height: 100vh; 
+            overflow-y: auto; 
             position: relative;
         }
 
@@ -52,7 +52,8 @@
             justify-content: space-between;
             padding: 0 30px;
             z-index: 10;
-            position: relative;
+            position: sticky;
+            top: 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
@@ -66,9 +67,10 @@
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s ease, background-color 0.2s ease;
+            transition: transform 0.1s ease, background-color 0.2s ease;
         }
-        .btn-start:hover { transform: translateY(-2px); background-color: #059669; }
+        .btn-start:active { transform: scale(0.98); }
+        .btn-start:hover { background-color: #059669; }
         .settings-toggle {
             background: none;
             border: none;
@@ -102,7 +104,7 @@
         .menu-item:last-child { border: none; }
         .menu-item:hover { background-color: #f8fafc; }
         [data-theme="dark"] .menu-item:hover { background: #334155; }
-        .checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+        .checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; width: 100%; justify-content: space-between; }
         .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
@@ -112,60 +114,79 @@
 
         /* MAIN CONTENT */
         .hero-container {
-            height: calc(100vh - 70px);
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            padding-top: 80px;
             text-align: center;
-            padding: 20px;
-            position: relative;
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ANIMATED LOGO CORE */
-        .productor-core {
+        /* CAROUSEL */
+        .carousel-container {
             position: relative;
-            width: 120px;
-            height: 120px;
-            margin-bottom: 30px;
-            animation: breathe 3s infinite ease-in-out;
-        }
-        .core-square {
             width: 100%;
-            height: 100%;
-            background-color: var(--primary-blue);
-            border-radius: 20px;
+            max-width: 900px;
+            margin: 40px auto;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: #000;
+        }
+        .carousel-slide {
             display: flex;
-            align-items: center;
+            transition: transform 0.8s ease-in-out;
+        }
+        .carousel-item {
+            min-width: 100%;
+            box-sizing: border-box;
+            padding: 20px;
+            display: flex;
             justify-content: center;
-            position: relative;
-            z-index: 2;
-            box-shadow: 0 0 20px var(--glow-color);
+            align-items: center;
+            background: var(--bg-light);
         }
-        .core-icon {
+        .carousel-item img {
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+        .prev, .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
             color: white;
-            font-size: 50px;
-            position: relative;
-            z-index: 2;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            z-index: 20;
+            transition: background 0.2s;
         }
-
-        /* HOLOGRAPHIC FLOATING ELEMENTS */
-        .floating-group {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            overflow: visible;
+        .prev:hover, .next:hover { background: rgba(0,0,0,0.8); }
+        .prev { left: 20px; }
+        .next { right: 20px; }
+        .dots-container {
+            text-align: center;
+            margin-top: 15px;
         }
-        .hologram-item {
-            position: absolute;
-            color: var(--primary-blue);
-            opacity: 0.6;
-            filter: blur(0.5px);
-            animation-fill-mode: forwards;
+        .dot {
+            height: 10px;
+            width: 10px;
+            margin: 0 5px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        .item-cash { font-size: 30px; }
-        .item-graph { font-size: 24px; }
+        .dot.active, .dot:hover { background-color: var(--primary-blue); }
 
         /* TEXT */
         .main-title {
@@ -181,23 +202,117 @@
         .subtitle {
             font-size: 18px;
             color: var(--gray-muted);
-            max-width: 500px;
+            max-width: 600px;
+            margin: 0 auto 40px;
             line-height: 1.6;
         }
 
+        /* SECTION DESCRIPTION */
+        .section-desc {
+            padding: 60px 20px;
+            background: #f8fafc;
+            [data-theme="dark"] & { background: #1e293b; }
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+        h2.section-title {
+            font-size: 32px; 
+            text-align: center; 
+            margin-bottom: 40px; 
+            font-weight: 700;
+            color: var(--text-dark);
+            [data-theme="dark"] & { color: #f1f5f9; }
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .feature-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border-light);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            [data-theme="dark"] & { background: #0f172a; border-color: #334155; }
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+        .feature-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: var(--primary-blue);
+        }
+        .feature-title { font-size: 18px; font-weight: 600; margin-bottom: 10px; color: var(--text-dark); }
+        [data-theme="dark"] .feature-title { color: #f1f5f9; }
+        .feature-text { color: var(--gray-muted); font-size: 14px; line-height: 1.5; }
+
+                /* FAQ - ВЕРСИЯ С ОТКРЫТЫМИ ОТВЕТАМИ */
+        .faq-container { margin-bottom: 50px; }
+        .faq-item {
+            background: white;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            overflow: hidden;
+            [data-theme="dark"] & { background: #0f172a; border-color: #334155; }
+        }
+        .faq-question {
+            width: 100%;
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 16px;
+            background: none;
+            border: none;
+            cursor: default; /* Курсор обычный, так как кликать не нужно */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-dark);
+            pointer-events: none; /* Полностью отключаем реакцию на клики по вопросу */
+            [data-theme="dark"] & { color: #f1f5f9; }
+        }
+        
+        /* Стрелка теперь статична или её можно убрать вовсе. Оставим как декоративный элемент */
+        .faq-arrow {
+            color: var(--gray-muted);
+            font-size: 18px;
+        }
+
+        /* Ответы всегда открыты */
+        .faq-answer {
+            max-height: 1000px; /* Большая высота вместо 0 */
+            overflow: visible;
+            padding: 0 20px 20px 20px; /* Добавим нижний паддинг */
+            color: var(--gray-muted);
+            line-height: 1.6;
+            transition: opacity 0.3s ease; /* Плавность появления при загрузке */
+            [data-theme="dark"] & { color: #94a3b8; }
+        }
+        .faq-answer p { margin: 15px 0; }
+
+        /* FOOTER */
+        footer {
+            background: var(--bg-light);
+            padding: 40px 20px 20px;
+            text-align: center;
+            border-top: 1px solid var(--border-light);
+            [data-theme="dark"] & { background: #0f172a; border-color: #334155; }
+        }
+        .footer-contact a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .footer-contact a:hover { text-decoration: underline; }
+        .footer-year { color: var(--gray-muted); font-size: 14px; margin-top: 10px; }
+
         /* UTILS */
         .hidden { display: none !important; }
-
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        @keyframes floatPath {
-            0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
-            50% { opacity: 0.8; }
-            100% { transform: translate(-20px, -60px) rotate(360deg); opacity: 0; }
-        }
     </style>
 </head>
 <body>
@@ -206,20 +321,18 @@
 <header class="header">
     <div class="logo-text">Продуктор для бизнеса</div>
     <div class="header-right">
-        <button class="btn-start" onclick="window.location.href='loader.html'">
+        <button class="btn-start" onclick="window.location.href='workspace.html'">
             <i class="fa-solid fa-play"></i> Запустить
         </button>
         <button class="settings-toggle" id="settingsToggle">&#x22EE;</button>
         <div class="dropdown-menu" id="dropdownMenu">
              <label class="menu-item checkbox-label">
-                <input type="checkbox" id="animToggle" checked onchange="toggleAnimations()">
-                <span class="slider"></span>
-                Анимации
+                <span>Анимации</span>
+                <label class="switch"><input type="checkbox" id="animToggle" checked><span class="slider"></span></label>
             </label>
             <label class="menu-item checkbox-label">
-                <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
-                <span class="slider"></span>
-                Тёмная тема
+                <span>Тёмная тема</span>
+                <label class="switch"><input type="checkbox" id="themeToggle"><span class="slider"></span></label>
             </label>
         </div>
     </div>
@@ -227,37 +340,125 @@
 
 <!-- HERO SECTION -->
 <div class="hero-container">
-    <div class="productor-core" id="animatedCore">
-        <div class="core-square">
-            <i class="fa-solid fa-cart-shopping core-icon"></i>
-        </div>
-        <!-- Floating holograms -->
-        <div class="floating-group">
-            <div class="hologram-item item-cash" style="top: 10%; left: 10%; animation-delay: 0s;"><i class="fa-solid fa-coins"></i></div>
-            <div class="hologram-item item-graph" style="top: 20%; right: 15%; animation-delay: 1s;"><i class="fa-solid fa-chart-line"></i></div>
-            <div class="hologram-item item-cash" style="bottom: 25%; left: 20%; animation-delay: 2s;"><i class="fa-solid fa-receipt"></i></div>
-            <div class="hologram-item item-graph" style="bottom: 15%; right: 5%; animation-delay: 3s;"><i class="fa-solid fa-dollar-sign"></i></div>
-        </div>
-    </div>
-
     <h1 class="main-title">Умный контроль продаж</h1>
     <p class="subtitle">Полноценное рабочее место кассира прямо в браузере. Управление товарами, гибкие скидки, сохранение сессий и стильный интерфейс.</p>
+
+    <!-- КАРУСЕЛЬ СКРИНШОТОВ -->
+    <div class="carousel-container">
+        <div class="carousel-slide" id="carouselSlide">
+            <div class="carousel-item"><img src="screenshot1.png" alt="Скриншот 1"></div>
+            <div class="carousel-item"><img src="screenshot2.png" alt="Скриншот 2"></div>
+            <div class="carousel-item"><img src="screenshot3.png" alt="Скриншот 3"></div>
+            <div class="carousel-item"><img src="screenshot4.png" alt="Скриншот 4"></div>
+            <div class="carousel-item"><img src="screenshot5.png" alt="Скриншот 5"></div>
+        </div>
+        <button class="prev" id="prevBtn">&#10094;</button>
+        <button class="next" id="nextBtn">&#10095;</button>
+    </div>
+    <div class="dots-container" id="dotsContainer"></div>
 </div>
+
+<!-- СЕКЦИЯ ОПИСАНИЯ И FAQ -->
+<div class="section-desc">
+    <div class="container">
+        <h2 class="section-title">Почему Продуктор?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-desktop"></i></div>
+                <div class="feature-title">Без установки</div>
+                <div class="feature-text">Работает в любом современном браузере. Не нужно ничего скачивать или устанавливать на компьютер.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-database"></i></div>
+                <div class="feature-title">Автосохранение</div>
+                <div class="feature-text">Все данные о товарах и чеках хранятся локально. Ничего не потеряется даже без интернета.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-palette"></i></div>
+                <div class="feature-title">Гибкость</div>
+                <div class="feature-text">Включайте темную тему для работы ночью и отключайте анимации для слабых ПК одним кликом.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <div class="feature-title">Полный контроль</div>
+                <div class="feature-text">Редактируйте цены, следите за остатками на складе и управляйте скидками в реальном времени.</div>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="faq-container">
+            <h2 style="text-align:left; font-size:24px; font-weight:700; margin-bottom:30px;">Частые вопросы</h2>
+            <div class="faq-item">
+                <button class="faq-question">Нужно ли платить за использование?<span class="faq-arrow">&#9660;</span></button>
+                <div class="faq-answer">
+                    <p>Нет, «Продуктор» — это полностью бесплатный инструмент с открытым исходным кодом. Вы можете использовать его для своего малого бизнеса абсолютно бесплатно.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">Где хранятся мои данные?<span class="faq-arrow">&#9660;</span></button>
+                <div class="faq-answer">
+                    <p>Только у вас. Мы используем технологию LocalStorage вашего браузера. Никакие ваши товары, чеки или отчеты не отправляются на сервер.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">Можно ли работать с телефона?<span class="faq-arrow">&#9660;</span></button>
+                <div class="faq-answer">
+                    <p>Да, интерфейс адаптивный. Однако для комфортной работы со сканером штрих-кодов рекомендуется использовать планшет или ноутбук.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">Как поддержать проект?<span class="faq-arrow">&#9660;</span></button>
+                <div class="faq-answer">
+                    <p>Если вам нравится наш продуктор, вы можете отправить письмо на нашу почту. Любая обратная связь помогает нам развиваться!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-contact">
+        Связаться с разработчиком: <a href="mailto:quantumacd25@gmail.com">quantumacd25@gmail.com</a>
+    </div>
+    <div class="footer-year">© <span id="currentYear"></span> Морковчик</div>
+</footer>
 
 <script>
 // --- РЕФЕРЕНСЫ ---
 const dropdown = document.getElementById('dropdownMenu');
 const settingsBtn = document.getElementById('settingsToggle');
-let isDarkMode = localStorage.getItem('productor_theme') === 'dark';
-let animationsEnabled = localStorage.getItem('productor_animations') !== 'false'; // По умолчанию true
+const themeToggle = document.getElementById('themeToggle');
+const animToggle = document.getElementById('animToggle');
+const htmlRoot = document.documentElement;
 
-// Применяем тему при загрузке
+// КАРУСЕЛЬ
+const carouselSlide = document.getElementById('carouselSlide');
+const slides = document.querySelectorAll('.carousel-item');
+const dotsContainer = document.getElementById('dotsContainer');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+let currentIndex = 0;
+let autoPlayInterval;
+const AUTO_PLAY_DELAY = 5000; // 5 секунд
+
+// ГОД В ФУТЕРЕ
+document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+// --- СЧИТЫВАНИЕ НАСТРОЕК ПРИ СТАРТЕ ---
+let isDarkMode = localStorage.getItem('productor_theme') === 'dark';
+let animationsEnabled = localStorage.getItem('productor_animations') !== 'false'; 
+
 if (isDarkMode) {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    document.getElementById('themeToggle').checked = true;
+    htmlRoot.setAttribute('data-theme', 'dark');
 }
-document.getElementById('animToggle').checked = animationsEnabled;
-if (!animationsEnabled) toggleAnimations();
+themeToggle.checked = isDarkMode;
+animToggle.checked = animationsEnabled;
+
+// Если анимации выключены — отключаем их сразу
+if (!animationsEnabled && typeof toggleAnimations === 'function') {
+    toggleAnimations(false);
+}
 
 // --- ЛОГИКА МЕНЮ ---
 settingsBtn.addEventListener('click', function(e) {
@@ -266,41 +467,124 @@ settingsBtn.addEventListener('click', function(e) {
 });
 
 window.addEventListener('click', function() {
-    dropdown.classList.remove('active');
+    if (dropdown.classList.contains('active')) {
+        dropdown.classList.remove('active');
+    }
 });
 
 // --- ПЕРЕКЛЮЧЕНИЕ ТЕМЫ ---
-function toggleTheme() {
-    const isChecked = document.getElementById('themeToggle').checked;
+themeToggle.addEventListener('change', function() {
+    const isChecked = this.checked;
     if (isChecked) {
-        document.documentElement.setAttribute('data-theme', 'dark');
+        htmlRoot.setAttribute('data-theme', 'dark');
         localStorage.setItem('productor_theme', 'dark');
     } else {
-        document.documentElement.setAttribute('data-theme', 'light');
+        htmlRoot.removeAttribute('data-theme');
         localStorage.setItem('productor_theme', 'light');
     }
-}
+});
 
 // --- УПРАВЛЕНИЕ АНИМАЦИЯМИ ---
-function toggleAnimations() {
-    const enabled = document.getElementById('animToggle').checked;
-    const core = document.getElementById('animatedCore');
-    
-    if (enabled) {
-        core.style.animationPlayState = 'running';
-        // Включаем все элементы внутри floating-group
-        document.querySelectorAll('.hologram-item').forEach(el => {
-            el.style.animationPlayState = 'running';
-        });
-        localStorage.setItem('productor_animations', 'true');
+function toggleAnimations(forceState) {
+    let enabled;
+    if (forceState === true || forceState === false) {
+        enabled = forceState;
     } else {
-        core.style.animationPlayState = 'paused';
-        document.querySelectorAll('.hologram-item').forEach(el => {
-            el.style.animationPlayState = 'paused';
-        });
-        localStorage.setItem('productor_animations', 'false');
+        enabled = animToggle.checked;
     }
+    
+    // На главной странице анимация логотипа имеет ID 'coreAnimation'
+    const logoAnim = document.getElementById('coreAnimation');
+    if (logoAnim) {
+        logoAnim.style.animationPlayState = enabled ? 'running' : 'paused';
+    }
+    
+    // Для плавающих иконок
+    document.querySelectorAll('.hologram-item').forEach(el => {
+        el.style.animationPlayState = enabled ? 'running' : 'paused';
+    });
+
+    localStorage.setItem('productor_animations', enabled.toString());
 }
+
+animToggle.addEventListener('change', function() {
+    toggleAnimations();
+});
+
+// --- КАРУСЕЛЬ: ФУНКЦИИ ---
+function updateCarousel() {
+    const slideWidth = slides[0].clientWidth;
+    carouselSlide.style.transform = `translateX(${-slideWidth * currentIndex}px)`;
+    
+    document.querySelectorAll('.dot').forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === currentIndex);
+    });
+}
+
+function createDots() {
+    slides.forEach((_, index) => {
+        const dot = document.createElement('span');
+        dot.classList.add('dot');
+        if (index === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => goToSlide(index));
+        dotsContainer.appendChild(dot);
+    });
+}
+
+function goToSlide(index) {
+    if (index >= slides.length) currentIndex = 0;
+    else if (index < 0) currentIndex = slides.length - 1;
+    else currentIndex = index;
+    updateCarousel();
+    resetAutoPlay();
+}
+
+function goNext() {
+    currentIndex++;
+    goToSlide(currentIndex);
+}
+
+function goPrev() {
+    currentIndex--;
+    goToSlide(currentIndex);
+}
+
+function resetAutoPlay() {
+    clearInterval(autoPlayInterval);
+    autoPlayInterval = setInterval(goNext, AUTO_PLAY_DELAY);
+}
+
+// --- ИНИЦИАЛИЗАЦИЯ КАРУСЕЛИ ---
+createDots();
+updateCarousel();
+resetAutoPlay();
+
+// Пауза при наведении мыши
+document.querySelector('.carousel-container').addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
+document.querySelector('.carousel-container').addEventListener('mouseleave', resetAutoPlay);
+
+// Кнопки
+prevBtn.addEventListener('click', goPrev);
+nextBtn.addEventListener('click', goNext);
+
+// Свайпы для мобильных устройств
+let touchStartX = 0;
+document.querySelector('.carousel-container').addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+});
+document.querySelector('.carousel-container').addEventListener('touchend', (e) => {
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+    if (diff > 50) goNext();      // Свайп вправо -> следующий слайд
+    if (diff < -50) goPrev();     // Свайп влево -> предыдущий слайд
+});
+
+// Закрытие меню по ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        dropdown.classList.remove('active');
+    }
+});
 </script>
 
 </body>
