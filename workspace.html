@@ -68,7 +68,7 @@
         }
         [data-theme="dark"] .dropdown-menu { background: #1e293b; border-color: #334155; }
         .dropdown-menu.active { display: flex; }
-        .menu-item { padding: 14px 20px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: background 0.2s; font-size: 15px; }
+        .menu-item { padding: 14px 20px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: background 0.2s; font-size: 15px; border-radius:12px }
         [data-theme="dark"] .menu-item { border-bottom: 1px solid #334155; }
         .menu-item:last-child { border: none; }
         .menu-item:hover { background-color: #f8fafc; }
@@ -77,7 +77,7 @@
         [data-theme="dark"] .hotkey { background: #334155; color: #cbd5e1; }
 
         .main-area { display: flex; flex-grow: 1; overflow: hidden; padding: 15px; gap: 15px; }
-        .sidebar { width: 280px; background: #f8fafc; border: 1px solid var(--border-light); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 15px; flex-shrink: 0; overflow-y: auto; }
+        .sidebar { width: 280px; background: #f8fafc; border: 1px solid var(--border-light); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 15px; flex-shrink: 0; overflow-y: auto; height: calc(100% - 67px - 10px - 40px) }
         [data-theme="dark"] .sidebar { background: none; border-color: #334155; }
         .search-input { width: 100%; padding: 10px 12px; border: 1px solid var(--border-light); border-radius: 8px; outline: none; background:none }
         [data-theme="dark"] .search-input { background: none; border-color: #334155; color: #f1f5f9; }
@@ -90,9 +90,9 @@
         .product-name { font-weight: 600; font-size: 15px; margin-bottom: 2px; }
         .product-meta { font-size: 12px; color: var(--gray-muted); display: flex; justify-content: space-between; }
         .badge-stock { font-size: 10px; padding: 2px 6px; border-radius: 999px; }
-        .badge-stock.low { background: var(--warning-accent); color: black; }
-        .badge-stock.out { background: var(--danger-accent); color: white; }
-        .no-stock { color: var(--danger-accent); font-size: 12px; cursor: not-allowed !important; opacity: 0.7; }
+        .badge-stock.low { background: var(--primary-accent); color: black; }
+        .badge-stock.out { background: var(--primary-accent); color: white; }
+        .no-stock { color: var(--primary-accent); font-size: 12px; cursor: not-allowed !important; opacity: 0.7; }
         [data-theme="dark"] .no-stock { color: #fca5a5; }
 
         .checkout-area { flex-grow: 1; display: flex; flex-direction: column; gap: 15px; overflow: hidden; }
@@ -109,7 +109,7 @@
         [data-theme="dark"] .qty-btn { border-color: #334155; }
         .qty-input { width: 50px; text-align: center; border: 1px solid var(--border-light); border-radius: 6px; padding: 4px; }
         [data-theme="dark"] .qty-input { background: #0f172a; border-color: #334155; color: #f1f5f9; }
-        .remove-item { background: none; border: none; color: var(--danger-accent); cursor: pointer; font-size: 18px; line-height: 1; }
+        .remove-item { background: none; border: none; color: var(--primary-accent); cursor: pointer; font-size: 18px; line-height: 1; }
         .discount-tag { font-size: 11px; background: var(--warning-accent); color: black; padding: 2px 5px; border-radius: 4px; margin-left: 5px; }
         [data-theme="dark"] .discount-tag { background: #d97706; }
         .total-block { display: flex; justify-content: space-between; align-items: center; padding-top: 15px; }
@@ -192,8 +192,10 @@
         <input type="text" class="search-input" placeholder="Поиск по артикулу..." id="globalSearch">
         <h3 style="margin: 15px 0 10px 0; font-size: 16px;">Инвентарь</h3>
         <ul class="inventory-list" id="inventoryList"></ul>
+		<div style="position:fixed;bottom:10px;left:12px;width:283px; background-color: var(--bg-light);padding:8px;border: 1px solid var(--border-light);border-radius:15px;">
 		<div class="menu-item" onclick="openModal('addProduct')" aria-label="Добавить товар">Добавить товар<span class="hotkey">Alt+C</span></div>
         <div class="menu-item" onclick="openModal('editProducts')" aria-label="Изменить товары">Изменить товары<span class="hotkey">Alt+E</span></div>
+		</div>
     </aside>
     <section class="checkout-area">
         <div class="current-checkout">
@@ -215,11 +217,11 @@
 <div class="modal-backdrop" id="editProductsModal"><div class="modal-window" style="width: 95%; height: 85%; max-height: 600px; display: flex; flex-direction: column;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"><h2>Управление товарами</h2><button class="close-modal" onclick="closeAllModals()">&times;</button></div><input type="text" class="search-input" placeholder="Фильтр..." id="filterEditInput" style="margin-bottom: 10px;"><div style="flex-grow:1; overflow-y:auto; border:1px solid var(--border-light); border-radius:8px; padding:10px;"><table class="products-table" id="productsTable"><thead><tr style="background:#f1f5f9; text-align:left;"><th style="padding:8px;">Название</th><th style="padding:8px;">Артикул</th><th style="padding:8px;">Цена</th><th style="padding:8px;">Склад</th><th style="padding:8px;"></th></tr></thead><tbody id="editTbody"></tbody></table></div><div style="margin-top: 15px; text-align:right;" class="btn-group"><button class="btn btn-danger" onclick="deleteSelected()">Удалить выбранные</button></div></div></div>
 <div class="modal-backdrop" id="finishModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Завершить сессию?</h2><p>Все несохраненные изменения будут утеряны.</p><div style="margin: 15px 0;"><input type="checkbox" id="reportCheckbox"> <label for="reportCheckbox">Сохранить отчёт о чеке</label></div><div class="btn-group"><button class="btn btn-primary" onclick="confirmFinish(true)">Да, завершить</button><button class="btn btn-outline" onclick="closeAllModals()">Продолжить работу</button></div></div></div>
 <div class="modal-backdrop" id="statisticsModal"><div class="modal-window" style="max-width: 900px;"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Статистика действий</h2><p>Журнал операций за текущие сессии.</p><table class="stats-table"><thead><tr><th>Дата и время</th><th>Действие</th><th>Детали</th></tr></thead><tbody id="statsBody"></tbody></table></div></div>
-<div class="modal-backdrop" id="aboutModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>О Продукторе</h2><p>Рабочая среда кассира версии <strong>26.8.19.1</strong>.</p><p>&copy; 2026 Морковчик. Все права защищены.</p><hr><p>Ответы на вопросы:<br><br>Если товары в списке не отображаются - попробуйте обновить страницу или введите артикул и очистите снова.<hr>Возникнут проблемы - пишите на почту - quantumacd25@gmail.com (также можно написать о поддержке проекта или найденных багах).<hr>Придётся ли платить? Нет, мы денег не берем. Программа не имеет доступ к банковским картам или средствам оплаты.<hr></p></div></div>
+<div class="modal-backdrop" id="aboutModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>О Продукторе</h2><p>Рабочая среда кассира версии <strong>26.8.19.2</strong>.</p><p>&copy; 2026 Морковчик. Все права защищены.</p><hr><p>Ответы на вопросы:<br><br>Если товары в списке не отображаются - попробуйте обновить страницу или введите артикул и очистите снова.<hr>Возникнут проблемы - пишите на почту - quantumacd25@gmail.com (также можно написать о поддержке проекта или найденных багах).<hr>Придётся ли платить? Нет, мы денег не берем. Программа не имеет доступ к банковским картам или средствам оплаты.<hr></p></div></div>
 <div class="modal-backdrop" id="paymentModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Сумма к оплате</h2><div style="text-align: center; font-size: 32px; font-weight: bold; margin: 20px 0;" id="paymentAmount">0 ₽</div><div class="btn-group" style="justify-content: center;"><button class="btn btn-danger" style="flex:none; padding: 0 40px;" onclick="cancelPayment()">ОТМЕНА</button><button class="btn btn-primary" style="flex:none; padding: 0 40px;" onclick="completeSale()">ОК</button></div><div style="margin-top: 20px; text-align: center;"><button class="btn btn-outline" style="padding: 0 30px;" onclick="clearCart()">ОЧИСТИТЬ ЧЕК</button></div></div></div>
 <div class="modal-backdrop" id="settingsModal"><div class="modal-window settings-modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Настройки</h2><div class="form-group"><label class="form-label">Тема оформления</label><div class="theme-grid"><div class="theme-option" data-theme="light" onclick="applyTheme('light')">Светлая</div><div class="theme-option" data-theme="dark" onclick="applyTheme('dark')">Тёмная</div></div></div><div class="form-group"><label class="form-label">Цветовая схема</label><div class="scheme-grid"><div class="scheme-dot" data-scheme="red" onclick="applyScheme('red')"></div><div class="scheme-dot" data-scheme="green" onclick="applyScheme('green')"></div><div class="scheme-dot" data-scheme="blue" onclick="applyScheme('blue')"></div><div class="scheme-dot" data-scheme="orange" onclick="applyScheme('orange')"></div><div class="scheme-dot" data-scheme="purple" onclick="applyScheme('purple')"></div></div></div><div class="btn-group"><button class="btn btn-primary" onclick="saveSettings()">Применить</button><button class="btn btn-outline" onclick="closeAllModals()">Отмена</button></div></div></div>
 <script>
-const VERSION = "26.8.19.1";
+const VERSION = "26.8.19.2";
 let productsDB = JSON.parse(localStorage.getItem('productor_products')) || [];
 let cart = JSON.parse(localStorage.getItem('productor_cart')) || [];
 let sessionReportHistory = JSON.parse(localStorage.getItem('productor_reports')) || [];
