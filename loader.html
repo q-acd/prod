@@ -4,170 +4,106 @@
     <meta charset="UTF-8">
     <title>Продуктор для бизнеса</title>
     
-    <!-- Подключаем Font Awesome для иконки корзины -->
+    <!-- ШАГ 1: Применяем тему ДО отрисовки -->
+    <script>
+        // Читаем настройки сразу при парсинге head
+        const savedTheme = localStorage.getItem('productor_theme') || 'light';
+        const savedSchemeIndex = parseInt(localStorage.getItem('productor_scheme_index')) || 2;
+        
+        // Устанавливаем атрибуты на корень документа немедленно
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.documentElement.setAttribute('data-color-scheme', ['blue', 'red', 'green', 'orange', 'purple'][savedSchemeIndex]);
+    </script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            /* Цвета по умолчанию (синий) */
+            --bg-light: #ffffff;
+            --text-dark: #1e293b;
+            --primary-accent: #2563eb; 
+            --gray-muted: #64748b;
+            --border-light: #e2e8f0;
         }
 
+        [data-theme="dark"] {
+            --bg-light: #0f172a;
+            --text-dark: #f1f5f9;
+            --primary-accent: #3b82f6; /* Чуть светлее для темной темы */
+            --gray-muted: #94a3b8;
+            --border-light: #334155;
+        }
+
+        /* Динамические цветовые схемы */
+        [data-color-scheme="red"] { --primary-accent: #dc2626; }
+        [data-color-scheme="green"] { --primary-accent: #047857; }
+        [data-color-scheme="orange"] { --primary-accent: #ea580c; }
+        [data-color-scheme="purple"] { --primary-accent: #9333ea; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body, html {
-            width: 100%;
-            height: 100%;
-            background-color: #f4f6f8;
+            width: 100%; height: 100%;
+            background-color: var(--bg-light); /* Используем переменную вместо серого */
+            color: var(--text-dark);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
             overflow: hidden;
         }
 
         .loader-container {
-            position: relative;
-            text-align: center;
-            opacity: 0;
+            position: relative; text-align: center; opacity: 0;
             animation: fadeIn 0.5s forwards ease-out;
         }
 
-        /* Контейнер логотипа */
         .logo-wrapper {
-            width: 100px;
-            height: 100px;
-            background-color: #2563eb;
-            border-radius: 16px;
-            margin: 0 auto 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 100px; height: 100px;
+            background-color: var(--primary-accent); /* Логотип теперь всегда вашего акцентного цвета */
+            border-radius: 16px; margin: 0 auto 20px;
+            display: flex; justify-content: center; align-items: center;
             transform: translateY(50px);
-            
-            /* Анимация вылета + дыхание */
             animation: flyUpLogo 0.8s forwards cubic-bezier(0.68, -0.55, 0.265, 1.55), breathe 2s infinite ease-in-out;
-            animation-delay: 0.3s;
-            position: relative;
+            animation-delay: 0.3s; position: relative;
         }
 
-        /* Сама иконка тележки */
-        .logo-icon {
-            color: #ffffff;
-            font-size: 48px; /* Размер подобрал под контейнер 100x100 */
-            line-height: 1;
-        }
+        .logo-icon { color: white; font-size: 48px; line-height: 1; }
 
-        h1 {
-            color: #1e293b;
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            transform: translateY(-50px);
-            animation: flyDownText 0.9s forwards ease-out;
-            animation-delay: 0.5s;
-        }
+        h1 { color: var(--text-dark); font-size: 36px; font-weight: 700; margin-bottom: 4px; transform: translateY(-50px); animation: flyDownText 0.9s forwards ease-out; animation-delay: 0.5s; }
+        p.subtitle { color: var(--gray-muted); font-size: 18px; transform: translateY(-50px); animation: flyDownText 0.9s forwards ease-out; animation-delay: 0.7s; }
 
-        p.subtitle {
-            color: #64748b;
-            font-size: 18px;
-            transform: translateY(-50px);
-            animation: flyDownText 0.9s forwards ease-out;
-            animation-delay: 0.7s;
-        }
+        .version { position: absolute; bottom: 20px; right: 20px; color: var(--gray-muted); font-size: 12px; opacity: 0; animation: fadeIn 0.5s forwards ease-out; animation-delay: 1.5s; }
 
-        .version {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            color: #94a3b8;
-            font-size: 12px;
-            opacity: 0;
-            animation: fadeIn 0.5s forwards ease-out;
-            animation-delay: 1.5s;
-        }
+        .progress-wrapper { width: 320px; max-width: 90%; margin-top: 30px; transform: scaleY(0); animation: slideUpBar 0.6s forwards ease-out; animation-delay: 1s; }
 
-        .progress-wrapper {
-            width: 320px;
-            max-width: 90%;
-            margin-top: 30px;
-            transform: scaleY(0);
-            animation: slideUpBar 0.6s forwards ease-out;
-            animation-delay: 1s;
-        }
+        .progress-bar-bg { width: 100%; height: 10px; background-color: var(--border-light); border-radius: 8px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary-accent), #f3f3f3); border-radius: 8px; transition: width 0.05s linear; }
+        .progress-text { margin-top: 10px; font-size: 14px; color: var(--gray-muted); min-height: 20px; transition: color 0.3s; }
 
-        .progress-bar-bg {
-            width: 100%;
-            height: 10px;
-            background-color: #e2e8f0;
-            border-radius: 8px;
-            overflow: hidden;
-        }
+        @keyframes flyUpLogo { to { transform: translateY(0); } }
+        @keyframes flyDownText { to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideUpBar { to { transform: scaleY(1); } }
+        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes breathe { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-4px) scale(1.03); } }
 
-        .progress-bar-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #3b82f6, #60a5fa);
-            border-radius: 8px;
-            transition: width 0.05s linear;
-        }
-
-        .progress-text {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #475569;
-            min-height: 20px;
-            transition: color 0.3s;
-        }
-
-        @keyframes flyUpLogo {
-            to { transform: translateY(0); }
-        }
-
-        @keyframes flyDownText {
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes slideUpBar {
-            to { transform: scaleY(1); }
-        }
-
-        @keyframes fadeIn {
-            to { opacity: 1; }
-        }
-
-        @keyframes breathe {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-4px) scale(1.03); }
-        }
-
-        /* Увеличено время затухания перед переходом */
-        .fade-out {
-            animation: fadeOut 1.5s forwards ease-in;
-        }
-
-        @keyframes fadeOut {
-            to { opacity: 0; }
-        }
+        .fade-out { animation: fadeOut 1.5s forwards ease-in; }
+        @keyframes fadeOut { to { opacity: 0; } }
     </style>
 </head>
 <body>
-
 <div class="loader-container">
-    <div class="logo-wrapper">
-        <!-- Используем бесплатную солид-версию иконки fa-cart-shopping -->
-        <i class="fa-solid fa-cart-shopping logo-icon"></i>
-    </div>
+    <div class="logo-wrapper"><i class="fa-solid fa-cart-shopping logo-icon"></i></div>
     <h1>Продуктор</h1>
     <p class="subtitle">для бизнеса</p>
     
     <div class="progress-wrapper">
-        <div class="progress-bar-bg">
-            <div class="progress-bar-fill" id="progressFill"></div>
-        </div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
         <div class="progress-text" id="progressText"></div>
+		
     </div>
 
-    <div class="version">Версия 26.8.19.2</div>
+    <div class="version">Версия 26.8.20.2</div>
+	<p>Возникли проблемы с загрузкой? Напишите <a href="mailto:quantumacd25gmail.com" style="color: var(--primary-accent)">нам</a>.</p>
 </div>
 
 <script>
@@ -192,11 +128,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateProgress(currentTime) {
         const elapsed = currentTime - startTime;
         let progress = (elapsed / randomDuration) * 100;
-
-        if (progress >= 100) {
-            progress = 100;
-        }
-
+        if (progress >= 100) progress = 100;
+        
         const roundedProgress = Math.round(progress);
         progressFill.style.width = roundedProgress + '%';
 
@@ -214,13 +147,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function onLoadingComplete() {
         progressText.textContent = 'Готово!';
-        
         setTimeout(() => {
             loaderContainer.classList.add('fade-out');
-            
             setTimeout(() => {
-                window.location.href = 'workspace.html';
-            }, 1500); /* Ждем новое время анимации fadeOut */
+                window.location.href = 'workspace.html'; // Переход происходит с уже установленной темой
+            }, 1500);
         }, 500);
     }
 
