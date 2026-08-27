@@ -3,14 +3,27 @@
 <head>
     <meta charset="utf-8">
     <title>Запуск Продуктора</title>
+    
+    <!-- Шрифт Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --bg-light: #ffffff;
             --text-dark: #1e293b;
+            --accent-start: #667eea;
+            --accent-end: #764ba2;
+            --dropdown-bg: #f8f9fa;
+            --border-color: #dee2e6;
         }
+
         [data-theme="dark"] {
             --bg-light: #0f172a;
             --text-dark: #f1f5f9;
+            --dropdown-bg: #1e293b;
+            --border-color: #334155;
         }
         
         body {
@@ -23,59 +36,313 @@
             margin: 0; 
             background-color: var(--bg-light);
             color: var(--text-dark);
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out;
         }
-        
+
+        /* Неоновая подсветка по бокам */
+        body::before,
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 100px;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.7;
+        }
+
+        body::before {
+            left: 0;
+            background: linear-gradient(90deg, transparent, var(--accent-start));
+        }
+
+        body::after {
+            right: 0;
+            background: linear-gradient(270deg, transparent, var(--accent-end));
+        }
+
+        /* Адаптация подсветки под темную тему */
+        [data-theme="dark"] body::before {
+            background: linear-gradient(90deg, transparent, #8b5cf6);
+        }
+        [data-theme="dark"] body::after {
+            background: linear-gradient(270deg, transparent, #3b82f6);
+        }
+
         h1 {
             margin-bottom: 30px;
             font-weight: 600;
+            letter-spacing: -0.03em;
+            text-shadow: 0 0 10px rgba(118, 75, 162, 0.2);
         }
-        
-        select {
-            padding: 12px 40px 12px 12px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
+
+        /* Контейнер дропдауна */
+        .dropdown-container {
+            position: relative;
+            width: 320px;
+            user-select: none;
+        }
+
+        .selected-box {
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
             cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592c.859 0 1.319 1.013.753 1.658L8.753 11.14a.5.5 0 0 1-.748 0z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            min-width: 200px;
+            background-color: var(--dropdown-bg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .selected-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .arrow-icon {
+            transition: transform 0.3s ease;
+            font-size: 18px;
+            color: #64748b;
+        }
+
+        .selected-box.active .arrow-icon {
+            transform: rotate(180deg);
+        }
+
+        .options-box {
+            position: absolute;
+            top: 110%;
+            left: 0;
+            right: 0;
+            max-height: 0;
+            overflow: hidden;
+            background-color: var(--dropdown-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            opacity: 0;
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .options-box.active {
+            max-height: 400px; /* Достаточно для отображения всех пунктов */
+            opacity: 1;
+        }
+
+        .option-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .option-item:last-child {
+            border-bottom: none;
+        }
+
+        .option-item:hover {
+            background-color: #f1f5f9;
         }
         
+        [data-theme="dark"] .option-item:hover {
+            background-color: #334155;
+        }
+
+        .option-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .option-title {
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .option-desc {
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.3;
+        }
+        
+        [data-theme="dark"] .option-desc {
+            color: #94a3b8;
+        }
+
         button {
-            margin-top: 20px; 
-            padding: 8px 16px; 
+            margin-top: 30px; 
+            padding: 10px 24px; 
             background: #e6e6e6; 
             border: none; 
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         
+        button:hover {
+            background: #dcdcdc;
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
         p { 
             margin-top: 40px; 
             color: #666; 
             font-size: 14px; 
+            opacity: 0.8;
         }
-		</style>
-    </head>
-<body>
 
+        /* Кнопка смены темы */
+        .theme-toggle {
+            position: fixed;
+            top: 0px;
+            right: 15px;
+            background: transparent;
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.3s;
+        }
+
+        [data-theme="dark"] .theme-toggle {
+            border-color: #94a3b8;
+        }
+
+        .moon-icon, .sun-icon {
+            font-size: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+		.logo-wrapper {
+            width: 100px; height: 100px;
+            color: var(--text-dark); /* Логотип теперь всегда вашего акцентного цвета */
+            border-radius: 16px; margin: 0 auto 20px;
+            display: flex; justify-content: center; align-items: center;
+            transform: translateY(50px);
+            animation: flyUpLogo 0.8s forwards cubic-bezier(0.68, -0.55, 0.265, 1.55), breathe 2s infinite ease-in-out;
+            animation-delay: 0.3s; position: relative;
+        .logo-icon { color: var(--text-dark); font-size: 48px; line-height: 1; }
+    </style>
+</head>
+<body>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<!-- Переключатель темы -->
+<button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+    🌙
+</button>
+<div class="logo-wrapper"><i class="fa-solid fa-cart-shopping logo-icon"></i></div>
 <h1>Продуктор для бизнеса</h1>
 
-<label for="versionSelect" hidden>Выбор версии:</label>
-<select id="versionSelect" onchange="window.location.href = this.value">
-    <option disabled selected>Выбор редакции:</option>
-    <option value="lite.html">LITE (Базовая)</option>
-    <option value="beta.html" disabled>Beta (Скоро)</option>
-    <option value="workspace.html">Stand (Рабочее место)</option>
-    <option value="pro.html" disabled>PRO (Максимальная)</option>
-</select>
+<div class="dropdown-container">
+    <div class="selected-box" id="selectedBox">
+        <span>Выбор версии:</span>
+        <span class="arrow-icon">▾</span>
+    </div>
+    <div class="options-box" id="optionsBox">
+        <div class="option-item" data-value="lite.html">
+            <div class="option-info">
+                <span class="option-title">LITE</span>
+                <small class="option-desc">v.26.8.25.1 | Для слабых устройств</small>
+            </div>
+        </div>
+        
+		<div class="option-item" data-value="beta.html">
+            <div class="option-info">
+                <span class="option-title">Beta</span>
+                <small class="option-desc">v.26.8.21.1 | Для разработчиков</small>
+            </div>
+		</div>
+        
+        <div class="option-item" data-value="workspace.html">
+            <div class="option-info">
+                <span class="option-title">Stand (По умолчанию)</span>
+                <small class="option-desc">v.26.8.20.2 | Всё, что нужно</small>
+            </div>
+        </div>
+        <div class="option-item disabled" style="color:#ccc; cursor:not-allowed;" title="Скоро будет доступно">
+            <div class="option-info">
+                <span class="option-title">PRO</span>
+                <small class="option-desc">Доступна только по почте: <a href="mailto:q-acd@mail.ru" style="color:gray">q-acd@mail.ru</a></small>
+            </div>
+        </div>
+    </div>
+</div>
 
-<button onclick="history.back()">Отмена</button>
+<button onclick="history.back()">◀ Отмена</button>
 
-<p>Launcher v.1.0 | &copy; Морковчик</p>
+<p>Launcher v.26.2 | &copy; Морковчик</p>
+
+<script>
+    // === ТЁМНАЯ ТЕМА И СОХРАНЕНИЕ ===
+    const themeToggle = document.getElementById('themeToggle');
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    
+    if (currentTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeToggle.innerHTML = '☀️'; // Солнце для светлой темы
+    }
+
+    themeToggle.addEventListener('click', () => {
+        let theme = document.documentElement.getAttribute('data-theme');
+        if (theme === 'dark') {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'light');
+            themeToggle.innerHTML = '🌙';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+            themeToggle.innerHTML = '☀️';
+        }
+    });
+
+    // === DROPDOWN ЛОГИКА ===
+    const selectedBox = document.getElementById('selectedBox');
+    const optionsBox = document.getElementById('optionsBox');
+    const optionItems = document.querySelectorAll('.option-item');
+
+    selectedBox.addEventListener('click', () => {
+        optionsBox.classList.toggle('active');
+        selectedBox.classList.toggle('active');
+    });
+
+    // Закрытие при клике мимо
+    document.addEventListener('click', function(e) {
+        if (!selectedBox.contains(e.target)) {
+            optionsBox.classList.remove('active');
+            selectedBox.classList.remove('active');
+        }
+    });
+
+    optionItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            // Проверяем, не заблокирован ли пункт
+            if (this.classList.contains('disabled')) return;
+
+            const value = this.getAttribute('data-value');
+            if (value) {
+                window.location.href = value;
+            }
+        });
+    });
+</script>
 
 </body>
 </html>
