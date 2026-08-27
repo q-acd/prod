@@ -254,7 +254,7 @@
                     <div class="file-info"><strong>Веб-приложение</strong><small>Совместимо со всеми устройствами<br>v.26.8.20.2</small></div>
                     <span><i class="fa-solid fa-arrow-to-bottom"></i></span>
                 </div>
-                <div class="download-item" onclick="alert('Beta')">
+                <div class="download-item" onclick="startDirectDownload('prod20.exe')">
                     <div class="file-info"><strong>Для Windows</strong><small>v.26.8.20.2</small></div>
                     <span><i class="fa-solid fa-arrow-to-bottom"></i></span>
                 </div>
@@ -282,7 +282,7 @@
     <div class="footer-contact">
         Связаться с разработчиком: <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>
     </div>
-    <div class="footer-year">© <span id="currentYear"></span> Морковчик. Версия сайта: 26.8.25.1</div>
+    <div class="footer-year">© <span id="currentYear"></span> Морковчик. Версия сайта: 26.8.27.3</div>
 </footer>
 
 <!-- DIALOG WINDOW (исправлено: добавлена кнопка закрытия) -->
@@ -318,9 +318,10 @@
         <iframe src="license.html" style="width: 100%; height: 50vh; border: 1px solid var(--border-light); border-radius: 8px;"></iframe><br><br>
         
         <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-            <button type="button" onclick="window.location.href='version.html'" style="background-color: var(--success-green); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Я согласен</button>
+            <button type="button" onclick="window.location.href='Лицензионное соглашение.pdf'" style="background: red; border: 1px solid var(--border-light); padding: 10px 20px; border-radius: 8px; cursor: pointer;color:white;width: calc(50% - 40px)">Скачать в PDF</button>
+            <button type="button" onclick="window.location.href='version.html'" style="background-color: var(--success-green); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;width: calc(50% - 40px)">Я согласен</button>
             <button type="button" onclick="document.getElementById('startup').close()" style="background: transparent; border: 1px solid var(--border-light); padding: 10px 20px; border-radius: 8px; cursor: pointer;">Отмена</button>
-        </div>
+		</div>
     </div>
 </dialog>
 <script>
