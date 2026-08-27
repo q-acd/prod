@@ -1,9 +1,81 @@
-<meta charset="utf-8">
-<select onchange="window.location.href = this.value">
-<option disabled selected>Выбор версии:</option>
-<option value="lite.html">LITE</option>
-<option value="beta.html" disabled>Beta</option>
-<option value="workspace.html">Stand</option>
-<option value="pro.html" disabled>PRO</option>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Запуск Продуктора</title>
+    <style>
+        :root {
+            --bg-light: #ffffff;
+            --text-dark: #1e293b;
+        }
+        [data-theme="dark"] {
+            --bg-light: #0f172a;
+            --text-dark: #f1f5f9;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            height: 100vh; 
+            margin: 0; 
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            transition: background-color 0.3s ease;
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        select {
+            padding: 12px 40px 12px 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592c.859 0 1.319 1.013.753 1.658L8.753 11.14a.5.5 0 0 1-.748 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            min-width: 200px;
+        }
+        
+        button {
+            margin-top: 20px; 
+            padding: 8px 16px; 
+            background: #e6e6e6; 
+            border: none; 
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        p { 
+            margin-top: 40px; 
+            color: #666; 
+            font-size: 14px; 
+        }
+		</style>
+    </head>
+<body>
+
+<h1>Продуктор для бизнеса</h1>
+
+<label for="versionSelect" hidden>Выбор версии:</label>
+<select id="versionSelect" onchange="window.location.href = this.value">
+    <option disabled selected>Выбор редакции:</option>
+    <option value="lite.html">LITE (Базовая)</option>
+    <option value="beta.html" disabled>Beta (Скоро)</option>
+    <option value="workspace.html">Stand (Рабочее место)</option>
+    <option value="pro.html" disabled>PRO (Максимальная)</option>
 </select>
-<p>Launcher v.1.0</p>
+
+<button onclick="history.back()">Отмена</button>
+
+<p>Launcher v.1.0 | &copy; Морковчик</p>
+
+</body>
+</html>
