@@ -111,7 +111,7 @@ textarea,
         .main-area { display: flex; flex-grow: 1; overflow: hidden; padding: 15px; gap: 15px; }
         .sidebar { width: 280px; background: #f8fafc; border: 1px solid var(--border-light); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 15px; flex-shrink: 0; overflow-y: auto; height: calc(100% - 67px - 10px - 40px); box-shadow: 0px 0px 30px var(--primary-accent); }
         [data-theme="dark"] .sidebar { background: none; border-color: #334155; }
-        .search-input { width: 100%; padding: 10px 12px; border: 1px solid var(--border-light); border-radius: 8px; outline: none; background:none;transition:0.3s; }
+        .search-input { width: 100%; padding: 10px 12px; border: 1px solid var(--border-light); border-radius: 8px; outline: none; background:none;transition:0.3s; color: var(--text-dark) }
         .search-input:hover { background-color: var(--primary-accent); box-shadow: 0px 0px 30px var(--primary-accent); transform: rotateZ(-1deg) }
         .search-input:focus { transform: rotateZ(0deg) }
         [data-theme="dark"] .search-input { background: none; border-color: #334155; color: #f1f5f9; }
@@ -128,7 +128,33 @@ textarea,
         .badge-stock.out { background: var(--primary-accent); color: white; }
         .no-stock { color: var(--primary-accent); font-size: 12px; cursor: not-allowed !important; opacity: 0.7; }
         [data-theme="dark"] .no-stock { color: #fca5a5; }
+/* Применяем ко всем скроллбарам страницы */
+*::-webkit-scrollbar {
+    width: 10px; /* Ширина вертикального скролла */
+    height: 10px; /* Высота горизонтального скролла */
+}
 
+/* Трек (фон под полосой) — полностью прозрачный */
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Сам ползунок */
+*::-webkit-scrollbar-thumb {
+    background-color: var(--primary-accent);
+    border-radius: 5px; /* Скругление углов */
+    border: 2px solid transparent; /* Чтобы сохранить размер 10px при рендеринге */
+    background-clip: content-box; /* Цвет применяется только к контенту, бордер остается прозрачным */
+	transition:0.3s;
+}
+
+/* Состояние при наведении (опционально, можно сделать полосу чуть ярче или шире) */
+*::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-accent); /* Если используете препроцессор вроде Sass */
+    /* Или просто укажите более светлый HEX-код вручную */
+	transition:0.3s;
+	scale:1.1;
+}
         .checkout-area { flex-grow: 1; display: flex; flex-direction: column; gap: 15px; overflow: hidden; box-shadow: 0px 0px 30px var(--primary-accent); border-radius:12px }
         .current-checkout { background: white; border: 1px solid var(--border-light); border-radius: 12px; padding: 15px; flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
         [data-theme="dark"] .current-checkout { background: #1e293b; border-color: #334155; }
@@ -164,7 +190,7 @@ textarea,
         .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--gray-muted); }
         .form-group { margin-bottom: 15px; display: flex; flex-direction: column; }
         .form-label { margin-bottom: 5px; font-weight: 500; font-size: 14px; }
-        .form-input { padding: 10px; border: 1px solid var(--border-light); border-radius: 6px; background:none;}
+        .form-input { padding: 10px; border: 1px solid var(--border-light); border-radius: 6px; background:none; color: var(--text-dark)}
         [data-theme="dark"] .form-input { background: #0f172a; border-color: #334155; color: #f1f5f9; }
         .btn-group { display: flex; gap: 10px; margin-top: 20px; }
         .btn { flex: 1; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; background: var(--primary-accent);}
@@ -221,13 +247,97 @@ textarea,
 		.calc-buttons button { background: var(--bg-light); border: none; padding: 20px; font-size: 18px; cursor: pointer; transition: background 0.1s; color: var(--primary-accent) } 
 		.calc-buttons button:hover { background: var(--primary-accent); color:white } .btn-operator { background: #dee2e6; } .btn-operator:hover { background: #c1c7cd; }
 		.btn-equal { grid-column: span 4; background: var(--primary-accent); color: var(--primary-accent); }
-		
+
+
+.floating-notes {
+    position: fixed;
+    top: 100px;
+    left: 100px;
+    width: 320px;
+    background: var(--bg-light);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    font-family: Arial, sans-serif;
+    display: none;
+    gap: 10px;
+    padding: 15px;
+    z-index: 999;
+    user-select: none;
+    grid-template-rows: auto auto auto 1fr auto;
+}
+
+.notes-header {
+    cursor: move;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    user-select: none;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Поля ввода */
+.note-title-input, #noteContentInput {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+#noteContentInput {
+    min-height: 120px;
+}
+
+/* Управление списком */
+.notes-controls {
+    display: flex;
+    gap: 8px;
+}
+#noteSelector {
+    flex-grow: 1;
+    padding: 6px;
+}
+
+/* Кнопки действий */
+.notes-actions {
+    display: flex;
+    gap: 10px;
+}
+.notes-actions button {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background: var(--primary-accent);
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.notes-actions button:hover {
+    scale:1.1;
+}
+input, select, button {}
     </style>
 </head>
 <body onbeforeunload="return handleBeforeUnload()">
 <header class="header">
     <div style="display: flex; align-items: center; gap: 12px;">
-        <span class="session-info" id="sessionInfo">Загрузка...</span>
+        <span class="session-info" id="sessionInfo"><noscript>Произошла ошибка кода программы</noscript></span>
     </div>
     
     <div class="top-nav-menu">
@@ -296,12 +406,37 @@ textarea,
 </style>
 
 </center>
-<div class="menu-item" onclick="beta()" style="border-radius:15px;border: 1px solid var(--border-light)">Заметки<br>Записывайте то, что нельзя забыть!<br>v.1.0<span class="hotkey">Недоступно</span></div><br>
+<div class="menu-item" onclick="toggleNotes()" style="border-radius:15px;border: 1px solid var(--border-light)">Заметки<br>Записывайте то, что нельзя забыть!<br>v.1.0<span class="hotkey">v.1.1</span></div><br>
 <div class="menu-item" onclick="toggleCalculator();closeAllModals()" style="border-radius:15px;border: 1px solid var(--border-light)">Калькулятор<br>Считайте не отходя от кассы!<br><span class="hotkey">v.1.1</span></div><br>
 </div>
 </div>
 
 <div class="floating-calculator" id="draggableCalculator"> <div class="calc-header" id="calcHeader"> Калькулятор <button class="close-btn" onclick="toggleCalculator()">&times;</button> </div> <div class="calc-screen" id="calcScreen"></div> <div class="calc-buttons"> <button onclick="clearCalc()">C</button> <button onclick="delChar()"><</button> <button class="btn-operator" onclick="appendValue('%')">%</button> <button class="btn-operator" onclick="setOperator('/')">/</button> <button onclick="appendValue('7')">7</button> <button onclick="appendValue('8')">8</button> <button onclick="appendValue('9')">9</button> <button class="btn-operator" onclick="setOperator('*')">*</button> <button onclick="appendValue('4')">4</button> <button onclick="appendValue('5')">5</button> <button onclick="appendValue('6')">6</button> <button class="btn-operator" onclick="setOperator('-')">-</button> <button onclick="appendValue('1')">1</button> <button onclick="appendValue('2')">2</button> <button onclick="appendValue('3')">3</button> <button class="btn-operator" onclick="setOperator('+')">+</button> <button onclick="appendValue('0')" style="grid-column: span 2;">0</button> <button onclick="appendValue('.')">.</button> <button class="btn-equal" onclick="calculateResult()">=</button> </div> </div>
+
+<div class="floating-notes" id="draggableNotes">
+    <div class="notes-header" id="notesHeader">
+        <span style="color: var(--primary-accent)">Заметки</span>
+        <button class="close-btn" onclick="toggleNotes()" style="color: var(--primary-accent)">&times;</button>
+    </div>
+    <br>
+    <!-- Блок управления заметками -->
+    <div class="notes-controls">
+        <select id="noteSelector"></select>
+        <button onclick="createNote()">Новая</button>
+    </div>
+<br>
+    <!-- Поля ввода -->
+    <input type="text" id="noteTitleInput" placeholder="Заголовок..." class="note-title-input">
+	<br>
+    <textarea id="noteContentInput" placeholder="Текст заметки..."></textarea>
+<br>
+    <!-- Кнопки действий -->
+    <div class="notes-actions">
+        <button onclick="saveCurrentNote()">Сохранить</button>
+        <button onclick="shareNote()">Поделиться</button>
+    </div>
+</div>
+
 
 <div class="modal-backdrop" id="addProductModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2 id="modalTitle">Добавить товар</h2><div class="form-group"><label class="form-label">Наименование</label><input type="text" class="form-input" id="nameInput"></div>
 <div class="form-group" disabled><label class="form-label">Изображение (&beta;)</label><input type="file" class="form-input" id="imageInput" disabled></div>
@@ -732,26 +867,10 @@ function applyScheme(scheme) {
     else isRedSchemeActive = false;
 }
 function saveSettings() {
-    // Ваши настройки темы
     localStorage.setItem('productor_theme', isDarkMode ? 'dark' : 'light');
     const currentScheme = document.documentElement.getAttribute('data-color-scheme');
     localStorage.setItem('productor_scheme_index', schemes.findIndex(s => s.theme === currentScheme).toString());
-
-    // Прямое чтение значений из полей
-    document.getElementById('orgNameInput').value && console.log('Сохраняем название:', document.getElementById('orgNameInput').value);
-    
-   localStorage.setItem('productor_org_settings', JSON.stringify({ name: document.getElementById('orgNameInput').value.trim(), inn: document.getElementById('innInput').value.trim(), ogrn: document.getElementById('ogrnInput').value.trim(), director: document.getElementById('directorInput').value.trim() })); console.log('Настройки успешно сериализованы и отправлены в Local Storage');
-
-    // Правильный вывод объекта целиком для отладки
-    console.log('Объект настроек перед сохранением:', orgSettings); 
-
-    try {
-        localStorage.setItem('productor_org_settings', JSON.stringify(orgSettings));
-        console.log('Данные успешно записаны в Local Storage.');
-    } catch(e) {
-        console.error("Ошибка записи:", e);
-    }
-
+	orgSettings = { name: document.getElementById('orgNameInput').value.trim(), inn: document.getElementById('innInput').value.trim(), ogrn: document.getElementById('ogrnInput').value.trim(), director: document.getElementById('directorInput').value.trim() }; localStorage.setItem('productor_org_settings', JSON.stringify(orgSettings));
     closeAllModals();
 }
 function exportInventory() {
@@ -819,7 +938,6 @@ function setupEventListeners() {
 document.getElementById('sortSelect').addEventListener('change', renderEditTable);
 document.getElementById('stockFilterSelect').addEventListener('change', renderEditTable);
 }
-
 function toggleDropdown(event) {
     event.stopPropagation(); 
     const menu = document.getElementById('dropdownMenu');
@@ -982,9 +1100,7 @@ window.manageFont = function(action) {
         /* Применяем мгновенно к странице */
         document.documentElement.style.setProperty('--font-family', targetFont);
         document.body.style.fontSize = sizeVal + 'px'; 
-		 document.select.style.fontSize = sizeVal + 'px'; 
-		  document.input.style.fontSize = sizeVal + 'px'; 
-		   document.button.style.fontSize = sizeVal + 'px'; 
+		 
 
         closeAllModals();
         
@@ -1066,9 +1182,6 @@ function applyCurrentFontToSettings() {
 /* ЗАПУСК ПРИ СТАРТЕ СТРАНИЦЫ */
 document.addEventListener('DOMContentLoaded', manageFont.bind(null, 'load'));
 
-/* ВЕРНИТЕ ЭТО В КНОПКУ "ПРИМЕНИТЬ" В НАСТРОЙКАХ:
-   onclick="manageFont('apply')"
-*/
 (function() {
     const counter = document.getElementById('fps-counter');
     
@@ -1303,38 +1416,228 @@ function dragEnd() {
 header.addEventListener('mousedown', dragStart);
 header.addEventListener('touchstart', dragStart, {passive: true});
 function toggleCalculator() { if (calcWindow.style.display === 'flex') { calcWindow.style.display = 'none'; } else { calcWindow.style.display = 'flex'; } }
-// ЗАГРУЗКА НАСТРОЕК ОРГАНИЗАЦИИ ПРИ СТАРТЕ СТРАНИЦЫ
-document.addEventListener('DOMContentLoaded', function() {
-    const rawData = localStorage.getItem('productor_org_settings');
+
+
+// --- Единый механизм Drag & Drop для всех плавающих окон ---
+let currentDragTarget = null;
+
+let offsetX = 0;
+let offsetY = 0;
+
+function makeWindowDraggable(headerId, windowId) {
+    const header = document.getElementById(headerId);
+    if (!header) return;
+    header.style.cursor = 'move';
     
-    if (!rawData) return;
-
-    try {
-        const data = JSON.parse(rawData);
+    header.addEventListener('mousedown', e => {
+        e.preventDefault(); // Отключаем выделение текста при клике
+        currentDragTarget = document.getElementById(windowId);
+        isDragging = true;
         
-        // Функция для безопасного заполнения одного поля
-        const fillField = (id, value) => {
-            const field = document.getElementById(id);
-            if (field) {
-                field.value = value; 
-                
-                // === КРИТИЧЕСКИ ВАЖНАЯ СТРОКА ===
-                // Создаем и отправляем событие "input", чтобы реактивные фреймворки 
-                // или кастомные обработчики увидели изменение.
-                field.dispatchEvent(new Event('input', { bubbles: true }));
-            }
-        };
-
-        fillField('orgNameInput', data.name || '');
-        fillField('innInput', data.inn || '');
-        fillField('ogrnInput', data.ogrn || '');
-        fillField('directorInput', data.director || '');
+        const rect = currentDragTarget.getBoundingClientRect();
+        offsetX = e.clientX - rect.left;
+        offsetY = e.clientY - rect.top;
         
-        console.log('Настройки организации загружены в DOM.');
+        document.body.style.userSelect = 'none';
+    });
+}
 
-    } catch(e) {
-        console.error("Ошибка парсинга:", e);
+document.addEventListener('mousemove', e => {
+    if (!isDragging || !currentDragTarget) return;
+    currentDragTarget.style.position = 'fixed';
+    currentDragTarget.style.left = (e.clientX - offsetX) + 'px';
+    currentDragTarget.style.top = (e.clientY - offsetY) + 'px';
+});
+
+document.addEventListener('mouseup', () => {
+    isDragging = false;
+    currentDragTarget = null;
+    document.body.style.userSelect = '';
+});
+
+
+// --- Логика Блокнота ---
+let notesData = {};
+let notesCounter = 0;
+const currentDate = new Date().toISOString();
+
+function toggleNotes() {
+    const el = document.getElementById('draggableNotes');
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function initNotes() {
+    const saved = localStorage.getItem('userNotes');
+    if (saved) {
+        try { 
+            const parsed = JSON.parse(saved);
+            notesData = parsed.data || {};
+            notesCounter = parsed.counter || Object.keys(notesData).length; 
+        } catch(e) { console.error("Ошибка парсинга данных:", e); }
     }
+    renderNoteList();
+    attachSelectListener(); 
+}
+
+function createNote() {
+    const id = "note_" + (++notesCounter);
+    notesData[id] = { title: 'Заметка ' + notesCounter, content: '', createdAt: currentDate };
+    saveAllToStorage();
+    renderNoteList(id);
+    attachSelectListener(); 
+}
+
+function renderNoteList(activeId) {
+    const select = document.getElementById('noteSelector');
+    while(select.firstChild){ select.removeChild(select.firstChild); }
+    
+    if (Object.keys(notesData).length === 0) {
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = 'Нет заметок';
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        select.appendChild(placeholder);
+        return;
+    }
+
+    const sortedKeys = Object.keys(notesData).sort((a, b) => {
+        return new Date(notesData[a].createdAt) - new Date(notesData[b].createdAt);
+    });
+
+    sortedKeys.forEach(key => {
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = notesData[key].title || 'Без названия';
+        select.appendChild(option);
+    });
+
+    const finalActiveId = activeId || sortedKeys[sortedKeys.length - 1];
+    if (finalActiveId) {
+        select.value = finalActiveId;
+        loadNote(finalActiveId);
+    }
+}
+
+function attachSelectListener() {
+    const select = document.getElementById('noteSelector');
+    select.onchange = null; 
+    select.addEventListener('change', function() {
+        if (this.value) {
+            loadNote(this.value);
+        }
+    });
+}
+
+function loadNote(key) {
+    const note = notesData[key];
+    if (!note) return;
+    document.getElementById('noteTitleInput').value = note.title;
+    document.getElementById('noteContentInput').value = note.content;
+}
+
+function saveCurrentNote() {
+    const select = document.getElementById('noteSelector');
+    if (!select.value) return;
+    
+    notesData[select.value].title = document.getElementById('noteTitleInput').value;
+    notesData[select.value].content = document.getElementById('noteContentInput').value;
+    notesData[select.value].updatedAt = currentDate;
+    
+    saveAllToStorage();
+}
+
+function saveAllToStorage() {
+    localStorage.setItem('userNotes', JSON.stringify({ data: notesData, counter: notesCounter }));
+}
+
+function shareNote() {
+    const select = document.getElementById('noteSelector');
+    if (!select.value) return;
+    
+    const note = notesData[select.value];
+    const textToShare = `# ${note.title}\n\n${note.content}`;
+    
+    if ('showSaveFilePicker' in window) {
+        showSaveDialog(textToShare, `${note.title.replace(/[^a-zA-Z0-9]/g, '_')}.txt`);
+    } else {
+        copyToClipboard(textToShare);
+        alert('Текст скопирован в буфер обмена.');
+    }
+}
+
+async function showSaveDialog(content, fileName) {
+    try {
+        const handle = await window.showSaveFilePicker({
+            suggestedName: fileName,
+            types: [{ description: 'Text Files', accept: {'text/plain': ['.txt']}, }]
+        });
+        const writable = await handle.createWritable();
+        await writable.write(content);
+        await writable.close();
+    } catch (err) {
+        if (err.name !== 'AbortError') copyToClipboard(content);
+    }
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).catch(() => {/* ignore */});
+}
+
+// Контекстное меню ПКМ по списку заметок
+document.getElementById('noteSelector').addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    const selectedKey = this.value;
+    if (!selectedKey) return;
+
+    const menu = document.createElement('div');
+    menu.style.cssText = `
+        position: fixed; top: ${e.pageY}px; left: ${e.pageX}px; background:#fff; border:1px solid #ccc;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index:1000; padding:5px 0;
+        font-size:14px; min-width:150px;
+    `;
+    
+    const renameBtn = document.createElement('div');
+    renameBtn.textContent = 'Переименовать заголовок';
+    renameBtn.style.padding = '6px 12px';
+    renameBtn.onclick = () => {
+        const newTitle = prompt('Новый заголовок:', notesData[selectedKey].title);
+        if (newTitle) {
+            notesData[selectedKey].title = newTitle;
+            saveAllToStorage();
+            renderNoteList(selectedKey);
+        }
+        document.body.removeChild(menu);
+    };
+    
+    const deleteBtn = document.createElement('div');
+    deleteBtn.textContent = 'Удалить заметку';
+    deleteBtn.style.color = 'red';
+    deleteBtn.style.padding = '6px 12px';
+    deleteBtn.onclick = () => {
+        if (confirm('Удалить эту заметку?')) {
+            delete notesData[selectedKey];
+            saveAllToStorage();
+            renderNoteList();
+        }
+        document.body.removeChild(menu);
+    };
+    
+    menu.appendChild(renameBtn);
+    menu.appendChild(deleteBtn);
+    document.body.appendChild(menu);
+
+    document.addEventListener('click', function closeMenu() {
+        document.body.removeChild(menu);
+        document.removeEventListener('click', closeMenu);
+    }, { once: true });
+});
+
+// Инициализация обоих окон после загрузки DOM
+document.addEventListener('DOMContentLoaded', () => {
+    initNotes();
+    makeWindowDraggable('calcHeader', 'draggableCalculator');
+    makeWindowDraggable('notesHeader', 'draggableNotes');
 });
 </script>
 
