@@ -5,15 +5,7 @@
     <title>Продуктор - Рабочее пространство</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
-     <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WSSEELHL51"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-WSSEELHL51');
-</script>
+    
     <!-- Подключение шрифтов -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -340,132 +332,6 @@ textarea,
     scale:1.1;
 }
 input, select, button {}
-
-/* --- НАСТРОЙКИ: Сетка под табы --- */
-.settings-modal-window {
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    gap: 0;
-    height: auto;
-    max-height: 90vh;
-    width: 768px;
-    max-width: 95vw;
-}
-
-.settings-tabs {
-    background: #f8fafc;
-    border-right: 1px solid var(--border-light);
-    border-top-left-radius: 12px;
-    border-bottom-left-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow-y: auto;
-}
-
-[data-theme="dark"] .settings-tabs {
-    background: #0f172a;
-    border-right-color: #334155;
-}
-
-.tab-item {
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-weight: 500;
-    color: #666;
-    white-space: nowrap;
-    border-left: 4px solid transparent;
-}
-
-[data-theme="dark"] .tab-item {
-    color: #aaa;
-}
-
-.tab-item.active {
-    background: white;
-    color: var(--primary-accent);
-    border-left-color: var(--primary-accent);
-    margin-right: -1px;
-}
-
-[data-theme="dark"] .tab-item.active {
-    background: #1e293b;
-    color: var(--primary-accent);
-    border-left-color: var(--primary-accent);
-}
-
-.tab-icon {
-    font-size: 18px;
-    min-width: 20px;
-    text-align: center;
-}
-
-.settings-content {
-    padding: 30px;
-    display: none;
-    overflow-y: auto;
-    height: calc(100vh - 200px);
-}
-
-.settings-content.active {
-    display: block;
-}
-
-/* Адаптация под мобильные устройства (табы сворачиваются сверху) */
-@media (max-width: 768px) {
-    .settings-modal-window {
-        grid-template-columns: 1fr;
-        border-radius: 0;
-        border-left: none;
-        border-right: none;
-        height: 100%;
-    }
-    
-    .settings-tabs {
-        flex-direction: row;
-        overflow-x: auto;
-        border-radius: 0;
-        border-right: none;
-        border-bottom: 1px solid var(--border-light);
-    }
-
-    .tab-item {
-        border-left: none;
-        border-bottom: 3px solid transparent;
-        padding: 14px 16px;
-    }
-
-    .tab-item.active {
-        border-bottom-color: var(--primary-accent);
-        background: initial;
-    }
-
-    .settings-content {
-        padding: 20px;
-    }
-}
-#help-toggle-btn{
-background: var(--primary-accent);
-border:1px solid var(--text-dark);
-color:white;
-transition:0.3s;
-padding:8px;
-border-radius:15px;
-margin-right:5px;
-}
-#help-toggle-btn:hover{
-scale:1.1;
-transition:0.3s;
-color: var(--primary-accent);
-border:1px solid var(--text-dark);
-background:white;
-margin-right:15px;
-}
-/* Анимация плавной смены текста */ .fade-swap { animation: fadeOutUp 0.4s ease-in-out forwards; } .fade-swap-active { animation: fadeInDown 0.4s ease-in-out forwards; } @keyframes fadeOutUp { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-10px); } } @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body onbeforeunload="return handleBeforeUnload()">
@@ -475,16 +341,8 @@ margin-right:15px;
     </div>
     
     <div class="top-nav-menu">
-	<!-- КНОПКА "СПРОСИТЕ ШТАБА" -->
-<div id="helper-toggle-btn" style="
-    cursor: pointer; 
-    display: flex; align-items: center; gap: 8px;
-    font-size: 14px; color: white;
-">
-    <div class="sheet-bg" style="width:20px;height:20px;background:#f1f5f9;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:gray">?</div>
-    <span id="help-text-bubble" style="transition: opacity 0.4s ease;">Спросите Штаба...</span>
-</div>
-<button class="settings-toggle" id="dropdownToggle" onclick="toggleDropdown(event)">&#x22EE;</button>
+        <button class="settings-toggle" id="dropdownToggle" onclick="toggleDropdown(event)">&#x22EE;</button>
+    </div>
     
     <div class="dropdown-menu" id="dropdownMenu">
         <div class="menu-item" onclick="exportReceipt()">Сохранить чек<span class="hotkey">▶</span></div>
@@ -494,7 +352,7 @@ margin-right:15px;
         <div class="menu-item" onclick="openImportModal()" aria-label="Загрузить список товаров">Загрузить список товаров<span class="hotkey">Alt+I</span></div>
         <div class="menu-item" onclick="openModal('settings')" aria-label="Открыть настройки">Настройки<span class="hotkey">▶</span></div>
         <div class="menu-item" onclick="openModal('plugin')">Инструменты</div>
-        
+        <div class="menu-item" onclick="openModal('about')" aria-label="О программе">О программе<span class="hotkey">Alt+A</span></div>
     </div>
 </header>
 <div class="main-area">
@@ -548,9 +406,8 @@ margin-right:15px;
 </style>
 
 </center>
-<div class="menu-item" onclick="toggleNotes();closeAllModals()" style="border-radius:15px;border: 1px solid var(--border-light)">Заметки<br>Записывайте то, что нельзя забыть!<br>v.1.0<span class="hotkey">v.1.1</span></div><br>
+<div class="menu-item" onclick="toggleNotes()" style="border-radius:15px;border: 1px solid var(--border-light)">Заметки<br>Записывайте то, что нельзя забыть!<br>v.1.0<span class="hotkey">v.1.1</span></div><br>
 <div class="menu-item" onclick="toggleCalculator();closeAllModals()" style="border-radius:15px;border: 1px solid var(--border-light)">Калькулятор<br>Считайте не отходя от кассы!<br><span class="hotkey">v.1.1</span></div><br>
-<div class="menu-item" onclick="openPriceMaker();closeAllModals()" style="border-radius:15px;border: 1px solid var(--border-light)">Создать ценник<br>О-о-очень удобный инструмент для составления ценииков в вашем магазине!<br><span class="hotkey">В разработке</span></div><br>
 </div>
 </div>
 
@@ -614,124 +471,60 @@ margin-right:15px;
 <div class="modal-backdrop" id="editProductsModal"><div class="modal-window" style="width: 95%; height: 85%; max-height: 600px; display: flex; flex-direction: column;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"><h2>Управление товарами</h2><button class="close-modal" onclick="closeAllModals()">&times;</button></div><input type="text" class="search-input" placeholder="Фильтр..." id="filterEditInput" style="margin-bottom: 10px;"><div style="flex-grow:1; overflow-y:auto; border:1px solid var(--border-light); border-radius:8px; padding:10px;"><table class="products-table" id="productsTable"><thead><tr style="background:#f1f5f9; text-align:left;"><th style="padding:8px;">Название</th><th style="padding:8px;">Артикул</th><th style="padding:8px;">Цена</th><th style="padding:8px;">Склад</th><th style="padding:8px;"></th></tr></thead><tbody id="editTbody"></tbody></table></div><div style="margin-top: 15px; text-align:right;" class="btn-group"><button class="btn btn-danger" onclick="deleteSelected()">Удалить выбранные</button></div></div></div>
 <div class="modal-backdrop" id="finishModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Завершить сессию?</h2><p>Все несохраненные изменения будут утеряны.</p><div style="margin: 15px 0;"><input type="checkbox" id="reportCheckbox"> <label for="reportCheckbox">Сохранить отчёт о чеке</label></div><div class="btn-group"><button class="btn btn-primary" onclick="confirmFinish(true)">Да, завершить</button><button class="btn btn-outline" onclick="closeAllModals()">Продолжить работу</button></div></div></div>
 <div class="modal-backdrop" id="statisticsModal"><div class="modal-window" style="max-width: 900px;"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Статистика действий</h2><p>Журнал операций за текущие сессии.</p><table class="stats-table"><thead><tr><th>Дата и время</th><th>Действие</th><th>Детали</th></tr></thead><tbody id="statsBody"></tbody></table></div></div>
-<div class="modal-backdrop" id="aboutModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>О Продукторе</h2><p>Рабочая среда кассира версии <strong>26.9.2.1</strong>.</p><p>&copy; 2026 Морковчик. Все права защищены.</p><hr><p>Ответы на вопросы:<br><br>Если товары в списке не отображаются - попробуйте обновить страницу или введите артикул и очистите снова.<hr>Возникнут проблемы - пишите на почту - quantumacd25@gmail.com (также можно написать о поддержке проекта или найденных багах).<hr>Придётся ли платить? Нет, мы денег не берем. Программа не имеет доступ к банковским картам или средствам оплаты.<hr></p></div></div>
+<div class="modal-backdrop" id="aboutModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>О Продукторе</h2><p>Рабочая среда кассира версии <strong>26.9.1.1</strong>.</p><p>&copy; 2026 Морковчик. Все права защищены.</p><hr><p>Ответы на вопросы:<br><br>Если товары в списке не отображаются - попробуйте обновить страницу или введите артикул и очистите снова.<hr>Возникнут проблемы - пишите на почту - quantumacd25@gmail.com (также можно написать о поддержке проекта или найденных багах).<hr>Придётся ли платить? Нет, мы денег не берем. Программа не имеет доступ к банковским картам или средствам оплаты.<hr></p></div></div>
 <div class="modal-backdrop" id="paymentModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Сумма к оплате</h2><div style="text-align: center; font-size: 32px; font-weight: bold; margin: 20px 0;" id="paymentAmount">0 ₽</div><div class="btn-group" style="justify-content: center;"><button class="btn btn-danger" style="flex:none; padding: 0 40px;" onclick="cancelPayment()">ОТМЕНА</button><button class="btn btn-primary" style="flex:none; padding: 0 40px;" onclick="exportReceipt();completeSale()">ОК</button></div><div style="margin-top: 20px; text-align: center;"><button class="btn btn-outline" style="padding: 0 30px;" onclick="clearCart()">ОЧИСТИТЬ ЧЕК</button></div></div></div>
-<!-- Модальное окно: Настройки (с табами) -->
-<div class="modal-backdrop" id="settingsModal">
-    <div class="modal-window settings-modal-window">
-        <button class="close-modal" onclick="closeAllModals()">&times;</button>
-        
-        <!-- Вкладки слева -->
-        <div class="settings-tabs">
-            <div class="tab-item active" data-tab="theme" onclick="switchTab('theme')">
-                <span class="tab-icon">☀️</span> Тема
-            </div>
-            <div class="tab-item" data-tab="personal" onclick="switchTab('personal')">
-                <span class="tab-icon">👤</span> Персональные данные
-            </div>
-            <div class="tab-item" data-tab="about" onclick="switchTab('about')">
-                <span class="tab-icon">ℹ️</span> О программе
-            </div>
-        </div>
-
-        <!-- Контент вкладок -->
-        <div class="settings-content active" id="content-theme">
-            <h2 style="margin-top: 0;">Тема оформления</h2>
-            <div class="form-group">
-                <label class="form-label">Тема оформления</label>
-                <div class="theme-grid">
-                    <div class="theme-option" data-theme="light" onclick="applyTheme('light')">Светлая</div>
-                    <div class="theme-option" data-theme="dark" onclick="applyTheme('dark')">Тёмная</div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Цветовая схема</label>
-                <div class="scheme-grid">
-                    <div class="scheme-dot" data-scheme="red" onclick="applyScheme('red')"></div>
-                    <div class="scheme-dot" data-scheme="green" onclick="applyScheme('green')"></div>
-                    <div class="scheme-dot" data-scheme="blue" onclick="applyScheme('blue')"></div>
-                    <div class="scheme-dot" data-scheme="orange" onclick="applyScheme('orange')"></div>
-                    <div class="scheme-dot" data-scheme="purple" onclick="applyScheme('purple')"></div>
-                </div>
-            </div>
-			<div class="form-group">
-                <label class="form-label">Шрифт приложения**</label>
-                <select id="fontSelect" style="padding: 8px; border-radius: 6px; width: 100%; box-sizing: border-box;">
-                    <option value="">По умолчанию (Inter)</option>
-                    <option value="'Arial', system-ui, sans-serif">Arial</option>
-                    <option value="'Times New Roman', serif">Times New Roman</option>
-                    <option value="'Courier New', monospace">Courier New</option>
-                    <option value="'Verdana', system-ui, sans-serif">Verdana</option>
-                    <option value="'Tahoma', system-ui, sans-serif">Tahoma</option>
-                    <option value="'Georgia', serif">Georgia</option>
-                    <option value="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto">Системный (стандарт ОС)</option>
-                    <option value="custom">Свой шрифт (ввести вручную)...</option>
-                </select>
-            </div>
-            <div class="form-group" id="customFontGroup">
-                <label class="form-label">Название своего шрифта</label>
-                <input type="text" id="customFontInput" class="form-input" placeholder="Например: 'Comic Sans MS' или Papyrus">
-            </div><br>
-            <div class="form-group">
-                <label class="form-label" style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-bottom: 5px;">
-                    Размер шрифта (применяется не ко всем элементам): <span id="fontSizeValue" style="font-weight: 600;">16px</span>
-                </label>
-                <input type="range" 
-                       id="fontSizeRange" 
-                       min="10" 
-                       max="20" 
-                       step="1"
-                       value="16"
-                       oninput="updateFontSizeLabel(this.value)"
-                       style="width: 100%; cursor: pointer;">
-					   </div>
-        </div>
-
-        <div class="settings-content" id="content-personal">
-            <h2 style="margin-top: 0;">Персональные данные и организация</h2>
-            <div class="form-group">
-                <label class="form-label">Название организации*</label>
-                <input type="text" class="form-input" id="orgNameInput" placeholder="ООО Ромашка">
-            </div>
-            <div class="form-group">
-                <label class="form-label">ИНН*</label>
-                <input type="text" class="form-input" id="innInput" placeholder="1234567890">
-            </div>
-            <div class="form-group">
-                <label class="form-label">ОГРН*</label>
-                <input type="text" class="form-input" id="ogrnInput" placeholder="1027700132195">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Имя директора (опц.)*</label>
-                <input type="text" class="form-input" id="directorInput" placeholder="Иванов И.И.">
-            </div>
-            <p style="font-size: 13px; color: #888; margin: 16px 0 24px 0;">
-                * - эти настройки временно не сохраняются<br>
-                ** - не забудьте перезагрузить страницу
-            </p>
-            
-            
-        </div>
-
-        <div class="settings-content" id="content-about">
-            <h2 style="margin-top: 0;">О программе</h2>
-            <p style="font-size: 14px; color: var(--text-dark); line-height: 1.6;">
-                Рабочая среда кассира «Продуктор» версии 26.9.2.1.<br><br>
-                • Данные организации (ИНН, ОГРН) применяются к чеку при экспорте.<br>
-                • Шрифт применяется ко всему интерфейсу после нажатия «Применить».<br>
-                • Для вступления изменений может потребоваться обновление страницы (F5).<br>
-				• Разработчик: Морковчик.<br>
-                • Поддержка: <a href="mailto:q-acd@mail.ru" style="color: var(--primary-accent)">q-acd@mail.ru</a>
-            </p>
-        </div>
-
-        <!-- Общая панель кнопок внизу (не дублируется во вкладках) -->
-        <div class="btn-group">
-            <button class="btn btn-primary" onclick="saveSettings();manageFont('apply')">Применить</button>
-            <button class="btn btn-outline" onclick="closeAllModals()">Отмена</button>
-        </div>
-    </div>
+<div class="modal-backdrop" id="settingsModal"><div class="modal-window settings-modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Настройки</h2><div class="form-group"><label class="form-label">Тема оформления</label><div class="theme-grid"><div class="theme-option" data-theme="light" onclick="applyTheme('light')">Светлая</div><div class="theme-option" data-theme="dark" onclick="applyTheme('dark')">Тёмная</div></div></div><div class="form-group"><label class="form-label">Цветовая схема</label><div class="scheme-grid"><div class="scheme-dot" data-scheme="red" onclick="applyScheme('red')"></div><div class="scheme-dot" data-scheme="green" onclick="applyScheme('green')"></div><div class="scheme-dot" data-scheme="blue" onclick="applyScheme('blue')"></div><div class="scheme-dot" data-scheme="orange" onclick="applyScheme('orange')"></div><div class="scheme-dot" data-scheme="purple" onclick="applyScheme('purple')"></div></div></div>
+<!-- Настройки организации для чека -->
+<div class="form-group">
+    <label class="form-label">Название организации*</label>
+    <input type="text" class="form-input" id="orgNameInput" placeholder="ООО Ромашка">
 </div>
+<div class="form-group">
+    <label class="form-label">ИНН*</label>
+    <input type="text" class="form-input" id="innInput" placeholder="1234567890">
+</div>
+<div class="form-group">
+    <label class="form-label">ОГРН*</label>
+    <input type="text" class="form-input" id="ogrnInput" placeholder="1027700132195">
+</div>
+<div class="form-group">
+    <label class="form-label">Имя директора (опц.)*</label>
+    <input type="text" class="form-input" id="directorInput" placeholder="Иванов И.И.">
+</div>
+<p>* - эти настройки временно не сохраняются<br>** - не забудьте перезагрузить страницу</p>
+<div class="form-group">
+    <label class="form-label">Шрифт приложения**</label>
+    <select id="fontSelect" style="padding: 8px; border-radius: 6px; width: 100%; box-sizing: border-box;">
+        <option value="">По умолчанию (Inter)</option>
+        <option value="'Arial', system-ui, sans-serif">Arial</option>
+        <option value="'Times New Roman', serif">Times New Roman</option>
+        <option value="'Courier New', monospace">Courier New</option>
+        <option value="'Verdana', system-ui, sans-serif">Verdana</option>
+        <option value="'Tahoma', system-ui, sans-serif">Tahoma</option>
+        <option value="'Georgia', serif">Georgia</option>
+        <option value="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto">Системный (стандарт ОС)</option>
+        <option value="custom">Свой шрифт (ввести вручную)...</option>
+    </select>
+</div>
+<!-- Поле для ввода своего шрифта (скрыто по умолчанию) -->
+<div class="form-group" id="customFontGroup" >
+    <label class="form-label">Название своего шрифта</label>
+    <input type="text" id="customFontInput" class="form-input" placeholder="Например: 'Comic Sans MS' или Papyrus">
+</div><br>
+<div class="form-group">
+    <label class="form-label" style="display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-bottom: 5px;">
+        Размер шрифта (применяется не ко всем элементам): <span id="fontSizeValue" style="font-weight: 600;">16px</span>
+    </label>
+    <input type="range" 
+           id="fontSizeRange" 
+           min="10" 
+           max="20" 
+           step="1"
+           value="16"
+           oninput="updateFontSizeLabel(this.value)"
+           style="width: 100%; cursor: pointer;">
+</div>
+<div class="btn-group"><button class="btn btn-primary" onclick="saveSettings();manageFont('apply')">Применить</button><button class="btn btn-outline" onclick="closeAllModals()">Отмена</button></div></div></div>
 <div id="fps-counter" style="
     position: fixed; 
     bottom: 0px; 
@@ -745,7 +538,7 @@ margin-right:15px;
     z-index: 9999;
 ">FPS: --</div>
 <script>
-const VERSION = "26.9.2.1";
+const VERSION = "26.9.1.1";
 let productsDB = JSON.parse(localStorage.getItem('productor_products')) || [];
 let cart = JSON.parse(localStorage.getItem('productor_cart')) || [];
 let sessionReportHistory = JSON.parse(localStorage.getItem('productor_reports')) || [];
@@ -1414,7 +1207,7 @@ document.addEventListener('DOMContentLoaded', manageFont.bind(null, 'load'));
             // Суммируем все дельты, делим на их количество, чтобы получить среднюю длительность кадра в мс,
             // затем переводим в секунды и вычисляем обратное значение (1 секунда / средняя длительность кадра)
             const averageFps = (frameTimes.length * 1000 / frameTimes.reduce((a, b) => a + b, 0)).toFixed(0);
-            counter.innerHTML = `FPS: ${averageFps}<br>Версия ${VERSION}`;
+            counter.innerHTML = `FPS: ${averageFps}<br>Версия ${VERSION}<br>Приносим извинения, чиним неработающую новую версию 26.9.2.1`;
             
             /* Опционально: меняем цвет при падении производительности
             if (averageFps < 30) {
@@ -1846,237 +1639,7 @@ document.addEventListener('DOMContentLoaded', () => {
     makeWindowDraggable('calcHeader', 'draggableCalculator');
     makeWindowDraggable('notesHeader', 'draggableNotes');
 });
-function switchTab(tabId) {
-    // Убираем активный класс со всех табов
-    document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
-    // Навешиваем на тот, по которому кликнули
-    event.currentTarget.classList.add('active');
-    
-    // Скрываем все блоки контента
-    document.querySelectorAll('.settings-content').forEach(el => el.classList.remove('active'));
-    // Показываем нужный
-    document.getElementById('content-' + tabId).classList.add('active');
-}
-// Функция запуска редактора
-function openPriceMaker() {
-    closeAllModals(); // Закрываем другие окна
-
-    // Проверяем, создан ли уже iframe
-    let frame = document.getElementById('price-maker-frame');
-    let overlay = document.getElementById('price-maker-overlay');
-    
-    if (!frame) {
-        // Создаем затемнение фона
-        overlay = document.createElement('div');
-        overlay.id = 'price-maker-overlay';
-        overlay.style.cssText = `
-            position: fixed; top:0; left:0; width:100vw; height:100vh;
-            background: rgba(0,0,0,0.7); z-index: 9998; 
-            display:flex; align-items:center; justify-content:center;
-        `;
-        
-        // Создаем само окно редактора
-        frame = document.createElement('iframe');
-        frame.id = 'price-maker-frame';
-        frame.src = 'pl_pm.html'; 
-        frame.style.cssText = `
-            width: 98%; height: 92vh; border:none; 
-            border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            z-index: 9999; background: white;
-        `;
-        
-        overlay.appendChild(frame);
-        document.body.appendChild(overlay);
-    } else {
-        overlay.style.display = 'flex';
-    }
-}
-
-// Функция закрытия (вызывается изнутри pl_pm.html через parent.closePriceMaker())
-window.closePriceMaker = function() {
-    const overlay = document.getElementById('price-maker-overlay');
-    if (overlay) overlay.style.display = 'none';
-}
 </script>
-<!-- 
-<div id="mobile-stub" style="
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(4px);
-    display: none; 
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: white;
-    z-index: 99999;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    padding: 20px;
-    box-sizing: border-box;
-">
-    <div style="max-width: 400px;">
-        <svg width="80" height="80" viewBox="0 0 24 24" fill="currentColor" style="margin-bottom: 20px; opacity: 0.8;">
-            <path d="M17 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V7L17 3ZM19 19H5V5H17V19ZM12 17L8 13H10.5V9H13.5V13H16L12 17Z"/>
-        </svg>
-        <h2 style="margin: 0 0 10px 0; font-size: 24px;">Приложение недоступно</h2>
-        <p style="margin: 0 0 25px 0; font-size: 15px; opacity: 0.9; line-height: 1.5;">
-            «Продуктор» работает только на экранах шириной более 768px. 
-            Пожалуйста, используйте ПК или ноутбук для управления складом и кассой.
-        </p>
-        
-        
-        <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px); border-radius: 12px; padding: 15px; border: 1px solid rgba(255, 255, 255, 0.2);">
-            <div class="menu-item" onclick="exportInventory()" style="
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-                padding: 12px;
-                margin-bottom: 10px;
-                background: rgba(255, 255, 255, 0.15);
-                border-radius: 8px;
-                font-weight: 500;
-                font-size: 14px;
-                cursor: pointer;
-                transition: background 0.2s;
-                border: 1px solid rgba(255, 255, 255, 0.3);
-            ">
-                <svg width="16" height="16" fill="currentColor"><use xlink:href="#icon-download"/></use></svg>
-                Сохранить список товаров
-            </div>
-            Версия 26.9.2.1 / <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>
-        </div>
-    </div>
-</div>
--->
-<script>
-	/*
-function checkMobile() {
-    // Проверяем ширину экрана И наличие сенсорного интерфейса
-    const isMobile = window.innerWidth <= 400 || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-    
-    const stub = document.getElementById('mobile-stub');
-    const mainApp = document.querySelector('.main-area'); // Основной контент (.sidebar + .checkout-area)
-    const header = document.querySelector('.header');     // Верхняя панель
 
-    if (isMobile) {
-        if(stub) stub.style.display = 'flex';
-        if(mainApp) mainApp.style.display = 'none';
-        if(header) header.style.display = 'none';
-    } else {
-        if(stub) stub.style.display = 'none';
-        if(mainApp) mainApp.style.display = 'flex';
-        if(header) header.style.display = 'flex';
-    }
-}
-
-// Запускаем проверку при загрузке страницы
-document.addEventListener('DOMContentLoaded', checkMobile);
-
-// Перепроверяем при повороте телефона или изменении размера окна браузера
-window.addEventListener('resize', checkMobile);
-*/
-// --- МАССИВ ФРАЗ ---
-const doubts = [
-    "что-то непонятно",
-    "что-то не работает", 
-    "боитесь нажать не туда",
-    "если запутались",
-    "если возникла ошибка",
-    "хотите узнать о программе",
-    "хотите узнать, как пользоваться"
-];
-
-let currentDoubtIndex = -1; // Храним индекс текущего активного текста
-
-// --- ГЛАВНАЯ ФУНКЦИЯ СМЕНЫ ТЕКСТА ---
-function rotateRandomHint() {
-    const bubble = document.getElementById('help-text-bubble');
-    if (!bubble) return;
-
-    // Выбираем НОВЫЙ рандомный индекс, который НЕ совпадает с текущим
-    let newIndex;
-    do {
-        newIndex = Math.floor(Math.random() * doubts.length);
-    } while (newIndex === currentDoubtIndex && doubts.length > 1); // Защита от повтора того же самого слова
-
-    currentDoubtIndex = newIndex;
-    
-    // 1. Скрываем старый текст (анимация исчезновения)
-    bubble.classList.remove('fade-swap-active');
-    bubble.classList.add('fade-swap');
-
-    // 2. Ждем завершения анимации исчезновения (400мс)
-    setTimeout(() => {
-        // Меняем текст внутри
-        bubble.textContent = 'Спросите Штаба, если ' + doubts[currentDoubtIndex];
-        
-        // Убираем старый класс анимации и запускаем появление
-        bubble.classList.remove('fade-swap');
-        // Делаем принудительный рефлоу, чтобы анимация сработала при добавлении класса
-        void bubble.offsetWidth; 
-        bubble.classList.add('fade-swap-active');
-    }, 400);
-}
-
-// --- ЗАПУСК ПРИ ЗАГРУЗКЕ И ИНТЕРВАЛ ---
-document.addEventListener('DOMContentLoaded', () => {
-    // Показываем первый случайный текст сразу без задержки
-    rotateRandomHint(); 
-    
-    // Запускаем смену каждые 10 секунд
-    setInterval(rotateRandomHint, 4000);
-});
-
-/* --- ЛОГИКА КЛИКА НА КНОПКУ (Штаб обучается) --- */
-document.addEventListener('DOMContentLoaded', () => {
-    const toggleBtn = document.getElementById('helper-toggle-btn');
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', function(e){
-            e.stopPropagation(); 
-            closeAllModals(); 
-            
-            // Открытие модалки про обучение (твоя заглушка)
-            showHelperStub(); 
-        });
-    }
-});
-
-// Функция открытия окна-заглушки (оставил твою логику)
-function showHelperStub() {
-    let modal = document.getElementById('helper-stub-modal');
-    if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'helper-stub-modal';
-        modal.className = 'modal-backdrop';
-        modal.style.zIndex = '9999'; 
-        modal.innerHTML = `
-            <div class="modal-window" style="width: 400px; text-align: center; padding: 30px;">
-                <button class="close-modal" onclick="closeAllModals()">&times;</button>
-                <img style="width:300px;margin-bottom:10px;" src="Stab.png"></img>
-                <h2 style="margin: 0 0 10px 0;">Штаб пока обучается</h2>
-                <p style="color: #64748b; margin-bottom: 20px; line-height: 1.5;">
-                    Скоро этот генерал будет помогать вам работать.<br>
-                    А пока вы можете написать автору напрямую.
-                </p>
-                <div style="text-align: right;">
-                    <button class="btn btn-outline" onclick="closeAllModals()" style="padding: 8px 16px;">Хорошо</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    } else {
-        modal.style.display = 'flex';
-    }
-}
-
-// Не забываем оставить функцию закрытия окон
-function closeAllModals() {
-    document.querySelectorAll('.modal-backdrop').forEach(el => el.style.display = 'none');
-}
-</script>
 </body>
 </html>
