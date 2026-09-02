@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактор ценников</title>
+    <style>
+        :root { --primary-accent: #3b82f6; }
+        * { margin:0; padding:0; box-sizing:border-box; user-select:none; }
+        body, html { width:100%; height:100vh; font-family: sans-serif; overflow:hidden; background:#fafafa; }
+        
+        .wrapper { display:grid; grid-template-columns: 280px 1fr; height:100vh; gap:0; }
+        
+        /* САЙДБАР */
+        .sidebar { 
+            background:white; border-right:1px solid #e2e8f0; 
+            padding:15px; display:flex; flex-direction:column; 
+        }
+        .sidebar h3 { margin-bottom:15px; color:#1e293b; font-size:16px; }
+        
+        .btn-action { 
+            padding:10px; margin-bottom:8px; border:1px solid #ccc; 
+            border-radius:6px; cursor:pointer; text-align:center; font-size:14px; transition:all 0.2s; 
+        }
+        .btn-action:hover { background:#f8fafc; border-color:#2563eb; }
+        
+        .form-group { margin-bottom:12px; }
+        .form-label { font-size:12px; color:#64748b; margin-bottom:4px; display:block; }
+        .form-input { width:100%; padding:6px; border:1px solid #ccc; border-radius:4px; font-size:13px; }
+        
+        /* ХОЛСТ */
+        .canvas-container { position:relative; background:white; height:100%; overflow:auto; padding:20px; box-sizing:border-box; }
+        
+        .price-node {
+            position: absolute;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: white;
+            min-width: 80px;
+            line-height: 1.4;
+            user-select: none;
+            transform-origin: center center;
+        }
+        .node-textarea { outline:none; resize:vertical; min-height:20px; padding:2px; }
+        .node-barcode { letter-spacing: 2px; font-size: 14px; font-weight:bold; }
+        
+        /* Ручки изменения размера */
+        .handle-tl, .handle-tr, .handle-bl, .handle-br { 
+            position:absolute; width:8px; height:8px; background:#fff; border:2px solid #2563eb; border-radius:50%; z-index:10; 
+        }
+        .handle-tl { top:-6px; left:-6px; cursor: nwse-resize; }
+        .handle-tr { top:-6px; right:-6px; cursor: nesw-resize; }
+        .handle-bl { bottom:-6px; left:-6px; cursor: nesw-resize; }
+        .handle-br { bottom:-6px; right:-6px; cursor: nwse-resize; }
+        
+        /* Крестик удаления */
+        .node-close { 
+            position:absolute; top:-8px; right:-8px; width:20px; height:20px; 
+            background:red; color:white; border-radius:50%; border:none; font-size:14px; 
+            display:none; align-items:center; justify-content:center; cursor:pointer; 
+        }
+        .price-node:hover .node-close { display:flex; }
+        
+        /* ШАПКА ВНУТРИ IFRAME */
+        .pm-header { 
+            position:sticky; top:0; background:white; border-bottom:1px solid #ccc; 
+            padding:10px 15px; display:flex; justify-content:space-between; align-items:center; z-index:10; 
+        }
+        .pm-header h2 { font-size:16px; color:#2563eb; margin:0; }
+        .pm-controls button { padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-size:12px; }
+        .btn-primary { background:#2563eb; color:white; }
+        .btn-outline { background:transparent; border:1px solid #ccc; color:#2563eb; }
+    </style>
+</head>
+<body>
+
+
+<!-- Шапка редактора поверх всего -->
+<div style="position:fixed;top:0;left:0;right:0;height:50px;background:#fff;border-bottom:1px solid #ccc;display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+    <strong>Конструктор этикеток</strong>
+    <div>
+        
+        
+    </div>
+</div>
+<br><br><br><p>Приложение недоступно. Перезагрузите страницу для выхода</p>
+<script>
+
+</script>
+
+</body>
+</html>

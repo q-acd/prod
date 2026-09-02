@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Помощник Штаб</title>
+    <style>
+        :root { --primary-accent: #3b82f6; --bg-light: white; --text-dark: #1e293b; }
+        
+        body, html { height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center; background:#f5f7fa; margin:0; font-family: -apple-system, sans-serif; }
+        
+        .wrapper {
+            width: 400px; max-width: 95vw;
+            background:white; border-radius:16px; overflow:hidden;
+            display:flex; flex-direction:column; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: var(--primary-accent); color: white; 
+            padding: 15px; text-align:center; position:relative;
+        }
+        .close-btn {
+            position:absolute; top:10px; right:15px;
+            background:none; border: none; color:white; font-size:24px; cursor:pointer;
+        }
+        
+        .chat-body {
+            flex-grow:1; min-height: 150px; max-height: 60vh; 
+            padding: 15px; overflow-y:auto; 
+            background: #fafafa; display:flex; flex-direction:column; gap:10px;
+        }
+        .msg-bubble { 
+            padding: 10px 14px; border-radius: 18px; line-height: 1.4; word-wrap: break-word;
+        }
+        .bot-msg { align-self:flex-start; background:#f8fafc; color:#1e293b; border-bottom-left-radius: 2px; }
+        .user-msg { align-self:flex-end; background:var(--primary-accent); color:white; border-bottom-right-radius: 2px; }
+        
+        .action-panel { 
+            padding: 15px; border-top: 1px solid #eee; 
+            display:flex; flex-direction:column; gap:8px; 
+        }
+        .btn-action { 
+            padding: 10px; border: 1px solid #ccc; border-radius: 6px; 
+            background:white; cursor:pointer; text-align:center; font-size:14px; transition:all 0.2s; 
+        }
+        .btn-action:hover { background:var(--primary-accent); color:white; border-color:var(--primary-accent); }
+        
+        .input-area { display:none; } <!-- Поле ввода скрыто навсегда -->
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="header">
+        <strong>🤖 Помощник Штаб</strong>
+        <button class="close-btn" onclick="window.parent.postMessage({type:'closeHelper'}, '*')">&times;</button>
+    </div>
+
+    <div id="chat-body" class="chat-body"></div>
+    
+    <div id="action-panel" class="action-panel"></div>
+</div>
+
+<script>
+// --- БАЗА ЗНАНИЙ (ВОПРОСЫ И ОТВЕТЫ) ---
+const KNOWLEDGE_BASE = [
+    { question: "Как добавить товар?", answer: "Нажми Alt+C или кнопку '+' внизу списка." },
+    { question: "Как сохранить чек?", answer: "Нажми 'Оплата', затем выбери способ оплаты." },
+    { question: "Как поменять цену?", answer: "Кликни дважды по товару в чеке или измени через карточку товара." },
+    { question: "Как сделать отчет?", answer: "В главном меню нажми 'Статистика' -> 'Отчет за смену'." },
+    { question: "Где настройки?", answer: "Нажми шестеренку ⚙️ вверху справа." },
+    { question: "Как создать ценник?", answer: "Зайди в Инструменты -> Создать ценник." },
+    { question: "Как выйти?", answer: "Нажми Ctrl+Q или кнопку 'Завершить сессию' в меню." }
+];
+
+// --- СОСТОЯНИЕ ---
+let botState = {
+    userName: localStorage.getItem('productor_user_name') || "Пользователь",
+    history: JSON.parse(localStorage.getItem('assistant_history')) || []
+};
+
+// --- РЕНДЕРИНГ UI ---
+function renderChat() {
+    const chat = document.getElementById('chat-body');
+    chat.innerHTML = '';
+    botState.history.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = msg.bot ? 'msg-bubble bot-msg' : 'msg-bubble user-msg';
+        div.textContent = msg.content;
+        chat.appendChild(div);
+    });
+    setTimeout(() => chat.scrollTop = chat.scrollHeight, 50);
+}
+
+function addActionButton(text, handler) {
+    const btn = document.createElement('button');
+    btn.className = 'btn-action';
+    btn.textContent = text;
+    btn.onclick = handler;
+    document.getElementById('action-panel').appendChild(btn);
+}
+
+// --- ЛОГИКА ЧАТ-БОТА ---
+function botSay(text, delay = 300) {
+    setTimeout(() => {
+        botState.history.push({content: val, bot: true});
+        localStorage.setItem('assistant_history', JSON.stringify(botState.history));
+        renderChat();
+    }, delay);
+}
+
+function showMainMenu() {
+    clearActions();
+    // Кнопка приветствия/здоровья
+    addActionButton("Привет", () => greetUser());
+    
+    // Динамические кнопки из базы знаний
+    KNOWLEDGE_BASE.forEach(item => {
+        addActionButton(`❓ ${item.question}`, () => handleQuestion(item.id));
+    });
+    
+    addActionButton("ℹ️ О программе", () => openAbout());
+    addActionButton("✕ Закрыть", closeSelf);
+}
+
+function greetUser() {
+    if (botState.userName === "Пользователь") {
+        askForName();
+    } else {
+        botSay(`Привет, ${botState.userName}! Чем помочь?`);
+        showMainMenu();
+    }
+}
+
+function askForName() {
+    botState.step = 'asking_name';
+    botSay("Как мне тебя называть?");
+    
+    // Показываем поле ввода только для имени
+    const inputArea = document.querySelector('.input-area');
+    inputArea.style.display = 'flex';
+    const input = document.getElementById('helper-text-input');
+    input.placeholder = "Например: Морковчик";
+    
+    input.addEventListener('keydown', function(e){
+        if(e.key === 'Enter'){
+            e.preventDefault();
+            saveName(this.value.trim());
+        }
+    });
+}
+
+function saveName(name) {
+    hideInputBox();
+    if(!name) return botSay("Имя нужно обязательно!", 300);
+    
+    botState.userName = name;
+    localStorage.setItem('productor_user_name', name);
+    
+    updateHistory({content: name, bot: false});
+    renderChat();
+    
+    botSay(`Принято, ${name}! Рад знакомству.`);
+    showMainMenu();
+}
+
+function handleQuestion(index) {
+    const item = KNOWLEDGE_BASE[index];
+    botSay(item.answer);
+    showMainMenu();
+}
+
+function openAbout() {
+    window.parent.postMessage({type: 'openModal', modal: 'about'}, '*');
+    closeSelf();
+}
+
+// --- UI УПРАВЛЕНИЕ ---
+function clearActions() {
+    document.getElementById('action-panel').innerHTML = '';
+}
+
+function hideInputBox() {
+    document.querySelector('.input-area').style.display = 'none';
+    document.getElementById('helper-text-input').value = '';
+}
+
+function updateHistory(data) {
+    botState.history.push(data);
+    localStorage.setItem('assistant_history', JSON.stringify(botState.history));
+    renderChat();
+}
+
+function closeSelf() {
+    window.parent.postMessage({type: 'closeHelper'}, '*');
+}
+
+// СТАРТ
+document.addEventListener('DOMContentLoaded', () => {
+    renderChat();
+    
+    // Если имя уже есть в памяти
+    if (botState.userName && botState.userName !== "Пользователь") {
+        botSay(`С возвращением, ${botState.userName}!`, 300);
+        showMainMenu();
+    } else {
+        askForName();
+    }
+    
+    // Глобальный ввод Enter (только для имени!)
+    document.getElementById('helper-text-input').addEventListener('keydown', (e) => {
+        if(e.key === 'Enter'){
+            e.preventDefault();
+            const val = e.target.value.trim();
+            if(val && botState.step === 'asking_name'){
+                updateHistory({content: val, bot: false});
+                e.target.value = '';
+                saveName(val);
+            }
+        }
+    });
+});
+</script>
+
+</body>
+</html>
