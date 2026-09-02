@@ -1955,7 +1955,7 @@ window.closePriceMaker = function() {
 <script>
 function checkMobile() {
     // Проверяем ширину экрана И наличие сенсорного интерфейса
-    const isMobile = window.innerWidth <= 768 || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+    const isMobile = window.innerWidth <= 400 || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
     
     const stub = document.getElementById('mobile-stub');
     const mainApp = document.querySelector('.main-area'); // Основной контент (.sidebar + .checkout-area)
