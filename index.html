@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <title>Продуктор для бизнеса</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GSQ1XVY3XW"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GSQ1XVY3XW"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -242,7 +241,9 @@
 
         .hidden { display: none !important; }
 		#warnbox { display:block; }
+		
     </style>
+	
 </head>
 <body>
 
@@ -258,16 +259,16 @@
                 <i class="fa-solid fa-download"></i> Скачать
             </button>
             <div class="download-dropdown" id="downloadDropdown">
-                <div class="download-item" onclick="startDirectDownload('prod9_1.zip')">
-                    <div class="file-info"><strong>Веб-приложение</strong><small>Совместимо со всеми устройствами<br>v.26.9.1.1 (570 KB)</small></div>
+                <div class="download-item" onclick="startDirectDownload('prod9_7.zip')">
+                    <div class="file-info"><strong>Веб-приложение</strong><small>Совместимо со всеми устройствами<br>v.26.9.7.1</small></div>
                     <span><i class="fa-solid fa-arrow-to-bottom"></i></span>
                 </div>
-                <div class="download-item" onclick="startDirectDownload('prod20.exe')">
-                    <div class="file-info"><strong>Для Windows</strong><small>v.26.8.20.2 (1.3 MB)</small></div>
+                <div class="download-item" onclick="alert('Beta')">
+                    <div class="file-info"><strong>Для Windows</strong><small>v.26.8.20.2</small></div>
                     <span><i class="fa-solid fa-arrow-to-bottom"></i></span>
                 </div>
 				<div class="download-item" onclick="alert('Ещё в разработке')">
-                    <div class="file-info"><strong>Для Linux</strong><small>Недоступно (0 B)</small></div>
+                    <div class="file-info"><strong>Для Linux</strong><small>Недоступно</small></div>
                     <span><i class="fa-solid fa-arrow-to-bottom"></i></span>
                 </div>
             </div>
@@ -281,12 +282,111 @@
     <!-- КАРУСЕЛЬ (исправлено: добавлены контейнеры и элементы управления) -->
  </div>   
 
+<!-- БЛОК СКАЧИВАНИЯ ВЕРСИЙ -->
+<div style="max-width: 800px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; margin-bottom: 20px;">Файлы для загрузки</h2>
+    
+    <!-- ТАБЛИЦА ВЕРСИЙ -->
+    <div style="overflow-x:auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); background: white;">
+        <table style="width: 100%; min-width: 600px; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="background-color: #f8fafc; color: var(--primary-accent); font-weight: 600;">
+                    <th style="padding: 15px;">Версия</th>
+                    <th>ОС / Платформа</th>
+                    <th>Размер файла</th>
+                    <th>Дата сборки</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- АКТУАЛЬНАЯ ВЕРСИЯ -->
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.9.7.1</strong></td>
+                    <td style="padding: 15px;">WEB (Браузер)</td>
+                    <td style="padding: 15px;">~ 1 MB</td>
+                    <td style="padding: 15px;">07.09.2026</td>
+                    <td style="padding: 15px; text-align: right;">
+                        <a href="prod9_7.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
+                    </td>
+                </tr>
+				<tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.9.1.1</strong></td>
+                    <td style="padding: 15px;">WEB (Браузер)</td>
+                    <td style="padding: 15px;">~ 1 MB</td>
+                    <td style="padding: 15px;">01.09.2026</td>
+                    <td style="padding: 15px; text-align: right;">
+                        <a href="prod9_1.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
+                    </td>
+                </tr>
+				<tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.8.27.1</strong></td>
+                    <td style="padding: 15px;">WEB (Браузер)</td>
+                    <td style="padding: 15px;">~ 1 MB</td>
+                    <td style="padding: 15px;">27.08.2026</td>
+                    <td style="padding: 15px; text-align: right;">
+                        <a href="prod27.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
+                    </td>
+                </tr>
+				<tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.8.20.1</strong></td>
+                    <td style="padding: 15px;">WEB (Браузер)</td>
+                    <td style="padding: 15px;">~ 1 MB</td>
+                    <td style="padding: 15px;">21.08.2026</td>
+                    <td style="padding: 15px; text-align: right;">
+                        <a href="prod20.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
+                    </td>
+                </tr>
+				<tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.8.19.1</strong></td>
+                    <td style="padding: 15px;">WEB (Браузер)</td>
+                    <td style="padding: 15px;">~ 1 MB</td>
+                    <td style="padding: 15px;">19.08.2026</td>
+                    <td style="padding: 15px; text-align: right;">
+                        <a href="prod19.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
+                    </td>
+                </tr>
+				<tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.8.18.1</strong></td>
+                    <td style="padding: 15px;">WEB (Браузер)</td>
+                    <td style="padding: 15px;">~ 1 MB</td>
+                    <td style="padding: 15px;">18.08.2026</td>
+                    <td style="padding: 15px; text-align: right;">
+                        <a href="prod18.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
+                    </td>
+                </tr>
+				<tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.8.17.1</strong></td>
+                    <td style="padding: 15px;">WEB (Браузер)</td>
+                    <td style="padding: 15px;">~ 1 MB</td>
+                    <td style="padding: 15px;">17.08.2026</td>
+                    <td style="padding: 15px; text-align: right;">
+                        <a href="prod.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
+                    </td>
+                </tr>
+                
+                <!-- СТАРЫЕ ВЕРСИИ -->
+                <tr style="background: #f9fafb;">
+                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.8.20.2</strong></td>
+                    <td style="padding: 15px;">Windows (.exe)</td>
+                    <td style="padding: 15px;">~ 2 MB</td>
+                    <td style="padding: 15px;">20.08.2026</td>
+                    <td style="padding: 15px; text-align: right;">
+                        <a href="prod20.exe" download class="btn btn-outline" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
+                    </td>
+                </tr>
+                
+                
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <!-- FOOTER -->
 <footer>
     <div class="footer-contact">
         Связаться с разработчиком: <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>
     </div>
-    <div class="footer-year">© <span id="currentYear"></span> Морковчик. Версия сайта: 26.9.1.1</div>
+    <div class="footer-year">© <span id="currentYear"></span> Морковчик. Версия сайта: 26.9.7.1</div>
 </footer>
 
 <!-- DIALOG WINDOW (исправлено: добавлена кнопка закрытия) -->
@@ -322,10 +422,11 @@
         <iframe src="license.html" style="width: 100%; height: 50vh; border: 1px solid var(--border-light); border-radius: 8px;"></iframe><br><br>
         
         <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-            <button type="button" onclick="window.location.href='Лицензионное соглашение.pdf'" style="background: red; border: 1px solid var(--border-light); padding: 10px 20px; border-radius: 8px; cursor: pointer;color:white;width: calc(50% - 40px)">Скачать в PDF</button>
+		<button type="button" onclick="window.location.href='Лицензионное соглашение.pdf'" style="background: red; border: 1px solid var(--border-light); padding: 10px 20px; border-radius: 8px; cursor: pointer;color:white;width: calc(50% - 40px)">Скачать в PDF</button>
             <button type="button" onclick="window.location.href='version.html'" style="background-color: var(--success-green); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;width: calc(50% - 40px)">Я согласен</button>
             <button type="button" onclick="document.getElementById('startup').close()" style="background: transparent; border: 1px solid var(--border-light); padding: 10px 20px; border-radius: 8px; cursor: pointer;">Отмена</button>
-		</div>
+			
+        </div>
     </div>
 </dialog>
 <script>
