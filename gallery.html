@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Галерея</title>
+    <style>
+        body{margin:0; padding:10px; font-family:Arial,sans-serif; background:#f5f7fa;}
+        .grid{display:grid; gap:10px; grid-template-columns:repeat(auto-fill, minmax(240px,1fr));}
+        .card{border:1px solid #ccc; border-radius:8px; overflow:hidden; cursor:pointer; transition:all .2s; display:flex; flex-direction:column; background:#fff;}
+        .card:hover{transform:translateY(-3px); box-shadow:0 5px 15px rgba(0,0,0,.1);}
+        .thumb{width:100%; aspect-ratio:1/1; object-fit:cover; background:#eee;}
+        .info{padding:8px; text-align:center; font-size:12px; color:#333; flex-grow:1; display:flex; flex-direction:column; justify-content:center;}
+        .tag{margin-top:4px; font-size:9px; padding:2px 6px; border-radius:99px; background:#e5edff; color:#2563eb;}
+        input{padding:10px; width: calc(100% - 22px); margin-bottom:10px; border:1px solid #ccc; border-radius:6px;}
+    </style>
+</head>
+<body>
+    
+    <input type="text" id="search" placeholder="Поиск...">
+    <div class="grid" id="grid"></div>
+
+<script>
+const photos = [
+    {url:"images/autumn-forest.png", name:"Осенний лес", tags:["природа","осень"]},
+    {url:"images/tree.jpg", name:"Дерево", tags:["природа","осень", "дерево"]},
+    {url:"images/wall.png", name:"Осенняя дорога", tags:["дорога","осень"]},
+    {url:"images/leaves.png", name:"Осенние листья", tags:["природа","осень", "листья"]}    
+];
+
+function render(data){
+    document.getElementById('grid').innerHTML = data.map(p=>`
+        <div class="card" onclick="select('${p.url}')">
+            <img src="${p.url}" onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg%20viewBox=%220%200%2024%2024%22%3E%3Cpath%20fill=%22%23ccc%22%20d=%22M21%2015v4a2%202%200%200%201-2%202H5a2%202%200%200%201-2-2v-4%22/%3E%3Cpolyline%20points=%227%2010%2012%2015%2017%2010%22/%3E%3Cline%20x1=%2212%22%20y1=%2215%22%20x2=%2212%22%20y2=%223%22/%3E%3C/svg%3E'" class="thumb">
+            <div class="info"><div style="font-weight:bold;">${p.name}</div> ${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        </div>`).join('');
+}
+
+function select(url){
+    if(window.opener){ 
+        window.opener.handleSelectedImageFromManager(url); 
+        window.close(); 
+    } else {
+        window.location.href = url;
+    }
+}
+
+document.getElementById('search').addEventListener('input', e=>{
+    const q = e.target.value.toLowerCase();
+    const filtered = photos.filter(p => p.name.toLowerCase().includes(q) || p.tags.some(t=>t.includes(q)));
+    render(filtered);
+});
+render(photos);
+</script>
+</body>
+</html>
