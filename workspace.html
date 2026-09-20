@@ -159,8 +159,8 @@ textarea,
         .hotkey { margin-left: auto; background: var(--border-light); color: var(--text-dark); padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; user-select: none; }
         [data-theme="dark"] .hotkey { background: #334155; color: #cbd5e1; }
 
-        .main-area { display: flex; flex-grow: 1; overflow: hidden; padding: 15px; gap: 15px; justify-content: space-evenly;}
-        .sidebar { width: 280px; background: var(--bg-light); border: 1px solid var(--border-light); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 15px; flex-shrink: 0; overflow-y: auto; height: calc(100% - 67px - 10px - 40px); box-shadow: 0px 0px 30px var(--primary-accent); }
+        .main-area { display: flex;  overflow: hidden; padding: 15px; gap: 15px; justify-content: space-evenly; height: calc(100% - 60px - 60px);}
+        .sidebar { width: 280px; background: var(--bg-light); border: 1px solid var(--border-light); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; gap: 15px; flex-shrink: 0; overflow-y: auto; height: 100%; box-shadow: 0px 0px 30px var(--primary-accent); }
         [data-theme="dark"] .sidebar {  border-color: #334155; }
         .search-input { width: 100%; padding: 10px 12px; border: 1px solid var(--border-light); border-radius: 8px; outline: none; background:none;transition:0.3s; color: var(--text-dark) }
         .search-input:hover { background-color: var(--primary-accent); box-shadow: 0px 0px 30px var(--primary-accent); transform: rotateZ(-1deg) }
@@ -257,7 +257,7 @@ textarea,
         .log-action-add { color: var(--primary-accent); font-weight: 600; }
         .log-action-edit { color: var(--warning-accent); font-weight: 600; }
         .hidden { display: none !important; }
-        .discount-input { border:none; font-size:18px; background:none; width:50px }
+        .discount-input { border:none; font-size:18px; background:none; width:50px; color: var(--text-dark) }
         
         .settings-modal-window { width: 500px; max-width: 90vw; }
         .theme-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
@@ -647,7 +647,7 @@ margin-right:15px;
     opacity: 0;
     transform: translateY(30px);
     transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    
+    box-shadow: 0px 0px 30px var(--primary-accent);
     display: flex;
     flex-direction: column; /* Главный контейнер — колонка */
     align-items: center;
@@ -669,9 +669,9 @@ margin-right:15px;
 
 /* ИКОНКА / ФОТО СВЕРХУ */
 .hint-icon {
-    width: 90px;
-    height: 90px;
     min-width: 90px;
+    min-height: 90px;
+	max-width:200px;
     border-radius: 12px;
     object-fit: cover;
     margin-top: -40px; /* Поднимаем картинку поверх границы тоста */
@@ -722,39 +722,53 @@ margin-right:15px;
     color: white;
 }
 .hint-next:hover {
-    background:var(--primary-accent);
+    background: color-mix(in srgb, var(--primary-accent) 85%, white);
     transform: translateY(-1px);
 }
 
 /* Стиль кнопки "Закрыть" */
 .hint-close {
-    background: var(--primary-accent);
+    background: var(--bg-light);
     color: var(--text-dark);
     font-size: 14px;
 }
 .hint-close:hover {
-    background: var(--primary-accent);
+    background: var(--text-dark);
+	color:var(--bg-light);
     transform: translateY(-1px);
 }
 
-/* Крестик в правом верхнем углу (опционально, дублирует кнопку Закрыть) */
-.hint-toast::after {
-    content: '✕';
-    position: absolute;
-    top: 12px;
-    right: 14px;
-    font-size: 22px;
-    color: var(--gray-muted);
-    cursor: pointer;
-    z-index: 1;
+
+#log {
+    user-select: text; /* Стандарт */
+    -webkit-user-select: text; /* Для Safari/старых Chrome */
+    -moz-user-select: text; /* Для старых Firefox */
+    -ms-user-select: text; /* Для IE10+ и Edge Legacy */
+    
+    /* Дополнительные стили для удобства чтения лога */
+    white-space: pre-wrap; /* Сохраняет переносы строк и пробелы */
+    word-break: break-all; /* Чтобы длинные ссылки не ломали верстку */
+    cursor: text;          /* Показывает курсор "I-beam", подсказывая, что тут можно выделить текст */
 }
-.hint-toast::after:hover {
-    color: var(--text-dark);
+#toggleHide, #toggleShow{
+background:none;
+color: var(--text-dark);
+border:none;
+font-family: var(--font-family) !important;
+width:100%;
+transition:0.2s ease;
+}
+#toggleHide:hover, #toggleShow:hover{
+scale:1.05;transition:0.2s ease;margin-left:4px;
 }
     </style>
 </head>
 <body onbeforeunload="return handleBeforeUnload()">
 <!-- ЭКРАН ЗАГРУЗКИ -->
+<audio id="snd"></audio>
+<script>
+const audio = document.querySelector("#snd");
+</script>
 <div class="loader-container" id="pageLoader">
     
     <!-- ЦЕНТРАЛЬНЫЙ БЛОК ДЛЯ ИКОНКИ И ТЕКСТА -->
@@ -766,6 +780,7 @@ margin-right:15px;
         
         <h1>Продуктор</h1>
         <p>Рабочее пространство кассира</p>
+		<p><b>Осторожно!</b> Версия нестабильная - возможны ошибки и недочёты!!!!</p>
         
     </div>
     
@@ -846,12 +861,14 @@ document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(updateProgress.bind(null, performance.now()));
 });
 </script>
-<header class="header">
+
+<header class="header" >
     <div style="display: flex; align-items: center; gap: 12px;">
         <span class="session-info" id="sessionInfo"><noscript>Произошла ошибка кода программы</noscript></span>
     </div>
     
     <div class="top-nav-menu">
+	
 	<!-- КНОПКА "СПРОСИТЕ ШТАБА" -->
 <div id="helper-toggle-btn" style="
     cursor: pointer; 
@@ -861,9 +878,9 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="sheet-bg" style="width:20px;height:20px;background:#f1f5f9;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;color:gray">?</div>
     <span id="help-text-bubble" style="transition: opacity 0.4s ease;">Спросите Штаба...</span>
 </div>
-<button class="settings-toggle" id="dropdownToggle" onclick="toggleDropdown(event)">&#x22EE;</button>
+<button class="settings-toggle" id="dropdownToggle" onclick="toggleDropdown(event);audio.src= 'click.mp3';audio.play()">&#x22EE;</button>
     
-   <div class="dropdown-menu" id="dropdownMenu">
+   <div class="dropdown-menu" id="dropdownMenu"  onclick="audio.src= 'click.mp3';audio.play()">
     <div class="menu-item" onclick="exportReceipt()">
         <span style="margin-right:8px;">💾</span>
         Сохранить чек
@@ -875,20 +892,16 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="hotkey">Alt+U</span>
     </div>
     <div class="menu-item" onclick="finishSession()">
-        <span style="margin-right:8px;">🧿</span>
+        <span style="margin-right:8px;">🛑</span>
         Завершить сессию
         <span class="hotkey">Ctrl+Q</span>
     </div>
-    <div class="menu-item" onclick="exportInventory()">
-        <span style="margin-right:8px;">💾</span>
-        Сохранить список товаров
-        <span class="hotkey">Alt+Z</span>
+	<div class="menu-item" onclick="openModal('tovset')">
+        <span style="margin-right:8px;">🛒</span>
+        Работа с товарами
+        
     </div>
-    <div class="menu-item" onclick="openImportModal()">
-        <span style="margin-right:8px;">♐</span>
-        Загрузить список товаров
-        <span class="hotkey">Alt+I</span>
-    </div>
+    
     <div class="menu-item" onclick="openModal('settings')">
         <span style="margin-right:8px;">⚙</span>
         Настройки
@@ -898,8 +911,149 @@ document.addEventListener('DOMContentLoaded', () => {
         <span style="margin-right:8px;">🔨</span>
         Инструменты
     </div>
+	<div class="menu-item">
+    <span id="toggleHide" onclick="uiHide()"><span style="margin-right:8px;">🧿</span> Скрыть интерфейс</span><span id="toggleShow" onclick="uiShow()"><span style="margin-right:8px;">🧿</span> Показать интерфейс</span>   
+	</div>
 </div>
 </header>
+<div style="position:fixed;bottom:10px;left:12px;width:calc(100% - 30px); background-color: var(--bg-light);padding:4px;border: 1px solid var(--border-light);border-radius:15px; box-shadow: 0px 0px 30px var(--primary-accent);z-index:2;" onclick="audio.src= 'click.mp3';audio.play()">
+<!-- БЛОК СИСТЕМНОЙ ИНФОРМАЦИИ (Время + Заряд) -->
+<div id="system-panel" style="
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--gray-muted);
+    user-select: none;
+">
+    <!-- Время -->
+    
+    
+    <!-- Индикатор батареи -->
+    <span id="battery-indicator" style="
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 6px;
+        border-radius: 999px;
+        background: var(--bg-light);
+        border: 1px solid var(--border-light);
+        transition: all 0.2s ease;
+    ">
+	
+        <svg id="battery-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            
+            <path d="M17 2v1h3v12h-3v1h4V3h-4z"/>
+        </svg>
+        <span id="battery-level" style="font-weight: 600;"></span>
+    </span>
+	<!-- КОНТЕЙНЕР ВРЕМЕНИ -->
+<div id="clock-wrapper" style="
+    position: relative;
+    height: 50px; /* Фиксированная высота ячейки */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	width:128px;
+">
+    <div id="clock-time"></div>
+</div>
+</div>
+<script>
+// --- ГЛАВНАЯ ЛОГИКА ОБНОВЛЕНИЯ ---
+function updateSystemPanel() {
+    const clockEl = document.getElementById('clock-time');
+    const levelEl = document.getElementById('battery-level');
+    const iconEl = document.getElementById('battery-icon');
+    const containerEl = document.getElementById('battery-indicator');
+
+    if (!clockEl || !levelEl) return;
+
+    // 1. Обновляем время (каждую секунду)
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const dateString = now.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit' });
+    clockEl.innerHTML = `<center><b style="font-size:24px;">${timeString} </b> ${dateString} </center>`;
+
+    // 2. Обновляем батарею (раз в 10 секунд или по событию)
+    if ('getBattery' in navigator) {
+        navigator.getBattery().then(battery => {
+            const percent = Math.round(battery.level * 100);
+            
+            // Меняем текст уровня заряда
+            levelEl.textContent = percent + '%';
+
+            // Адаптируем иконку под уровень заряда
+            let pathD;
+            if (percent >= 80) pathD = "M17 2v1h3v12h-3v1h4V3h-4z"; // Полная
+            else if (percent >= 50) pathD = "M17 2v1h3v12h-3v1h4V3h-4z"; 
+            else if (percent >= 20) pathD = "M17 2v1h3v6h-3v1h4V3h-4z";   // Половина
+            else pathD = "M17 2v1h3v2h-3v1h4V3h-4z";                     // Низкая
+
+            iconEl.querySelector('path').setAttribute('d', pathD);
+
+            // Цветовая индикация критического заряда (<20%)
+            if (percent <= 20 && !battery.charging) {
+                levelEl.style.color = '#ef4444'; // Красный из вашей схемы
+                containerEl.style.borderColor = '#ef4444';
+            } else if (battery.charging) {
+                levelEl.style.color = '#10b981'; // Зеленый при зарядке
+                containerEl.style.borderColor = '#10b981';
+                 // Простая анимация молнии или точки зарядки
+                 levelEl.innerHTML = '&#9749; ' + percent + '%'; // Кофейная чашка как символ зарядки
+            } else {
+                levelEl.style.color = ''; // Сброс цвета к переменной --text-dark/gray
+                containerEl.style.borderColor = 'var(--border-light)';
+                levelEl.textContent = percent + '%';
+            }
+
+            // Подписываемся на изменения системы (если браузер поддерживает события)
+            battery.onlevelchange = () => updateSystemPanel();
+            battery.onchargingchange = () => updateSystemPanel();
+        }).catch(() => {
+            // Если доступ к API запрещен или недоступен
+            levelEl.textContent = '--%';
+            iconEl.querySelector('path').setAttribute('d', "M17 2v1h3v12h-3v1h4V3h-4z");
+        });
+    } else {
+        // Для Safari на Mac/iOS старых версий
+        levelEl.textContent = '?%';
+    }
+}
+
+// --- ЗАПУСК ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Запускаем обновление сразу
+    updateSystemPanel();
+    
+    // Обновляем время каждую секунду
+    setInterval(updateSystemPanel, 1000);
+    
+    // Обновляем данные о батарее чуть реже (она редко скачет мгновенно)
+    // Но если сработают системные события onlevelchange, это произойдет быстрее
+    setInterval(() => {
+        // Вызываем без обновления часов, чтобы избежать лишних перерисовок даты
+        const clockEl = document.getElementById('clock-time');
+        const oldText = clockEl ? clockEl.textContent : null;
+        
+        updateSystemPanel();
+        
+        // Восстанавливаем время, если оно случайно сбросилось
+        if (oldText) {
+             setTimeout(() => { if(clockEl) clockEl.textContent = oldText; }, 50);
+        }
+    }, 10000);
+});
+</script>
+<div style="display: flex; gap: 20px; align-items: flex-end;">
+		<div class="menu-item" onclick="openModal('addProduct')" aria-label="Добавить товар" style="border:none;margin-bottom:2px;border-radius:15px">Добавить товар<span class="hotkey">Alt+C</span></div>
+        <div class="menu-item" onclick="openModal('editProducts')" aria-label="Изменить товары"  style="border:none;border-radius:15px">Изменить товары<span class="hotkey">Alt+E</span></div>
+		</div>
+		</div>
 <div class="main-area">
     <aside class="sidebar">
         
@@ -912,11 +1066,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		</details>
 	</div>
         <h3 style="margin: 15px 0 10px 0; font-size: 16px;">Инвентарь</h3>
-        <ul class="inventory-list" id="inventoryList"></ul>
-		<div style="position:fixed;bottom:10px;left:12px;width:283px; background-color: var(--bg-light);padding:8px;border: 1px solid var(--border-light);border-radius:15px; box-shadow: 0px 0px 30px var(--primary-accent);">
-		<div class="menu-item" onclick="openModal('addProduct')" aria-label="Добавить товар" style="border:none;margin-bottom:2px;border-radius:15px">Добавить товар<span class="hotkey">Alt+C</span></div>
-        <div class="menu-item" onclick="openModal('editProducts')" aria-label="Изменить товары"  style="border:none;border-radius:15px">Изменить товары<span class="hotkey">Alt+E</span></div>
-		</div>
+        <ul class="inventory-list" id="inventoryList"  onclick="audio.src= 'Beep2.mp3';audio.play();"></ul>
+		
     </aside>
     <section class="checkout-area">
         <div class="current-checkout">
@@ -934,7 +1085,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </section>
 </div>
 
-<div class="modal-backdrop" id="pluginModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2 id="modalTitle">Инструменты <span style="background:var(--primary-accent);color:white;padding:5px 10px;border-radius:10px;" class="pulse-card">&beta;</span></h2><br><br>
+<div class="modal-backdrop" id="pluginModal" onclick="audio.src= 'click.mp3';audio.play()"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2 id="modalTitle">Инструменты <span style="background:var(--primary-accent);color:white;padding:5px 10px;border-radius:10px;" class="pulse-card">&beta;</span></h2><br><br>
 <center>
 <style>
 @keyframes pulse-glow {
@@ -982,9 +1133,20 @@ document.addEventListener('DOMContentLoaded', () => {
         <button onclick="shareNote()">Поделиться</button>
     </div>
 </div>
+<div class="modal-backdrop" id="tovsetModal"  onclick="audio.src= 'click.mp3';audio.play()"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2 id="modalTitle">Работа с товарами</h2>
+<div class="menu-item" onclick="exportInventory()">
+        <span style="margin-right:8px;">💾</span>
+        Сохранить список товаров
+        <span class="hotkey">Alt+Z</span>
+    </div>
+    <div class="menu-item" onclick="openImportModal()">
+        <span style="margin-right:8px;">♐</span>
+        Загрузить список товаров
+        <span class="hotkey">Alt+I</span>
+    </div>
+</div></div>
 
-
-<div class="modal-backdrop" id="addProductModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2 id="modalTitle">Добавить товар</h2><div class="form-group"><label class="form-label">Наименование</label><input type="text" class="form-input" id="nameInput"></div>
+<div class="modal-backdrop" id="addProductModal"  onclick="audio.src= 'click.mp3';audio.play()"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2 id="modalTitle">Добавить товар</h2><div class="form-group"><label class="form-label">Наименование</label><input type="text" class="form-input" id="nameInput"></div>
 <div class="form-group" disabled><label class="form-label">Изображение (&beta;)</label><input type="file" class="form-input" id="imageInput" disabled></div>
 <div class="form-group"><label class="form-label">Артикул (обязательно)</label><input type="text" class="form-input" id="skuInput"></div><!-- Обёртка-контейнер -->
 <div style="display: flex; gap: 20px; align-items: flex-end;">
@@ -1014,13 +1176,13 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
 
 </div><div class="form-group"><label class="form-label">Доп. описание</label><textarea class="form-input" id="descInput" rows="3"></textarea></div><div class="btn-group"><button class="btn btn-primary" id="saveProductBtn">Сохранить</button><button class="btn btn-outline" onclick="closeAllModals()">Отмена</button></div></div></div>
-<div class="modal-backdrop" id="editProductsModal"><div class="modal-window" style="width: 95%; height: 85%; max-height: 600px; display: flex; flex-direction: column;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"><h2>Управление товарами</h2><button class="close-modal" onclick="closeAllModals()">&times;</button></div><input type="text" class="search-input" placeholder="Фильтр..." id="filterEditInput" style="margin-bottom: 10px;"><div style="flex-grow:1; overflow-y:auto; border:1px solid var(--border-light); border-radius:8px; padding:10px;"><table class="products-table" id="productsTable"><thead><tr style="background:#f1f5f9; text-align:left;"><th style="padding:8px;">Название</th><th style="padding:8px;">Артикул</th><th style="padding:8px;">Цена</th><th style="padding:8px;">Склад</th><th style="padding:8px;"></th></tr></thead><tbody id="editTbody"></tbody></table></div><div style="margin-top: 15px; text-align:right;" class="btn-group"><button class="btn btn-danger" onclick="deleteSelected()">Удалить выбранные</button></div></div></div>
+<div class="modal-backdrop" id="editProductsModal" onclick="audio.src= 'click.mp3';audio.play()"><div class="modal-window" style="width: 95%; height: 85%; max-height: 600px; display: flex; flex-direction: column;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"><h2>Управление товарами</h2><button class="close-modal" onclick="closeAllModals()">&times;</button></div><input type="text" class="search-input" placeholder="Фильтр..." id="filterEditInput" style="margin-bottom: 10px;"><div style="flex-grow:1; overflow-y:auto; border:1px solid var(--border-light); border-radius:8px; padding:10px;"><table class="products-table" id="productsTable"><thead><tr style="background:#f1f5f9; text-align:left;"><th style="padding:8px;">Название</th><th style="padding:8px;">Артикул</th><th style="padding:8px;">Цена</th><th style="padding:8px;">Склад</th><th style="padding:8px;"></th></tr></thead><tbody id="editTbody"></tbody></table></div><div style="margin-top: 15px; text-align:right;" class="btn-group"><button class="btn btn-danger" onclick="deleteSelected()">Удалить выбранные</button></div></div></div>
 <div class="modal-backdrop" id="finishModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Завершить сессию?</h2><p>Все несохраненные изменения будут утеряны.</p><div style="margin: 15px 0;"><input type="checkbox" id="reportCheckbox"> <label for="reportCheckbox">Сохранить отчёт о чеке</label></div><div class="btn-group"><button class="btn btn-primary" onclick="confirmFinish(true)">Да, завершить</button><button class="btn btn-outline" onclick="closeAllModals()">Продолжить работу</button></div></div></div>
 <div class="modal-backdrop" id="statisticsModal"><div class="modal-window" style="max-width: 900px;"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Статистика действий</h2><p>Журнал операций за текущие сессии.</p><table class="stats-table"><thead><tr><th>Дата и время</th><th>Действие</th><th>Детали</th></tr></thead><tbody id="statsBody"></tbody></table></div></div>
-<div class="modal-backdrop" id="aboutModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>О Продукторе</h2><p>Рабочая среда кассира версии <strong>26.9.9.1</strong>.</p><p>&copy; 2026 Морковчик. Все права защищены.</p><hr><p>Ответы на вопросы:<br><br>Если товары в списке не отображаются - попробуйте обновить страницу или введите артикул и очистите снова.<hr>Возникнут проблемы - пишите на почту - quantumacd25@gmail.com (также можно написать о поддержке проекта или найденных багах).<hr>Придётся ли платить? Нет, мы денег не берем. Программа не имеет доступ к банковским картам или средствам оплаты.<hr></p></div></div>
+<div class="modal-backdrop" id="aboutModal" onclick="audio.src= 'click.mp3';audio.play()"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>О Продукторе</h2><p>Рабочая среда кассира версии <strong>26.9.20.1</strong>.</p><p>&copy; 2026 Морковчик. Все права защищены.</p><hr><p>Ответы на вопросы:<br><br>Если товары в списке не отображаются - попробуйте обновить страницу или введите артикул и очистите снова.<hr>Возникнут проблемы - пишите на почту - quantumacd25@gmail.com (также можно написать о поддержке проекта или найденных багах).<hr>Придётся ли платить? Нет, мы денег не берем. Программа не имеет доступ к банковским картам или средствам оплаты.<hr></p></div></div>
 <div class="modal-backdrop" id="paymentModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Сумма к оплате</h2><div style="text-align: center; font-size: 32px; font-weight: bold; margin: 20px 0;" id="paymentAmount">0 ₽</div><div class="btn-group" style="justify-content: center;"><button class="btn btn-danger" style="flex:none; padding: 0 40px;" onclick="cancelPayment()">ОТМЕНА</button><button class="btn btn-primary" style="flex:none; padding: 0 40px;" onclick="exportReceipt();completeSale()">ОК</button></div><div style="margin-top: 20px; text-align: center;"><button class="btn btn-outline" style="padding: 0 30px;" onclick="clearCart()">ОЧИСТИТЬ ЧЕК</button></div></div></div>
 <!-- Модальное окно: Настройки (с табами) -->
-<div class="modal-backdrop" id="settingsModal">
+<div class="modal-backdrop" id="settingsModal" onclick="audio.src= 'click.mp3';audio.play()">
     <div class="modal-window settings-modal-window">
         <button class="close-modal" onclick="closeAllModals()">&times;</button>
         
@@ -1087,7 +1249,7 @@ document.addEventListener('DOMContentLoaded', () => {
                        value="16"
                        oninput="updateFontSizeLabel(this.value)"
                        style="width: 100%; cursor: pointer;">
-					   <!-- Ползунок размытия фона --> <div class="form-group"> <label class="form-label">Размытие фона (Beta)</label> <input type="range" id="blurRange" min="0" max="20" step="1" value="5" oninput="updateBlur(this.value)" style="width: 100%;"> <span style="display: block; text-align: right; font-size: 12px; color: var(--gray-muted);" id="blurValueLabel">5px</span> </div> <!-- Загрузка своего изображения на фон --> <div class="form-group"> <label class="form-label">Фоновое изображение (Beta)</label> <input type="file" id="bgFileInput" accept="image/*" style="padding: 8px; border: 1px solid var(--border-light); border-radius: 6px;" disabled> <button id="clearBgBtn" class="btn btn-outline" style="margin-top: 8px; width: 100%;">Сбросить фон</button> </div>
+					   <!-- Ползунок размытия фона --> <div class="form-group"> <label class="form-label">Размытие фона (Beta)</label> <input type="range" id="blurRange" min="0" max="20" step="1" value="5" oninput="updateBlur(this.value)" style="width: 100%;"> <span style="display: block; text-align: right; font-size: 12px; color: var(--gray-muted);" id="blurValueLabel">5px</span> </div> <!-- Загрузка своего изображения на фон --> <div class="form-group"> <label class="form-label">Фоновое изображение (Beta)</label> <input type="file" id="bgFileInput" accept="image/*" style="padding: 8px; border: 1px solid var(--border-light); border-radius: 6px;"> <button id="clearBgBtn" class="btn btn-outline" style="margin-top: 8px; width: 100%;">Сбросить фон</button> </div>
 					   
 					   
 <!-- Вкладка Theme -->
@@ -1098,11 +1260,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <option value="light">Белый (для темных/средних фонов)</option>
     </select>
 </div>
-<div class="interface-toggle-panel">
-    <label><input type="checkbox" id="toggleInventory"> Скрыть инвентарь</label>
-    <label><input type="checkbox" id="toggleReceipt"> Скрыть чек</label>
-    
-</div>
+
 
 					   </div>
         </div>
@@ -1147,7 +1305,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="settings-content" id="content-about">
             <h2 style="margin-top: 0;">О программе</h2>
             <p style="font-size: 14px; color: var(--text-dark); line-height: 1.6;">
-                Рабочая среда кассира «Продуктор» версии 26.9.9.1.<br><br>
+                Рабочая среда кассира «Продуктор» версии 26.9.20.1.<br><br>
                 • Данные организации (ИНН, ОГРН) применяются к чеку при экспорте.<br>
                 • Шрифт применяется ко всему интерфейсу после нажатия «Применить».<br>
                 • Для вступления изменений может потребоваться обновление страницы (F5).<br>
@@ -1173,6 +1331,22 @@ document.addEventListener('DOMContentLoaded', () => {
             <div><span class="badge-stock">1000 шт.</span></div>
         </li>
     </ul>
+	<div>
+	<h3>Лог для ошибок</h3>
+	<div id="error-log-container" readonly style="min-width:100%;border:none;height:200px;overflow-y:auto;"></div>
+	
+	<h3>Тестирование отдельных функций</h3>
+	<p>Обычным пользователям не рекомендуется ничего нажимать далее.</p>
+	<div class="form-group">           
+                <input type="text" class="form-input" id="sam" placeholder="Поле для вывода showAlert(), разрешен HTML">
+		<div class="menu-item" onclick="showAlert(sam.value)" style="text-align: center;margin-bottom:5px">
+        Вывод
+    </div>		
+            </div>
+
+	
+	
+	</div>
 </div>
 
         <!-- Общая панель кнопок внизу (не дублируется во вкладках) -->
@@ -1195,7 +1369,7 @@ document.addEventListener('DOMContentLoaded', () => {
     z-index: 9999;
 ">FPS: --</div>
 <script>
-const VERSION = "26.9.9.1";
+const VERSION = "26.9.20.1";
 let productsDB = JSON.parse(localStorage.getItem('productor_products')) || [];
 let cart = JSON.parse(localStorage.getItem('productor_cart')) || [];
 let sessionReportHistory = JSON.parse(localStorage.getItem('productor_reports')) || [];
@@ -1216,6 +1390,7 @@ updateTotal();
 initSession();
 bindHotkeys();
 setupEventListeners();
+ const sam = document.getElementById('sam'); 
 function initSession() {
     if (!currentSessionId) { const randomID = Math.floor(10000000 + Math.random() * 90000000); currentSessionId = `Сессия №${randomID}`; }
     document.getElementById('sessionInfo').textContent = "Продуктор для бизнеса v." + VERSION;
@@ -1289,7 +1464,8 @@ function changeQty(index, delta, manualValue) {
     renderInventory(); 
     updateTotal();
 }
-function removeFromCart(index) { cart.splice(index, 1); saveData(); renderCart(); renderInventory(); updateTotal(); }
+function removeFromCart(index) { audio.src= 'Beep1.mp3';
+audio.play(); cart.splice(index, 1); saveData(); renderCart(); renderInventory(); updateTotal(); }
 function clearCart() { confirmDialog('Очистить чек?', function(){ cart = []; saveData(); renderCart(); renderInventory(); updateTotal(); }); }
 function calculateLineTotal(price, qty, discountPercent) { const base = price * qty; return discountPercent > 0 ? base - (base * (discountPercent / 100)) : base; }
 function updateTotal() {
@@ -1493,6 +1669,7 @@ function openCheckoutActions() {
 }
 function cancelPayment() { closeAllModals(); }
 function completeSale() {
+
     logAction('sale_complete', `Оплата чека. Товаров: ${cart.length}. Сумма: ${document.getElementById('finalSum').textContent}`);
     cart.forEach(item => { const dbProd = productsDB.find(p => p.sku === item.sku); if(dbProd){ dbProd.stock -= item.qty; } });
     if(document.getElementById('reportCheckbox').checked){ 
@@ -1504,6 +1681,8 @@ function completeSale() {
     renderCart(); 
     renderInventory(); 
     updateTotal(); 
+	audio.src= 'Pay.mp3';
+audio.play();
     closeAllModals();
 }
 function renderStatistics() { 
@@ -1596,25 +1775,7 @@ function saveSettings() {
     closeAllModals();
 }
 
-function applyInterfaceVisibility() {
-    // Боковая панель (инвентарь)
-    const sidebar = document.querySelector('.sidebar');
-    if(sidebar){
-        sidebar.classList.toggle('hidden', document.getElementById('toggleInventory').checked);
-    }
 
-    // Область чека
-    const checkoutArea = document.querySelector('.checkout-area'); 
-    if(checkoutArea && document.getElementById('toggleReceipt')){
-        checkoutArea.classList.toggle('hidden', document.getElementById('toggleReceipt').checked);
-    }
-    
-    // Кнопки снизу слева (пример для калькулятора)
-    const calcWindow = document.getElementById('draggableCalculator');
-    if(calcWindow && document.getElementById('toggleBottomButtons')){
-        calcWindow.style.display = document.getElementById('toggleBottomButtons').checked ? 'flex' : 'none';
-    }
-}
 
 /* --- ЗАГРУЗКА ВСЕХ ВИЗУАЛЬНЫХ НАСТРОЕК ПРИ СТАРТЕ --- */
 function loadVisualSettings() {
@@ -1652,10 +1813,8 @@ function loadVisualSettings() {
     }
 
     // 6. Видимость элементов
-    document.getElementById('toggleInventory').checked = localStorage.getItem('hideInventory') === 'true';
-    document.getElementById('toggleReceipt').checked = localStorage.getItem('hideReceipt') === 'true';
-    document.getElementById('toggleBottomButtons').checked = localStorage.getItem('hideBottomButtons') === 'true';
-    applyInterfaceVisibility();
+    
+   
 }
 
 /* --- ОБРАБОТЧИКИ СОБЫТИЙ ДЛЯ ИНТЕРАКТИВА БЕЗ КНОПКИ "ПРИМЕНИТЬ" --- */
@@ -1863,9 +2022,76 @@ function confirmDialog(message, callback) {
     if (!result) window.confirm = originalOnConfirm;
 }
 function showAlert(message) {
-    const originalAlert = window.alert;
-    window.alert = function(){ closeAllModals(); window.alert = originalAlert; };
-    alert(message);
+audio.src= 'Error1.mp3';
+audio.play();
+
+    // const originalAlert = window.alert;
+    // window.alert = function(){ closeAllModals(); window.alert = originalAlert; };
+	
+     // Проверка наличия контейнера для тостов, создание при необходимости
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        // Позиционируем контейнер в правом верхнем углу с отступами
+        Object.assign(toastContainer.style, {
+            position: 'fixed',
+            bottom: '1rem',
+            left: '1rem',
+            zIndex: '9999',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem'
+        });
+        document.body.appendChild(toastContainer);
+    }
+
+    const toast = document.createElement('div');
+    
+    // Базовые стили и анимация появления/исчезновения (используется CSS-переменная --primary-accent)
+    Object.assign(toast.style, {
+        backgroundColor: 'var(--primary-accent)',
+        color: '#ffffff',
+        padding: '12px 16px',
+        borderRadius: '8px',
+        fontSize: '14px',
+        fontWeight: '500',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+        opacity: '0', // Начальное состояние для анимации
+        transform: 'translateX(-120%)', // Начинаем за пределами экрана справа
+        transition: 'transform 0.3s cubic-bezier(0.2, 0, 0, 1), opacity 0.3s ease-out',
+        minWidth: '200px',
+        textAlign: 'left'
+    });
+
+    toast.innerHTML = message;
+    
+    // Добавляем элемент в DOM перед началом анимации
+    toastContainer.appendChild(toast);
+    
+    // Запускаем анимацию появления через микрозадержку, чтобы браузер успел перерисовать начальные стили
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            Object.assign(toast.style, {
+                opacity: '1',
+                transform: 'translateX(0)'
+            });
+        });
+    });
+
+    // Скрытие и удаление элемента через 2.5 секунды
+    setTimeout(() => {
+        Object.assign(toast.style, {
+            opacity: '0',
+            transform: 'translateX(-120%)'
+        });
+        
+        // Ждем завершения анимации исчезновения и удаляем узел из DOM
+        toast.addEventListener('transitionend', function handler() {
+            toast.remove();
+            toast.removeEventListener('transitionend', handler);
+        });
+    }, 2500);
 }
 function deleteSelected() {
     const checkboxes = document.querySelectorAll('#editTbody input[type="checkbox"]:checked');
@@ -1890,7 +2116,7 @@ function saveData() {
 
 
 function exportReceipt() {
-    if (cart.length === 0) { alert('Чек пуст.'); return; }
+    if (cart.length === 0) { showAlert('Чек пуст.'); return; }
 
     let html = `<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><title>Чек</title>
     <style>body{font-family:sans-serif;padding:20px;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ccc;padding:8px;text-align:left;}th{background:#f3f4f6;}.right{text-align:right;}</style></head><body>`;
@@ -2088,7 +2314,7 @@ document.addEventListener('DOMContentLoaded', manageFont.bind(null, 'load'));
             const averageFps = (frameTimes.length * 1000 / frameTimes.reduce((a, b) => a + b, 0)).toFixed(0);
             
             // Используем textContent вместо innerHTML (это быстрее и безопаснее)
-            counter.textContent = `FPS: ${averageFps} | Версия 26.9.9.1`;
+            counter.textContent = `FPS: ${averageFps} | Версия 26.9.20.1`;
         }
 
         // 5. Запрашиваем следующий кадр
@@ -2882,7 +3108,17 @@ const hintsData = [
     },
     {
         title: "Режим кассы",
-        text: "Программа работает даже оффлайн. Все данные сохранятся при появлении интернета.",
+        text: "Программа работает даже оффлайн. Все данные сохранятся только на вашем компьютере.",
+        iconUrl: "./logo.png"
+    },
+	{
+        title: "Спросите Штаба",
+        text: "Если боитесь нажать не туда.",
+        iconUrl: "./stab.png"
+    },
+	{
+        title: "Канал в MAX",
+        text: "Подписывайтесь и узнавайте о новых функциях раньше релиза! https://max.ru/channel_productor",
         iconUrl: "./logo.png"
     }
 ];
@@ -2902,6 +3138,7 @@ function createHintToast(data) {
     
     toastElement = document.createElement('div');
     toastElement.className = 'hint-toast';
+	toastElement.style.zIndex = '50000';
     
     // ИСПРАВЛЕНО: Добавлен закрывающий тег </div> и alt-текст
     toastElement.innerHTML = `
@@ -3006,6 +3243,250 @@ document.addEventListener('DOMContentLoaded', () => {
         startHintRotator();
         isHintsVisible = true;
     }, 3000);
+});
+// Флаг и идентификатор таймера для предотвращения спама ошибок
+let __errorLogTimer = null;
+const ERROR_LOG_COOLDOWN = 10000; // ОШИБКА В КОДЕ: было 100 (это 0.1 сек), нужно 10000 (10 секунд)
+const MAX_LOG_LINES = 500;        // Оптимально: 500-1000 вместо 5000 для экономии памяти браузера
+
+/**
+ * Функция ДОБАВЛЕНИЯ ошибки в div#error-log-container под каждой новой строкой
+ */
+function logErrorToDiv(message) {
+    const logContainer = document.querySelector('#error-log-container');
+    
+    if (!logContainer) return;
+
+    // Сброс таймера защиты от спама при каждой новой ошибке
+    if (__errorLogTimer !== null) {
+        clearTimeout(__errorLogTimer);
+    }
+
+    // Экранирование спецсимволов для безопасности HTML
+    const safeMessage = String(message)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+    const timestamp = new Date().toLocaleTimeString();
+    
+    // Создаем новый элемент для строки лога
+    const errorLine = document.createElement('div');
+    errorLine.textContent = `[${timestamp}] ${safeMessage}`;
+    errorLine.style.marginBottom = '4px';
+    errorLine.style.wordBreak = 'break-all';
+    errorLine.style.fontFamily = 'monospace'; /* Для читаемости технических логов */
+
+    // Вставляем новую строку в НАЧАЛО блока (самые свежие ошибки сверху)
+    logContainer.prepend(errorLine);
+
+    /* ОПТИМИЗАЦИЯ ПАМЯТИ: 
+       Вместо удаления элементов по одному в цикле while (что вызывает перерисовку),
+       эффективнее один раз очистить самый старый фрагмент массива узлов.
+    */
+    if (logContainer.children.length > MAX_LOG_LINES) {
+        // Удаляем сразу пачку самых старых записей снизу
+        const excessCount = logContainer.children.length - MAX_LOG_LINES;
+        for (let i = 0; i < excessCount; i++) {
+            logContainer.removeChild(logContainer.lastChild);
+        }
+    }
+
+    // Устанавливаем блокировку на следующие 10 секунд
+    __errorLogTimer = setTimeout(() => {
+        __errorLogTimer = null;
+    }, ERROR_LOG_COOLDOWN);
+}
+
+/* ========== ВАША БИЗНЕС-ЛОГИКА ========== */
+async function loadArticle(id) {
+    try {
+        const response = await fetch(`/api/articles/${id}`);
+        
+        if (!response.ok) {
+            throw new Error(`Сервер вернул статус ${response.status}`);
+        }
+
+        const article = await response.json();
+        renderArticle(article);
+    } catch (error) {
+        logErrorToDiv(`Не удалось загрузить статью (${id}): ${error.message || 'Нет ответа'}`);
+    }
+}
+
+
+/* ========== 1. ПЕРЕХВАТ СИНХРОННЫХ ОШИБОК ========== */
+window.addEventListener('error', function(event) {
+    let message = event.message;
+
+    if (event.filename) {
+        const fileName = event.filename.split('/').pop();
+        message += ` [${fileName}:${event.lineno}:${event.colno}]`;
+    }
+    
+    logErrorToDiv(message);
+}, true);
+
+
+/* ========== 2. ПЕРЕХВАТ АСИНХРОННЫХ ОШИБОК ========== */
+window.addEventListener('unhandledrejection', function(event) {
+    const reason = event.reason;
+    let message = 'Неперехваченное отклонение промиса';
+
+    if (reason instanceof Error) {
+        message = reason.message;
+    } else if (typeof reason === 'string') {
+        message = reason;
+    } else if (reason && typeof reason === 'object') {
+        message = reason.error || JSON.stringify(reason);
+    }
+
+    logErrorToDiv(message);
+});
+// Функция копирования текста из элемента с id="log"
+function copyLog() {
+    const logElement = document.getElementById('log');
+    
+    // Защита от пустого лога
+    if (!logElement || !logElement.textContent.trim()) {
+        showAlert('Лог пуст. Если визуально лог не пуст - значит это ошибка программы.');
+        return;
+    }
+
+    const textToCopy = logElement.textContent;
+
+    // Современный способ (работает на HTTPS)
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(textToCopy).catch(() => fallbackCopy(textToCopy));
+    } else {
+        // Резервный способ для HTTP или старых браузеров
+        fallbackCopy(textToCopy);
+    }
+}
+
+// Резервная функция копирования через временное поле textarea
+function fallbackCopy(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';  // Чтобы не прокручивать страницу вверх
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    let successful = false;
+    try {
+        successful = document.execCommand('copy');
+		showAlert('Скопировано!');
+    } catch (err) {
+        console.error('Ошибка при копировании:', err);
+    }
+
+    document.body.removeChild(textArea);
+
+    if (!successful) {
+        showAlert('Не удалось скопировать автоматически. Пожалуйста, выделите текст вручную: Ctrl+A, затем Ctrl+C.');
+    }
+}
+
+// Функция очистки содержимого лога (ваша кнопка "Обновить")
+function clearLog() {
+    const logElement = document.getElementById('error-log-container');
+    if (logElement) {
+        logErrorToDiv();
+    }
+}
+const bhide = document.querySelector('#toggleHide');
+const bshow = document.querySelector('#toggleShow');
+bshow.hidden = true;
+function uiHide(){
+bshow.hidden = false;
+bhide.hidden = true;
+document.querySelector('.main-area').style.display = 'none';
+}
+function uiShow(){
+bshow.hidden = true;
+bhide.hidden = false;
+document.querySelector('.main-area').style.display = 'flex';
+}
+// --- ФУНКЦИЯ ПРИМЕНЕНИЯ ФОНА ---
+function applyBackgroundImage(url) {
+    const clearBtn = document.getElementById('clearBgBtn');
+    const fileInput = document.getElementById('bgFileInput');
+
+    if (url) {
+        document.body.style.backgroundImage = `url(${url})`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        
+        // Затемняем основной контент полупрозрачным цветом, чтобы текст читался на картинке
+       // document.documentElement.style.setProperty('--bg-light', 'rgba(255, 255, 255, 0.9)');
+        
+        // Управляем состоянием кнопок
+        if (clearBtn) clearBtn.textContent = 'Удалить фон';
+        if (fileInput) fileInput.disabled = true;
+
+    } else {
+        // Сбрасываем стили до значений по умолчанию из :root
+        document.body.style.backgroundImage = 'none';
+        document.body.style.backgroundColor = ''; /* Браузер возьмет значение --bg-light */
+        document.documentElement.style.removeProperty('--bg-light');
+        
+        if (clearBtn) clearBtn.textContent = 'Сбросить фон';
+        if (fileInput) fileInput.disabled = false;
+    }
+}
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // ... ваш существующий код loadVisualSettings() ...
+
+    // === ЗАГРУЗКА НАСТРОЕК ФОНА ===
+    const savedBg = localStorage.getItem('custom_background_url');
+    if (savedBg && savedBg !== 'null') {
+        try {
+            applyBackgroundImage(savedBg);
+        } catch(e) {
+            console.error("Ошибка установки фона:", e);
+            localStorage.removeItem('custom_background_url'); // Чистим битую ссылку
+        }
+    }
+
+    // --- ОБРАБОТЧИК ВЫБОРА ФАЙЛА ---
+    const bgInput = document.getElementById('bgFileInput');
+    if (bgInput) {
+        bgInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showAlert('Пожалуйста, выберите изображение.');
+                e.target.value = ''; // Очищаем поле после ошибки
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const imageUrl = event.target.result;
+                localStorage.setItem('custom_background_url', imageUrl);
+                applyBackgroundImage(imageUrl);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // --- ОБРАБОТЧИК КНОПКИ "СБРОСИТЬ" ---
+    const clearBgBtn = document.getElementById('clearBgBtn');
+    if (clearBgBtn) {
+        clearBgBtn.addEventListener('click', function() {
+            localStorage.removeItem('custom_background_url');
+            applyBackgroundImage(null); 
+            
+            // Обязательно сбрасываем выбранный файл во input,
+            // иначе событие change не сработает при повторном выборе той же картинки
+            if (bgInput) bgInput.value = '';
+        });
+    }
 });
 </script>
 
