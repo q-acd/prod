@@ -765,11 +765,12 @@ scale:1.05;transition:0.2s ease;margin-left:4px;
 </head>
 <body onbeforeunload="return handleBeforeUnload()">
 <!-- ЭКРАН ЗАГРУЗКИ -->
-<audio id="snd"></audio>
+
+<audio id="snd" src="start.mp3" autoplay></audio>
 <script>
 const audio = document.querySelector("#snd");
 </script>
-<div class="loader-container" id="pageLoader">
+<div class="loader-container" id="pageLoader" onclick="document.querySelector('#snd-tip').textContent = 'Теперь звук заиграет!'">
     
     <!-- ЦЕНТРАЛЬНЫЙ БЛОК ДЛЯ ИКОНКИ И ТЕКСТА -->
     <div class="center-box">
@@ -779,8 +780,8 @@ const audio = document.querySelector("#snd");
         </div>
         
         <h1>Продуктор</h1>
-        <p>Рабочее пространство кассира</p>
-		<p><b>Осторожно!</b> Версия нестабильная - возможны ошибки и недочёты!!!!</p>
+        <p>Рабочее пространство кассира<br><br><span id="snd-tip">Чтобы звук запуска заиграл - нажмите на это поле.</span></p>
+		
         
     </div>
     
@@ -794,6 +795,7 @@ const audio = document.querySelector("#snd");
 </div>
 
 <script>
+
 // --- ГЛАВНЫЙ СТАРТ СТРАНИЦЫ ---
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -833,12 +835,13 @@ document.addEventListener('DOMContentLoaded', () => {
             requestAnimationFrame(updateProgress.bind(null, performance.now()));
         } else {
             onLoadingComplete();
+			
         }
     }
 
     function onLoadingComplete() {
         progressText.textContent = 'Готово!';
-        
+        audio.play();
         setTimeout(() => {
             // Скрываем лоадер через прозрачность
             loaderContainer.classList.add('fade-out'); 
@@ -916,7 +919,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	</div>
 </div>
 </header>
-<div style="position:fixed;bottom:10px;left:12px;width:calc(100% - 30px); background-color: var(--bg-light);padding:4px;border: 1px solid var(--border-light);border-radius:15px; box-shadow: 0px 0px 30px var(--primary-accent);z-index:2;" onclick="audio.src= 'click.mp3';audio.play()">
+<div style="position:fixed;bottom:10px;left:12px;width:calc(100% - 30px); background-color: var(--bg-light);padding:4px;border: 1px solid var(--border-light);border-radius:15px; box-shadow: 0px 0px 30px var(--primary-accent);z-index:2;">
 <!-- БЛОК СИСТЕМНОЙ ИНФОРМАЦИИ (Время + Заряд) -->
 <div id="system-panel" style="
     position: absolute;
@@ -960,13 +963,14 @@ document.addEventListener('DOMContentLoaded', () => {
     justify-content: center;
 	width:128px;
 ">
-    <div id="clock-time"></div>
+    <div><center><h2><span id="clock-time"></span></h2><span id="date-set"></span></div>
 </div>
 </div>
 <script>
 // --- ГЛАВНАЯ ЛОГИКА ОБНОВЛЕНИЯ ---
 function updateSystemPanel() {
     const clockEl = document.getElementById('clock-time');
+	const dateEl = document.getElementById('date-set');
     const levelEl = document.getElementById('battery-level');
     const iconEl = document.getElementById('battery-icon');
     const containerEl = document.getElementById('battery-indicator');
@@ -977,7 +981,8 @@ function updateSystemPanel() {
     const now = new Date();
     const timeString = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     const dateString = now.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit' });
-    clockEl.innerHTML = `<center><b style="font-size:24px;">${timeString} </b> ${dateString} </center>`;
+    clockEl.innerHTML = `${timeString}`;
+	dateEl.innerHTML = `${dateString}`;
 
     // 2. Обновляем батарею (раз в 10 секунд или по событию)
     if ('getBattery' in navigator) {
@@ -1050,15 +1055,22 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 <div style="display: flex; gap: 20px; align-items: flex-end;">
-		<div class="menu-item" onclick="openModal('addProduct')" aria-label="Добавить товар" style="border:none;margin-bottom:2px;border-radius:15px">Добавить товар<span class="hotkey">Alt+C</span></div>
-        <div class="menu-item" onclick="openModal('editProducts')" aria-label="Изменить товары"  style="border:none;border-radius:15px">Изменить товары<span class="hotkey">Alt+E</span></div>
+<button id="hints-toggle-btn" style="
+    
+    background: var(--primary-accent); color: white; border: none; 
+    padding: 14px; border-radius: 10px; font-size: 15px; cursor: pointer;
+    
+" onclick="audio.src='swoosh2.mp3';audio.play()">💡 Подсказки</button>
+		<div class="menu-item" onclick="openModal('addProduct');audio.src= 'click.mp3';audio.play()" aria-label="Добавить товар" style="border:none;margin-bottom:2px;border-radius:15px">Добавить товар<span class="hotkey">Alt+C</span></div>
+        <div class="menu-item" onclick="openModal('editProducts');audio.src= 'click.mp3';audio.play()" aria-label="Изменить товары"  style="border:none;border-radius:15px">Изменить товары<span class="hotkey">Alt+E</span></div>
+		
 		</div>
 		</div>
 <div class="main-area">
     <aside class="sidebar">
         
 	<div style="position:sticky;top:0px;background: var(--bg-light);border: 1px solid var(--border-light);border-radius:15px;padding:8px;z-index:12">
-	<div class="menu-item" onclick="beta()" style="padding:8px;width:40px;margin-left:5px;border: 1px solid var(--border-light);border-radius:15px;float:right">📷</div>
+	<div class="menu-item" onclick="beta();audio.src= 'camera.mp3';audio.play()" style="padding:8px;width:40px;margin-left:5px;border: 1px solid var(--border-light);border-radius:15px;float:right">📷</div>
         <input type="text" class="search-input" placeholder="Поиск по артикулу..." id="globalSearch" style="width:calc(100% - 50px);border-radius:15px;"><br><br>
 		<details>
 		<summary>Фильтры (Beta)</summary>
@@ -1085,7 +1097,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </section>
 </div>
 
-<div class="modal-backdrop" id="pluginModal" onclick="audio.src= 'click.mp3';audio.play()"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2 id="modalTitle">Инструменты <span style="background:var(--primary-accent);color:white;padding:5px 10px;border-radius:10px;" class="pulse-card">&beta;</span></h2><br><br>
+<div class="modal-backdrop" id="pluginModal" ><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2 id="modalTitle">Инструменты <span style="background:var(--primary-accent);color:white;padding:5px 10px;border-radius:10px;" class="pulse-card">&beta;</span></h2><br><br>
 <center>
 <style>
 @keyframes pulse-glow {
@@ -1146,7 +1158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
 </div></div>
 
-<div class="modal-backdrop" id="addProductModal"  onclick="audio.src= 'click.mp3';audio.play()"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2 id="modalTitle">Добавить товар</h2><div class="form-group"><label class="form-label">Наименование</label><input type="text" class="form-input" id="nameInput"></div>
+<div class="modal-backdrop" id="addProductModal"  onclick="audio.src= 'click.mp3';audio.play()"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2 id="modalTitle">Добавить/изменить товар</h2><div class="form-group"><label class="form-label">Наименование</label><input type="text" class="form-input" id="nameInput"></div>
 <div class="form-group" disabled><label class="form-label">Изображение (&beta;)</label><input type="file" class="form-input" id="imageInput" disabled></div>
 <div class="form-group"><label class="form-label">Артикул (обязательно)</label><input type="text" class="form-input" id="skuInput"></div><!-- Обёртка-контейнер -->
 <div style="display: flex; gap: 20px; align-items: flex-end;">
@@ -1175,11 +1187,12 @@ document.addEventListener('DOMContentLoaded', () => {
         <input type="text" class="form-input" id="placementInput" placeholder="A-123" value="" style="width: 100%; box-sizing: border-box;" disabled>
     </div>
 
-</div><div class="form-group"><label class="form-label">Доп. описание</label><textarea class="form-input" id="descInput" rows="3"></textarea></div><div class="btn-group"><button class="btn btn-primary" id="saveProductBtn">Сохранить</button><button class="btn btn-outline" onclick="closeAllModals()">Отмена</button></div></div></div>
+</div><div class="form-group"><label class="form-label">Доп. описание (теперь отображается в списке)</label><textarea class="form-input" id="descInput" rows="3"></textarea></div><div class="btn-group"><button class="btn btn-primary" id="saveProductBtn">Сохранить</button><button class="btn btn-outline" onclick="closeAllModals()">Отмена</button></div></div></div>
+
 <div class="modal-backdrop" id="editProductsModal" onclick="audio.src= 'click.mp3';audio.play()"><div class="modal-window" style="width: 95%; height: 85%; max-height: 600px; display: flex; flex-direction: column;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"><h2>Управление товарами</h2><button class="close-modal" onclick="closeAllModals()">&times;</button></div><input type="text" class="search-input" placeholder="Фильтр..." id="filterEditInput" style="margin-bottom: 10px;"><div style="flex-grow:1; overflow-y:auto; border:1px solid var(--border-light); border-radius:8px; padding:10px;"><table class="products-table" id="productsTable"><thead><tr style="background:#f1f5f9; text-align:left;"><th style="padding:8px;">Название</th><th style="padding:8px;">Артикул</th><th style="padding:8px;">Цена</th><th style="padding:8px;">Склад</th><th style="padding:8px;"></th></tr></thead><tbody id="editTbody"></tbody></table></div><div style="margin-top: 15px; text-align:right;" class="btn-group"><button class="btn btn-danger" onclick="deleteSelected()">Удалить выбранные</button></div></div></div>
 <div class="modal-backdrop" id="finishModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Завершить сессию?</h2><p>Все несохраненные изменения будут утеряны.</p><div style="margin: 15px 0;"><input type="checkbox" id="reportCheckbox"> <label for="reportCheckbox">Сохранить отчёт о чеке</label></div><div class="btn-group"><button class="btn btn-primary" onclick="confirmFinish(true)">Да, завершить</button><button class="btn btn-outline" onclick="closeAllModals()">Продолжить работу</button></div></div></div>
 <div class="modal-backdrop" id="statisticsModal"><div class="modal-window" style="max-width: 900px;"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Статистика действий</h2><p>Журнал операций за текущие сессии.</p><table class="stats-table"><thead><tr><th>Дата и время</th><th>Действие</th><th>Детали</th></tr></thead><tbody id="statsBody"></tbody></table></div></div>
-<div class="modal-backdrop" id="aboutModal" onclick="audio.src= 'click.mp3';audio.play()"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>О Продукторе</h2><p>Рабочая среда кассира версии <strong>26.9.20.1</strong>.</p><p>&copy; 2026 Морковчик. Все права защищены.</p><hr><p>Ответы на вопросы:<br><br>Если товары в списке не отображаются - попробуйте обновить страницу или введите артикул и очистите снова.<hr>Возникнут проблемы - пишите на почту - quantumacd25@gmail.com (также можно написать о поддержке проекта или найденных багах).<hr>Придётся ли платить? Нет, мы денег не берем. Программа не имеет доступ к банковским картам или средствам оплаты.<hr></p></div></div>
+<div class="modal-backdrop" id="aboutModal" onclick="audio.src= 'click.mp3';audio.play()"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>О Продукторе</h2><p>Рабочая среда кассира версии <strong>26.9.21.1</strong>.</p><p>&copy; 2026 Морковчик. Все права защищены.</p><hr><p>Ответы на вопросы:<br><br>Если товары в списке не отображаются - попробуйте обновить страницу или введите артикул и очистите снова.<hr>Возникнут проблемы - пишите на почту - quantumacd25@gmail.com (также можно написать о поддержке проекта или найденных багах).<hr>Придётся ли платить? Нет, мы денег не берем. Программа не имеет доступ к банковским картам или средствам оплаты.<hr></p></div></div>
 <div class="modal-backdrop" id="paymentModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Сумма к оплате</h2><div style="text-align: center; font-size: 32px; font-weight: bold; margin: 20px 0;" id="paymentAmount">0 ₽</div><div class="btn-group" style="justify-content: center;"><button class="btn btn-danger" style="flex:none; padding: 0 40px;" onclick="cancelPayment()">ОТМЕНА</button><button class="btn btn-primary" style="flex:none; padding: 0 40px;" onclick="exportReceipt();completeSale()">ОК</button></div><div style="margin-top: 20px; text-align: center;"><button class="btn btn-outline" style="padding: 0 30px;" onclick="clearCart()">ОЧИСТИТЬ ЧЕК</button></div></div></div>
 <!-- Модальное окно: Настройки (с табами) -->
 <div class="modal-backdrop" id="settingsModal" onclick="audio.src= 'click.mp3';audio.play()">
@@ -1305,7 +1318,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="settings-content" id="content-about">
             <h2 style="margin-top: 0;">О программе</h2>
             <p style="font-size: 14px; color: var(--text-dark); line-height: 1.6;">
-                Рабочая среда кассира «Продуктор» версии 26.9.20.1.<br><br>
+                Рабочая среда кассира «Продуктор» версии 26.9.21.1.<br><br>
                 • Данные организации (ИНН, ОГРН) применяются к чеку при экспорте.<br>
                 • Шрифт применяется ко всему интерфейсу после нажатия «Применить».<br>
                 • Для вступления изменений может потребоваться обновление страницы (F5).<br>
@@ -1369,7 +1382,7 @@ document.addEventListener('DOMContentLoaded', () => {
     z-index: 9999;
 ">FPS: --</div>
 <script>
-const VERSION = "26.9.20.1";
+const VERSION = "26.9.21.1";
 let productsDB = JSON.parse(localStorage.getItem('productor_products')) || [];
 let cart = JSON.parse(localStorage.getItem('productor_cart')) || [];
 let sessionReportHistory = JSON.parse(localStorage.getItem('productor_reports')) || [];
@@ -1419,7 +1432,7 @@ function renderInventory() {
         li.onclick = () => { if (canAdd) addToCart(product.sku); else showAlert('Недостаточно товара на складе.'); };
         let badgeClass = 'badge-stock'; 
         if (product.stock === 0) badgeClass += ' out'; else if (stockLeft < 5 && stockLeft > 0) badgeClass += ' low';
-        li.innerHTML = `<div class="product-details"><div class="product-name">${product.name}</div><div class="product-meta"><span>Арт.: ${product.sku}</span><span>${product.price} ₽</span></div></div><div><span class="${badgeClass}">${stockLeft} шт.</span></div>`;
+        li.innerHTML = `<div class="product-details"><div class="product-name">${product.name}</div><p><i>${product.desc}</i></p><div class="product-meta"><span>Арт.: ${product.sku}</span><span>${product.price} ₽</span></div></div><div><span class="${badgeClass}">${stockLeft} шт.</span></div>`;
         if(!canAdd) li.classList.add('no-stock'); 
         list.appendChild(li);
     });
@@ -1510,7 +1523,7 @@ function saveProduct() {
     }
     else { 
         if (productsDB.some(p => p.sku === sku)) { showAlert('Артикул существует.'); return; } 
-        logAction('add_product', `Добавлен новый товар "${name}"`); 
+        showAlert(`Товар "${name} (${price}р)" успешно добавлен!`); 
         productsDB.push({ name, sku, price, stock, desc: desc || "", individualDiscount }); 
     }
     saveData(); 
@@ -2314,7 +2327,7 @@ document.addEventListener('DOMContentLoaded', manageFont.bind(null, 'load'));
             const averageFps = (frameTimes.length * 1000 / frameTimes.reduce((a, b) => a + b, 0)).toFixed(0);
             
             // Используем textContent вместо innerHTML (это быстрее и безопаснее)
-            counter.textContent = `FPS: ${averageFps} | Версия 26.9.20.1`;
+            counter.innerHTML = `<b>Продуктор для бизнеса</b> | FPS: ${averageFps} | Версия 26.9.21.1`;
         }
 
         // 5. Запрашиваем следующий кадр
@@ -2796,14 +2809,7 @@ window.closePriceMaker = function() {
 }
 </script>
 <!-- Кнопка вызова подсказок слева снизу -->
-<button id="hints-toggle-btn" style="
-    position: fixed; 
-    bottom: 0; left: 0; 
-    z-index: 9999;
-    background: var(--primary-accent); color: white; border: none; 
-    padding: 3px 6px; border-radius: 8px; font-size: 14px; cursor: pointer;
-    
-">💡 Подсказки</button>
+
 
 <script>
 function enforceDecimalFormat(inputElement, maxDecimals = 2) {
@@ -3118,7 +3124,12 @@ const hintsData = [
     },
 	{
         title: "Канал в MAX",
-        text: "Подписывайтесь и узнавайте о новых функциях раньше релиза! https://max.ru/channel_productor",
+        text: `Подписывайтесь и узнавайте о новых функциях раньше релиза! <a href="https://max.ru/channel_productor">Подписаться</a>`,
+        iconUrl: "./logo.png"
+    },
+	{
+        title: "Что нового?",
+        text: "В версии 26.9.21.1 появилось кое-что новое!<br> 1) Описание товара отображается в списке;<br>2. Появилось больше звуков!",
         iconUrl: "./logo.png"
     }
 ];
@@ -3151,8 +3162,8 @@ function createHintToast(data) {
 
         <!-- Блок кнопок -->
         <div class="hint-controls">
-            <button class="hint-btn hint-next">Далее</button>
-            <button class="hint-btn hint-close">Закрыть</button>
+            <button class="hint-btn hint-next" onclick="audio.src='swoosh.mp3';audio.play()">Далее</button>
+            <button class="hint-btn hint-close" onclick="audio.src='swoosh2.mp3';audio.play()">Закрыть</button>
         </div>
     `;
 
