@@ -3,53 +3,484 @@
 <head>
     <meta charset="UTF-8">
     <title>Галерея</title>
+    <!-- Подключаем Font Awesome для иконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        body{margin:0; padding:10px; font-family:Arial,sans-serif; background:#f5f7fa;}
-        .grid{display:grid; gap:10px; grid-template-columns:repeat(auto-fill, minmax(240px,1fr));}
-        .card{border:1px solid #ccc; border-radius:8px; overflow:hidden; cursor:pointer; transition:all .2s; display:flex; flex-direction:column; background:#fff;}
-        .card:hover{transform:translateY(-3px); box-shadow:0 5px 15px rgba(0,0,0,.1);}
-        .thumb{width:100%; aspect-ratio:1/1; object-fit:cover; background:#eee;}
-        .info{padding:8px; text-align:center; font-size:12px; color:#333; flex-grow:1; display:flex; flex-direction:column; justify-content:center;}
-        .tag{margin-top:4px; font-size:9px; padding:2px 6px; border-radius:99px; background:#e5edff; color:#2563eb;}
-        input{padding:10px; width: calc(100% - 22px); margin-bottom:10px; border:1px solid #ccc; border-radius:6px;}
+        :root {
+            --bg-light: #ffffff;
+            --text-dark: #1e293b;
+            --primary-blue: #2563eb;
+            --gray-muted: #64748b;
+        }
+
+        [data-theme="dark"] {
+            --bg-light: #0f172a;
+            --text-dark: #f1f5f9;
+            --primary-blue: #3b82f6;
+            --gray-muted: #94a3b8;
+        }
+
+        body {
+            margin: 0; 
+            padding: 20px; 
+            font-family: 'Inter', sans-serif; 
+            background: #f5f7fa;
+            color: var(--text-dark);
+        }
+        
+        input {
+            padding: 12px; 
+            width: 100%; 
+            max-width: 500px;
+            border: 1px solid #ccc; 
+            border-radius: 8px; 
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* ИЗМЕНЕНО: minmax(300px) дает примерно 4 колонки на FullHD */
+        .grid {
+            display: grid; 
+            gap: 15px; 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+        
+        .card {
+            border: 1px solid #e2e8f0; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            cursor: pointer; 
+            transition: all .2s; 
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px); 
+            box-shadow: 0 8px 20px rgba(0,0,0,.08); 
+            border-color: var(--primary-blue);
+        }
+
+        .thumb-wrapper {
+            padding: 10px;
+            
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .thumb {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover; 
+            border-radius: 8px;
+            display: block;
+        }
+        
+        .info {
+            padding: 14px;
+            text-align: left; 
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info div:nth-child(1) {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+        
+        .meta {
+            font-size: 11px;
+            color: var(--gray-muted);
+            margin-bottom: 8px;
+        }
+        
+        .tags { 
+            display:flex; 
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: auto;
+         }
+         
+        .tag {
+            font-size: 10px; 
+            padding: 3px 8px; 
+            border-radius: 99px; 
+            background:#e5edff; 
+            color:var(--primary-blue);
+            white-space: nowrap;
+        }
+
+        /* СТИЛИ МОДАЛЬНОГО ОКНА */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0; top: 0;
+            width: 100%; height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.9); 
+            align-items: center;
+            justify-content: center;
+        }
+       
+        .modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 0;
+            border: 1px solid #888;
+            width: 98%;
+            max-width: 1000px;
+            border-radius: 16px;
+            display: flex;
+            max-height: 97vh;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            z-index: 10;
+            background: rgba(0,0,0,0.3);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        .close:hover { color: red; }
+        
+        .modal-body {
+    display: flex;
+    gap: 20px;
+     /* Ограничиваем тело модалки видимой областью */
+    padding: 20px;
+	
+}
+        
+        .modal-image-wrapper {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+            
+            border-radius: 12px;
+            overflow: hidden;
+			width:50%;
+        }
+        
+        .modal-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Меняем здесь */
+    transition: filter 0.3s;
+	
+}
+        
+        .modal-details {
+            
+            display: flex;
+            flex-direction: column;
+            width:20%;
+            overflow-y: auto;
+        }
+        
+        .modal-details h2 {
+            margin-top: 0;
+            font-size: 1.8rem;
+            color: var(--text-dark);
+        }
+        
+        .modal-details p {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            white-space: pre-line;
+        }
+        
+        .modal-meta {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 20px;
+        }
+        
+        .btn-download {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--primary-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+            align-self: flex-start;
+			
+        }
+        .btn-download:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* БЛОК ПОХОЖИХ ФОТО */
+        .similar-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            
+        }
+        .similar-section h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+        }
+        .similar-grid {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        }
+        .similar-item {
+            cursor: pointer;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f8fafc;
+            transition: transform .2s;
+            position: relative;
+        }
+        .similar-item:hover {
+            transform: scale(0.95);
+        }
+        .similar-thumb {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            display: block;
+        }
+        .similar-name {
+            font-size: 12px;
+            padding: 6px 8px;
+            color: #333;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     </style>
 </head>
 <body>
     
-    <input type="text" id="search" placeholder="Поиск...">
+    <input type="text" id="search" placeholder="Поиск по названию или описанию...">
     <div class="grid" id="grid"></div>
 
 <script>
 const photos = [
-    {url:"images/autumn-forest.png", name:"Осенний лес", tags:["природа","осень"]},
-    {url:"images/tree.jpg", name:"Дерево", tags:["природа","осень", "дерево"]},
-    {url:"images/wall.png", name:"Осенняя дорога", tags:["дорога","осень"]},
-    {url:"images/leaves.png", name:"Осенние листья", tags:["природа","осень", "листья"]}    
+    {
+        url:"images/autumn-forest.png", 
+        name:"Осенний лес", 
+        tags:["природа","осень"],
+        resolution:"1920x1080",
+        source:"Unsplash",
+        description:"Утренний туман в сосновом бору. Идеально для заставок."
+    },
+    {
+        url:"images/tree.jpg", 
+        name:"Дерево", 
+        tags:["природа","осень", "дерево"],
+        resolution:"1280x720",
+        source:"Pexels",
+        description:"Старая ива у реки."
+    },
+    {
+        url:"images/wall.png", 
+        name:"Осенняя дорога", 
+        tags:["дорога","осень"],
+        resolution:"2560x1440",
+        source:"Pixabay",
+        description:"Шоссе, уходящее в закат."
+    },
+    {
+        url:"images/leaves.png", 
+        name:"Осенние листья", 
+        tags:["природа","осень", "листья"], 
+        resolution:"1080x1080",
+        source:"Собственное",
+        description:"Макросъемка кленового листа."
+    }, 
+    {
+        url:"images/winter.png", 
+        name:"Зима", 
+        tags:["зима"],
+        resolution:"1920x1080",
+        source:"Unsplash",
+        description:"Заснеженный лес в Альпах."
+    },    
+    {
+        url:"images/winter-night.png", 
+        name:"Зимняя ночь", 
+        tags:["зима", "ночь"], 
+        resolution:"1600x900",
+        source:"Pexels",
+        description:"Северное сияние над городом."
+    }, 
+    {
+        url:"images/winter-landscape.png", 
+        name:"Зимний пейзаж", 
+        tags:["зима", "пейзаж", "елка", "ёлка"], 
+        resolution:"3840x2160",
+        source:"Pixabay",
+        description:"Еловый лес после снегопада."
+    }, 
 ];
 
 function render(data){
-    document.getElementById('grid').innerHTML = data.map(p=>`
-        <div class="card" onclick="select('${p.url}')">
-            <img src="${p.url}" onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg%20viewBox=%220%200%2024%2024%22%3E%3Cpath%20fill=%22%23ccc%22%20d=%22M21%2015v4a2%202%200%200%201-2%202H5a2%202%200%200%201-2-2v-4%22/%3E%3Cpolyline%20points=%227%2010%2012%2015%2017%2010%22/%3E%3Cline%20x1=%2212%22%20y1=%2215%22%20x2=%2212%22%20y2=%223%22/%3E%3C/svg%3E'" class="thumb">
-            <div class="info"><div style="font-weight:bold;">${p.name}</div> ${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    document.getElementById('grid').innerHTML = data.map((p, index)=>`
+        <div class="card" onclick="openModal(${index})">
+            <div class="thumb-wrapper">
+                <img src="${p.url}" onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg%20viewBox=%220%200%2024%2024%22%3E%3Cpath%20fill=%22%23ccc%22%20d=%22M21%2015v4a2%202%200%200%201-2%202H5a2%202%200%200%201-2-2v-4%22/%3E%3Cpolyline%20points=%227%2010%2012%2015%2017%2010%22/%3E%3Cline%20x1=%2212%22%20y1=%2215%22%20x2=%2212%22%20y2=%223%22/%3E%3C/svg%3E'" class="thumb">
+            </div>
+            <div class="info">
+                <div style="font-weight:bold;">${p.name}</div>
+                <div class="meta">${p.resolution} + ${p.source}</div>
+                <div class="tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+            </div>
         </div>`).join('');
 }
 
-function select(url){
-    if(window.opener){ 
-        window.opener.handleSelectedImageFromManager(url); 
-        window.close(); 
+let currentPhotoIndex = 0;
+
+// Функция поиска похожих фото по тегам
+function findSimilarTags(currentTags) {
+    const similar = [];
+    photos.forEach((p, index) => {
+        if (currentPhotoIndex !== index) {
+            // Проверяем, есть ли хотя бы один общий тег
+            const hasMatch = p.tags.some(tag => currentTags.includes(tag));
+            if (hasMatch) {
+                similar.push({...p, index: index});
+            }
+        }
+    });
+    // Сортируем по количеству совпадений и берем первые 6
+    return similar.sort((a, b) => {
+        const aMatches = a.tags.filter(t => currentTags.includes(t)).length;
+        const bMatches = b.tags.filter(t => currentTags.includes(t)).length;
+        return bMatches - aMatches;
+    }).slice(0, 6);
+}
+
+function renderSimilar(similarList) {
+    const container = document.getElementById('similarGrid');
+    if (similarList.length === 0) {
+        container.innerHTML = '<p style="color: #94a3b8; grid-column: 1/-1; text-align:center;">Похожих фото не найдено</p>';
+        return;
+    }
+    container.innerHTML = similarList.map(p => `
+        <div class="similar-item" onclick="openModal(${p.index})">
+            <img class="similar-thumb" alt="${p.name}" id="01a0d89a-17bb-74ff-b637-1902f2f35ba4" src="${p.url}">
+            <div class="similar-name">${p.name}</div>
+        </div>
+    `).join('');
+}
+
+function openModal(index) {
+    currentPhotoIndex = index;
+    const p = photos[index];
+    
+    const modal = document.getElementById('modal');
+    const img = document.getElementById('modalImage');
+    const wrapper = img.closest('.modal-image-wrapper');
+    
+    document.getElementById('modalName').innerText = p.name;
+    document.getElementById('modalDescription').innerText = p.description;
+    document.getElementById('modalResolution').innerText = p.resolution;
+    document.getElementById('modalSource').innerText = p.source;
+    
+    const downloadBtn = document.getElementById('downloadBtn');
+    downloadBtn.href = p.url;
+    
+    const [w, h] = p.resolution.split('x').map(Number);
+    if (w < 1920 || h < 1080) {
+        wrapper.classList.add('blurred');
     } else {
-        window.location.href = url;
+        wrapper.classList.remove('blurred');
+    }
+    
+    img.src = p.url;
+    
+    // Загрузка блока похожих фото
+    const similar = findSimilarTags(p.tags);
+    renderSimilar(similar);
+    
+    modal.style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+    document.getElementById('modalImage').src = '';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('modal');
+    if (event.target == modal) {
+        closeModal();
     }
 }
 
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeModal();
+    }
+});
+
 document.getElementById('search').addEventListener('input', e=>{
     const q = e.target.value.toLowerCase();
-    const filtered = photos.filter(p => p.name.toLowerCase().includes(q) || p.tags.some(t=>t.includes(q)));
+    const filtered = photos.filter(p => 
+        p.name.toLowerCase().includes(q) || 
+        p.description.toLowerCase().includes(q) || 
+        p.tags.some(t=>t.includes(q))
+    );
     render(filtered);
 });
+
 render(photos);
 </script>
+
+<!-- HTML Модального окна -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-body">
+            <div class="modal-image-wrapper">
+                <img id="modalImage" class="modal-image" src="" alt="Превью фото">
+            </div>
+            <div class="modal-details">
+                <h2 id="modalName"></h2>
+                <p id="modalDescription"></p>
+                <div class="modal-meta">
+                    <span id="modalResolution"></span> • <span id="modalSource"></span>
+                </div>
+                <div class="modal-actions">
+                    <a id="downloadBtn" class="btn-download" href="#" download><i class="fa-solid fa-download"></i> Скачать оригинал</a>
+                </div>
+                
+                <!-- Блок похожих фото -->
+                <div class="similar-section">
+                    <h3>Похожие фото</h3>
+                    <div class="similar-grid" id="similarGrid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
