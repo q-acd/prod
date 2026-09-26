@@ -10,6 +10,7 @@
             --bg-light: #ffffff;
             --text-dark: #1e293b;
             --primary-blue: #2563eb;
+			--primary-accent: #a4a4a4;
             --gray-muted: #64748b;
         }
 
@@ -24,18 +25,18 @@
             margin: 0; 
             padding: 20px; 
             font-family: 'Inter', sans-serif; 
-            background: #f5f7fa;
+            background: #f3f3f3;
             color: var(--text-dark);
         }
         
         input {
             padding: 12px; 
-            width: 100%; 
-            max-width: 500px;
+            width: calc(100% - 24px); 
+            max-width: 900px;
             border: 1px solid #ccc; 
-            border-radius: 8px; 
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 24px; 
+            
+            box-shadow: 0px 0px 4px gray;
         }
 
         /* ИЗМЕНЕНО: minmax(300px) дает примерно 4 колонки на FullHD */
@@ -132,16 +133,16 @@
             margin: auto;
             padding: 0;
             border: 1px solid #888;
-            width: 98%;
-            max-width: 1000px;
+            max-width: 98%;
+            
             border-radius: 16px;
             display: flex;
-            max-height: 97vh;
+            height: 99vh;
             box-shadow: 0 20px 60px rgba(0,0,0,0.4);
         }
         
         .close {
-            color: #aaa;
+            color: white;
             float: right;
             font-size: 28px;
             font-weight: bold;
@@ -182,6 +183,7 @@
         .modal-image {
     width: 100%;
     height: 100%;
+	
     object-fit: cover; /* Меняем здесь */
     transition: filter 0.3s;
 	
@@ -189,9 +191,9 @@
         
         .modal-details {
             
-            display: flex;
+            
             flex-direction: column;
-            width:20%;
+            min-width:20%;
             overflow-y: auto;
         }
         
@@ -220,17 +222,19 @@
             background-color: var(--primary-blue);
             color: white;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 24px;
             text-align: center;
             font-weight: 600;
             transition: background 0.2s;
             border: none;
             cursor: pointer;
             align-self: flex-start;
-			
+			box-shadow: 0px 0px 4px gray;
+			width: calc(100% - 50px);
         }
         .btn-download:hover {
-            background-color: #1d4ed8;
+            background-color: white;
+			color: var(--primary-blue);
         }
 
         /* БЛОК ПОХОЖИХ ФОТО */
@@ -247,7 +251,7 @@
         .similar-grid {
             display: grid;
             gap: 10px;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            
         }
         .similar-item {
             cursor: pointer;
@@ -262,23 +266,119 @@
         }
         .similar-thumb {
             width: 100%;
-            height: 80px;
+            height: 120px;
             object-fit: cover;
             display: block;
         }
         .similar-name {
-            font-size: 12px;
+            font-size: 14px;
             padding: 6px 8px;
             color: #333;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
+		.logo-text {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    
+    /* --- АНИМАЦИЯ ПЕРЕЛИВАНИЯ --- */
+    
+    /* Создаем фоновый градиент */
+    background-image: linear-gradient(40deg, violet, dodgerblue);
+    
+    /* Применяем градиент только к буквам */
+    -webkit-background-clip: text;
+    background-clip: text;
+    
+    /* Делаем сами буквы прозрачными */
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    
+    /* Инициализируем анимацию */
+    animation: logo-pulse 4s ease-in-out infinite alternate;
+    
+    /* Тень для объема (чтобы текст не терялся на фоне) */
+    text-shadow: 
+        0 1px 2px rgba(0,0,0,0.2),
+        0 2px 8px rgba(37, 99, 235, 0.2);
+}
+
+/* Правило для темной темы (цвета меняются, чтобы светиться на черном) */
+[data-theme="dark"] .logo-text {
+    background-image: linear-gradient(90deg, cyan, blue);
+    text-shadow: 
+        0 1px 2px rgba(255,255,255,0.1),
+        0 2px 8px rgba(37, 99, 235, 0.4);
+}
+
+/* Ключевые кадры анимации */
+@keyframes logo-pulse {
+    0% {
+        /* Смещение оттенка в более светлую сторону (влево по градиенту) */
+        filter: hue-rotate(0deg) saturate(1);
+    }
+    50% {
+        /* Смещение в более насыщенную синюю сторону */
+        filter: hue-rotate(15deg) saturate(1.2);
+    }
+    100% {
+        /* Возврат назад */
+        filter: hue-rotate(-10deg) saturate(1.1);
+    }
+}
+
+/* Для совместимости со старыми браузерами Safari */
+@-webkit-keyframes logo-pulse {
+    0% { filter: hue-rotate(0deg); }
+    50% { filter: hue-rotate(150deg); }
+    100% { filter: hue-rotate(-100deg); }
+}
+/* Применяем ко всем скроллбарам страницы */
+*::-webkit-scrollbar {
+    width: 10px; /* Ширина вертикального скролла */
+    height: 10px; /* Высота горизонтального скролла */
+}
+
+/* Трек (фон под полосой) — полностью прозрачный */
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Сам ползунок */
+*::-webkit-scrollbar-thumb {
+    background-color: var(--primary-accent);
+    border-radius: 5px; /* Скругление углов */
+    border: 2px solid transparent; /* Чтобы сохранить размер 10px при рендеринге */
+    background-clip: content-box; /* Цвет применяется только к контенту, бордер остается прозрачным */
+	transition:0.3s;
+}
+
+/* Состояние при наведении (опционально, можно сделать полосу чуть ярче или шире) */
+*::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-accent); /* Если используете препроцессор вроде Sass */
+    /* Или просто укажите более светлый HEX-код вручную */
+	transition:0.3s;
+	scale:1.1;
+}
+.modal-details::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 5px; /* Скругление углов */
+    border: 2px solid transparent; /* Чтобы сохранить размер 10px при рендеринге */
+    background-clip: content-box; /* Цвет применяется только к контенту, бордер остается прозрачным */
+	transition:0.3s;
+}
     </style>
 </head>
 <body>
     
-    <input type="text" id="search" placeholder="Поиск по названию или описанию...">
+    <div style="position:sticky;top:15px;left:5%;z-index:999;background:white;padding:5px;border-radius:24px;box-shadow: 0px 0px 4px gray;">
+	<button style="padding:12px 15px;background:dodgerblue;color:white;border:none;margin-left:8px;border-radius:20px;font-size:15px;box-shadow: 0px 0px 4px gray;float:right" onclick="alert('Beta')"><i class="fa-solid fa-wand-magic-sparkles"></i> Сгенерировать</button>
+	<button style="padding:12px 15px;background:dodgerblue;color:white;border:none;margin-right:8px;border-radius:20px;font-size:15px;box-shadow: 0px 0px 4px gray;float:left" onclick="window.location.href = 'index.html'"><i class="fa-solid fa-arrow-left"></i></button>
+	<input type="text" id="search" placeholder="Поиск по названию или описанию...">
+	<span style="float:left;margin:5px;" class="logo-text"><i class="fa-solid fa-image"></i> Галерея</span>
+	</div><br>
     <div class="grid" id="grid"></div>
 
 <script>
@@ -287,58 +387,66 @@ const photos = [
         url:"images/autumn-forest.png", 
         name:"Осенний лес", 
         tags:["природа","осень"],
-        resolution:"1920x1080",
-        source:"Unsplash",
-        description:"Утренний туман в сосновом бору. Идеально для заставок."
+        resolution:"1440х900",
+        source:"Unknown",
+        description:"Красивый пейзаж осеннего леса и реки."
     },
     {
         url:"images/tree.jpg", 
         name:"Дерево", 
         tags:["природа","осень", "дерево"],
-        resolution:"1280x720",
-        source:"Pexels",
-        description:"Старая ива у реки."
+        resolution:"1440x900",
+        source:"Unknown",
+        description:"Нет описания"
     },
     {
         url:"images/wall.png", 
         name:"Осенняя дорога", 
         tags:["дорога","осень"],
-        resolution:"2560x1440",
-        source:"Pixabay",
+        resolution:"1440x900",
+        source:"Unknown",
         description:"Шоссе, уходящее в закат."
     },
     {
         url:"images/leaves.png", 
         name:"Осенние листья", 
         tags:["природа","осень", "листья"], 
-        resolution:"1080x1080",
-        source:"Собственное",
+        resolution:"1440х900",
+        source:"Unknown",
         description:"Макросъемка кленового листа."
     }, 
     {
         url:"images/winter.png", 
         name:"Зима", 
         tags:["зима"],
-        resolution:"1920x1080",
-        source:"Unsplash",
-        description:"Заснеженный лес в Альпах."
+        resolution:"1080х1920",
+        source:"Pinterest",
+        description:"Заснеженный лес."
     },    
     {
         url:"images/winter-night.png", 
         name:"Зимняя ночь", 
         tags:["зима", "ночь"], 
-        resolution:"1600x900",
-        source:"Pexels",
-        description:"Северное сияние над городом."
+        resolution:"1280х960",
+        source:"Pinterest",
+        description:"Северное сияние над мостом."
     }, 
     {
         url:"images/winter-landscape.png", 
         name:"Зимний пейзаж", 
         tags:["зима", "пейзаж", "елка", "ёлка"], 
-        resolution:"3840x2160",
-        source:"Pixabay",
+        resolution:"768х1408",
+        source:"Pinterest",
         description:"Еловый лес после снегопада."
     }, 
+	{
+        url:"images/winter-house.jpg", 
+        name:"Зимний домик", 
+        tags:["зима", "новый год", "дом"], 
+        resolution:"1456х832",
+        source:"Pinterest",
+        description:"Еловый лес после снегопада."
+    },
 ];
 
 function render(data){
@@ -349,7 +457,7 @@ function render(data){
             </div>
             <div class="info">
                 <div style="font-weight:bold;">${p.name}</div>
-                <div class="meta">${p.resolution} + ${p.source}</div>
+                <div class="meta">${p.resolution} • ${p.source}</div>
                 <div class="tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
             </div>
         </div>`).join('');
@@ -386,7 +494,7 @@ function renderSimilar(similarList) {
     container.innerHTML = similarList.map(p => `
         <div class="similar-item" onclick="openModal(${p.index})">
             <img class="similar-thumb" alt="${p.name}" id="01a0d89a-17bb-74ff-b637-1902f2f35ba4" src="${p.url}">
-            <div class="similar-name">${p.name}</div>
+            <div class="similar-name"><span style="float:right" class="tag">${p.resolution}</span>${p.name}</div>
         </div>
     `).join('');
 }
@@ -403,6 +511,7 @@ function openModal(index) {
     document.getElementById('modalDescription').innerText = p.description;
     document.getElementById('modalResolution').innerText = p.resolution;
     document.getElementById('modalSource').innerText = p.source;
+	document.getElementById('modalTag').innerHTML = p.tags.map(t=>`<span class="tag">${t}</span>`).join('');
     
     const downloadBtn = document.getElementById('downloadBtn');
     downloadBtn.href = p.url;
@@ -466,10 +575,11 @@ render(photos);
                 <h2 id="modalName"></h2>
                 <p id="modalDescription"></p>
                 <div class="modal-meta">
-                    <span id="modalResolution"></span> • <span id="modalSource"></span>
+                    <span id="modalResolution"></span> • <span id="modalSource"></span><br><br>
+					<span>Теги: <span id="modalTag" style="font-size:14px;"></span></span><br>
                 </div>
                 <div class="modal-actions">
-                    <a id="downloadBtn" class="btn-download" href="#" download><i class="fa-solid fa-download"></i> Скачать оригинал</a>
+                    <a id="downloadBtn" class="btn-download" href="#"><i class="fa-solid fa-download"></i> Скачать оригинал</a>
                 </div>
                 
                 <!-- Блок похожих фото -->
