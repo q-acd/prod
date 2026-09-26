@@ -695,7 +695,7 @@ body.dialog-open::before {
 
     <!-- Кнопка открытия формы -->
     <div style="text-align: center; margin-top: 40px;">
-        <button class="btn-open-form" id="openReviewBtn">Оставить отзыв</button>
+        <button class="btn-open-form" id="openReviewBtn" >Оставить отзыв</button>
     </div>
 </div>
 
@@ -729,32 +729,7 @@ body.dialog-open::before {
         
         <h2 style="margin-top: 0; text-align: center;">Ваш отзыв</h2>
         
-        <form id="reviewForm" action="https://formspree.io/f/mppwlggg" method="POST">
-            <div style="margin-bottom: 16px;">
-                <label style="display: block; margin-bottom: 6px; font-weight: 500;">Имя</label>
-                <input type="text" id="reviewName" name="name" required style="width: 100%; padding: 10px 12px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 15px;">
-            </div>
-            <div style="margin-bottom: 16px;">
-                <label style="display: block; margin-bottom: 6px; font-weight: 500;">Почта</label>
-                <input type="email" id="reviewEmail" name="email" required style="width: 100%; padding: 10px 12px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 15px;">
-            </div>
-            <div style="margin-bottom: 16px;">
-                <label style="display: block; margin-bottom: 6px; font-weight: 500;">Оценка</label>
-                <div class="modal-stars" id="modalStars">
-                    <span data-value="1">★</span><span data-value="2">★</span><span data-value="3">★</span><span data-value="4">★</span><span data-value="5">★</span>
-                </div>
-                <input type="hidden" id="reviewRating" name="rating" value="5">
-            </div>
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 6px; font-weight: 500;">Отзыв</label>
-                <textarea id="reviewText" name="text" required style="width: 100%; padding: 10px 12px; border: 1px solid var(--border-light); border-radius: 8px; font-size: 15px; min-height: 100px; resize: vertical;"></textarea>
-            </div>
-			<small style="color:gray">Модерация может занять от 8 часов до недели. Обновление ленты отзывов происходит каждые 72 часа.</small><br>
-            <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                <button type="button" onclick="document.getElementById('reviewModal').close();document.body.classList.remove('dialog-open');" style="flex: 1; padding: 12px; background: #e6e6e6; border: none; border-radius: 8px; cursor: pointer;">Отмена</button>
-                <button type="submit" style="flex: 1; padding: 12px; background: var(--primary-blue); color: white; border: none; border-radius: 8px; cursor: pointer;">Отправить на модерацию</button>
-            </div>
-        </form>
+        <p>Оставить отзыв можно <a href="https://forms.yandex.ru/u/6ab7636049af475334c00f05">тут</a>.</p>
     </div>
 </dialog>
 
@@ -898,7 +873,7 @@ body.dialog-open::before {
     <div class="footer-contact">
         Связаться с разработчиком: <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>
     </div>
-    <div class="footer-year">© <span id="currentYear"></span> Морковчик. Версия сайта: 26.9.8.3</div>
+    <div class="footer-year">© <span id="currentYear"></span> Морковчик. Версия сайта: 26.9.26.1</div>
 </footer>
 
 <!-- DIALOG WINDOW (исправлено: добавлена кнопка закрытия) -->
