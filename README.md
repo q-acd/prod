@@ -16,5 +16,7 @@
 Проект также участвует в проекте «HTML как основа веб-разработки».
 #### Ссылки
 Сайт: q-acd.github.io/prod
+
 Канал: max.ru/channel_productor
+
 Почта: q-acd@mail.ru
