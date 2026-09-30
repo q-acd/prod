@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Сканер (Финальный)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 95%;
+            max-width: 400px;
+        }
+        video {
+            width: 100%;
+            height: 250px;
+            background: #000;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            object-fit: cover;
+        }
+        #result {
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            min-height: 50px;
+            word-break: break-all;
+        }
+        .success { background: #d1e7dd; color: #0f5132; border: 1px solid #badbcc; }
+        .error { background: #f8d7da; color: #842029; border: 1px solid #f5c2c7; }
+        .info { background: #cff4fc; color: #055160; border: 1px solid #b6effb; }
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: 0.2s;
+        }
+        .start { background: #0d6efd; color: white; }
+        .start:hover { background: #0b5ed7; }
+        .stop { background: #dc3545; color: white; }
+        .stop:hover { background: #c82333; }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Сканер штрихкодов</h2>
+    <video id="video" playsinline autoplay></video>
+    <div id="result" class="info">Нажми «Старт»</div>
+    <br>
+    <button id="startBtn" class="start">Начать</button>
+    <button id="stopBtn" class="stop" disabled>Стоп</button>
+</div>
+
+<!-- 
+    НОВАЯ ССЫЛКА. 
+    Это официальный UMD билд, который создает window.ZXing.
+    Забываем про @zxing/browser.
+-->
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.1/umd/index.min.js"></script>
+
+<script>
+    // Теперь используем просто ZXing (без Browser)
+    let codeReader = null;
+    let stream = null;
+    const video = document.getElementById('video');
+    const resultDiv = document.getElementById('result');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+
+    function startScanning() {
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        resultDiv.textContent = 'Запуск камеры...';
+        resultDiv.className = 'info';
+
+        try {
+            // Конструктор называется просто BrowserMultiFormatReader внутри ZXing
+           // Было: codeReader = new ZXing.BrowserMultiFormatReader();
+// Стало: 
+const hints = new Map();
+hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [
+    ZXing.BarcodeFormat.EAN_13,   // Штрихкоды товаров
+    ZXing.BarcodeFormat.CODE_128, // Логистические штрихкоды
+    ZXing.BarcodeFormat.QR_CODE   // Оставим QR для теста
+]);
+// Мы просим библиотеку смотреть не на 640px, а на центральный квадрат 300x300px
+// Это работает как цифровое увеличение (кроп)
+codeReader = new ZXing.BrowserMultiFormatReader(hints, 300); 
+
+
+
+            // Чтобы использовать await, оборачиваем в async функцию
+            (async () => {
+                try {
+
+					// Даем камере 2 секунды на фокусировку
+await new Promise(resolve => setTimeout(resolve, 2000)); 
+
+// И только потом запускаем декодер
+stream = await codeReader.decodeFromVideoDevice(
+    undefined, 
+    video, 
+    (result, err) => { 
+	 if (result) {
+                                const text = result.getText();
+                                resultDiv.textContent = 'Код: ' + text;
+                                resultDiv.className = 'success';
+                                stopScanning(); 
+                            }
+                            if (err && err.name !== 'NotFoundException') {
+                                resultDiv.textContent = 'Ошибка: ' + err.message;
+                                resultDiv.className = 'error';
+                            }
+	}
+);
+                    resultDiv.textContent = 'Сканирую...';
+                    resultDiv.className = 'info';
+                } catch (e) {
+                    console.error(e);
+                    resultDiv.textContent = 'Ошибка камеры';
+                    resultDiv.className = 'error';
+                    resetButtons();
+                }
+            })();
+
+        } catch (e) {
+            console.error(e);
+            resultDiv.textContent = 'Ошибка: ' + e.message;
+            resultDiv.className = 'error';
+            resetButtons();
+        }
+    }
+
+    function stopScanning() {
+        if (codeReader) {
+            codeReader.reset();
+            codeReader = null;
+        }
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+        }
+        resetButtons();
+    }
+
+    function resetButtons() {
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+    }
+
+    startBtn.addEventListener('click', startScanning);
+    stopBtn.addEventListener('click', stopScanning);
+	// Внутри startScanning, после создания codeReader
+video.onloadedmetadata = function() {
+    console.log('Камера запущена, разрешение:', video.videoWidth, 'x', video.videoHeight);
+};
+</script>
+
+</body>
+</html>
