@@ -887,10 +887,12 @@ document.addEventListener('DOMContentLoaded', () => {
 <button class="settings-toggle" id="dropdownToggle" onclick="toggleDropdown(event);audio.src= 'click.mp3';audio.play()">&#x22EE;</button>
     
    <div class="dropdown-menu" id="dropdownMenu"  onclick="audio.src= 'click.mp3';audio.play()">
-<div class="menu-item" onclick="showAlert('Скоро появятся аккануты для использования PRO-версии. Позже нужно будет ввести код активации.')">
+<div class="menu-item" id="account-menu-item" style="display:block; cursor:pointer;">
     <span style="margin-right:8px;">👤</span>
-    Аккаунт
-    <span id="account-timer-display" style="margin-left:auto; font-size:12px; color:var(--gray-muted); font-family: monospace;"></span>
+    <span id="acc-name">Загрузка...</span>
+    <span class="hotkey" id="acc-timer" style="float:right; display:none;">--</span>
+    <br><br>
+    <button class="hotkey" style="border:none;border-radius:14px;" onclick="openModal('account')">Управление аккаунтом</button>
 </div>
     <div class="menu-item" onclick="exportReceipt()">
         <span style="margin-right:8px;">💾</span>
@@ -1213,7 +1215,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <div class="modal-backdrop" id="editProductsModal" onclick="audio.src= 'click.mp3';audio.play()"><div class="modal-window" style="width: 95%; height: 85%; max-height: 600px; display: flex; flex-direction: column;"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"><h2>Управление товарами</h2><button class="close-modal" onclick="closeAllModals()">&times;</button></div><input type="text" class="search-input" placeholder="Фильтр..." id="filterEditInput" style="margin-bottom: 10px;"><div style="flex-grow:1; overflow-y:auto; border:1px solid var(--border-light); border-radius:8px; padding:10px;"><table class="products-table" id="productsTable"><thead><tr style="background:#f1f5f9; text-align:left;"><th style="padding:8px;">Название</th><th style="padding:8px;">Артикул</th><th style="padding:8px;">Цена</th><th style="padding:8px;">Склад</th><th style="padding:8px;"></th></tr></thead><tbody id="editTbody"></tbody></table></div><div style="margin-top: 15px; text-align:right;" class="btn-group"><button class="btn btn-danger" onclick="deleteSelected()">Удалить выбранные</button></div></div></div>
 <div class="modal-backdrop" id="finishModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Завершить сессию?</h2><p>Все несохраненные изменения будут утеряны.</p><div style="margin: 15px 0;"><input type="checkbox" id="reportCheckbox"> <label for="reportCheckbox">Сохранить отчёт о чеке</label></div><div class="btn-group"><button class="btn btn-primary" onclick="confirmFinish(true)">Да, завершить</button><button class="btn btn-outline" onclick="closeAllModals()">Продолжить работу</button></div></div></div>
 <div class="modal-backdrop" id="statisticsModal"><div class="modal-window" style="max-width: 900px;"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Статистика действий</h2><p>Журнал операций за текущие сессии.</p><table class="stats-table"><thead><tr><th>Дата и время</th><th>Действие</th><th>Детали</th></tr></thead><tbody id="statsBody"></tbody></table></div></div>
-<div class="modal-backdrop" id="aboutModal" onclick="audio.src= 'click.mp3';audio.play()"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>О Продукторе</h2><p>Рабочая среда кассира версии <strong>26.9.30.0</strong>.</p><p>&copy; 2026 Морковчик. Все права защищены.</p><hr><p>Ответы на вопросы:<br><br>Если товары в списке не отображаются - попробуйте обновить страницу или введите артикул и очистите снова.<hr>Возникнут проблемы - пишите на почту - quantumacd25@gmail.com (также можно написать о поддержке проекта или найденных багах).<hr>Придётся ли платить? Нет, мы денег не берем. Программа не имеет доступ к банковским картам или средствам оплаты.<hr></p></div></div>
+<div class="modal-backdrop" id="aboutModal" onclick="audio.src= 'click.mp3';audio.play()"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>О Продукторе</h2><p>Рабочая среда кассира версии <strong>26.10.1.0</strong>.</p><p>&copy; 2026 Морковчик. Все права защищены.</p><hr><p>Ответы на вопросы:<br><br>Если товары в списке не отображаются - попробуйте обновить страницу или введите артикул и очистите снова.<hr>Возникнут проблемы - пишите на почту - quantumacd25@gmail.com (также можно написать о поддержке проекта или найденных багах).<hr>Придётся ли платить? Нет, мы денег не берем. Программа не имеет доступ к банковским картам или средствам оплаты.<hr></p></div></div>
 <div class="modal-backdrop" id="paymentModal"><div class="modal-window"><button class="close-modal" onclick="closeAllModals()">&times;</button><h2>Сумма к оплате</h2><div style="text-align: center; font-size: 32px; font-weight: bold; margin: 20px 0;" id="paymentAmount">0 ₽</div><div class="btn-group" style="justify-content: center;"><button class="btn btn-danger" style="flex:none; padding: 0 40px;" onclick="cancelPayment()">ОТМЕНА</button><button class="btn btn-primary" style="flex:none; padding: 0 40px;" onclick="exportReceipt();completeSale()">ОК</button></div><div style="margin-top: 20px; text-align: center;"><button class="btn btn-outline" style="padding: 0 30px;" onclick="clearCart()">ОЧИСТИТЬ ЧЕК</button></div></div></div>
 <!-- Модальное окно: Настройки (с табами) -->
 <div class="modal-backdrop" id="settingsModal" onclick="audio.src= 'click.mp3';audio.play()">
@@ -1339,7 +1341,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="settings-content" id="content-about">
             <h2 style="margin-top: 0;">О программе</h2>
             <p style="font-size: 14px; color: var(--text-dark); line-height: 1.6;">
-                Рабочая среда кассира «Продуктор» версии 26.9.30.0.<br><br>
+                Рабочая среда кассира «Продуктор» версии 26.10.1.0.<br><br>
                 • Данные организации (ИНН, ОГРН) применяются к чеку при экспорте.<br>
                 • Шрифт применяется ко всему интерфейсу после нажатия «Применить».<br>
                 • Для вступления изменений может потребоваться обновление страницы (F5).<br>
@@ -1403,7 +1405,7 @@ document.addEventListener('DOMContentLoaded', () => {
     z-index: 9999;
 ">FPS: --</div>
 <script>
-const VERSION = "26.9.30.0";
+const VERSION = "26.10.1.0";
 let productsDB = JSON.parse(localStorage.getItem('productor_products')) || [];
 let cart = JSON.parse(localStorage.getItem('productor_cart')) || [];
 let sessionReportHistory = JSON.parse(localStorage.getItem('productor_reports')) || [];
@@ -2035,7 +2037,8 @@ function bindHotkeys(){
         if(e.ctrlKey && !e.altKey){
             e.preventDefault();
             switch(e.key.toLowerCase()){
-                case 'q': finishSession(); break;         
+                case 'q': finishSession(); break;    
+                case 'o': openScanner();				
             }
         }
     });
@@ -3120,8 +3123,8 @@ const hintsData = [
     },
 	{
         title: "Что нового?",
-        text: "В версии 26.9.30.0 появилось сканирование QR-кода! Правда пока плохо работает.",
-        iconUrl: "./logo.png"
+        text: "В версии 26.10.1.0 появилась система аккаунтов! Введите код и пользуйтесь с удовольствием! (Каждый код имеет своё время, получить бесплатный пробный можно в нашем канале!",
+        iconUrl: "./pro.png"
     }
 ];
 
@@ -3556,7 +3559,7 @@ function tryScan() {
 			audio.src = 'Beep2.mp3';
 			audio.play();
         } else {
-            showAlert(`Артикул ${codeText} не найден`, 'warning');
+            showAlert(`${codeText} не найден`, 'warning');
         }
         
         stopScanner(); // Останавливаем
@@ -3580,26 +3583,337 @@ document.addEventListener('keydown', (e) => {
         stopScanner();
     }
 });
+// ==========================================
+// === СИСТЕМА АКТИВАЦИИ (FULL VERSION) ===
+// ==========================================
 
+// --- 1. БАЗА ДАННЫХ КОДОВ (SKU) ---
+// Ключ: Код, Значение: Количество дней
+// --- БАЗА ДАННЫХ НОВЫХ КЛЮЧЕЙ ---
+const LICENSE_DB = {
+    // PROD-QXXXXX-XXX (5 цифр + 3 буквы A-G)
+    // Срок действия в днях:
+    "PROD-Q09017-ABA": 10,
+    "PROD-Q18341-CFB": 15,
+    "PROD-Q25140-DEF": 11,
+    "PROD-Q28595-EDD": 13,
+    "PROD-Q32815-GCE": 2,
+    "PROD-Q33416-ACE": 4,
+    "PROD-Q40970-CAD": 12,
+    "PROD-Q46220-FCA": 5,
+    "PROD-Q54231-FCE": 8,
+    "PROD-Q62436-DFD": 9,
+    "PROD-Q63577-CFE": 2,
+    "PROD-Q87276-ABE": 14,
+    "PROD-Q89155-DDA": 6,
+    "PROD-Q91209-CFA": 7,
+    "PROD-Q95779-DBA": 3,
+};
+
+// --- 2. ФУНКЦИЯ ПРОВЕРКИ ЛИЦЕНЗИИ (нужна для шапки) ---
+function checkLicenseStatus() {
+    const saved = localStorage.getItem('tvr_license');
+    if (!saved) return false;
+    try {
+        const data = JSON.parse(saved);
+        const now = Date.now();
+        const expiresAt = new Date(data.activatedAt).getTime() + (data.days * 24 * 60 * 60 * 1000);
+        return now < expiresAt;
+    } catch(e) {
+        return false;
+    }
+}
+
+// --- 3. ФУНКЦИЯ ОБНОВЛЕНИЯ ИНТЕРФЕЙСА (шапка) ---
+function updateAccountUI() {
+    const nameSpan = document.getElementById('acc-name');
+    const timerSpan = document.getElementById('acc-timer');
+    const menuItem = document.getElementById('account-menu-item');
+
+    if (!nameSpan || !menuItem) return;
+
+    const isActive = checkLicenseStatus();
+    const savedOrg = localStorage.getItem('productor_org_settings');
+    let displayName = "Пользователь";
+
+    if (savedOrg) {
+        try { 
+            const org = JSON.parse(savedOrg); 
+            if (org.name) displayName = org.name; 
+        } catch(e) {}
+    }
+
+    if (isActive) {
+        nameSpan.textContent = displayName;
+        timerSpan.style.display = "inline";
+        
+        const data = JSON.parse(localStorage.getItem('tvr_license'));
+        const now = Date.now();
+        const expiresAt = new Date(data.activatedAt).getTime() + (data.days * 24 * 60 * 60 * 1000);
+        const diff = expiresAt - now;
+        
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        
+        timerSpan.textContent = `${days}дн. ${hours}ч.`;
+        menuItem.style.color = "";
+    } else {
+        nameSpan.textContent = "АКТИВИРОВАТЬ PRO";
+        timerSpan.style.display = "none";
+        menuItem.style.color = "#ff6b6b";
+    }
+}
+
+// --- 4. ФУНКЦИЯ АКТИВАЦИИ (Ядро системы) ---
+function activateLicenseBySKU(sku, name) {
+    const days = LICENSE_DB[sku.toUpperCase()];
+
+    if (!days) {
+        showAlert("❌ Неверный код SKU.", "error");
+        return false;
+    }
+
+    // Сохраняем имя
+    let orgSettings = JSON.parse(localStorage.getItem('productor_org_settings') || '{}');
+    orgSettings.name = name;
+    localStorage.setItem('productor_org_settings', JSON.stringify(orgSettings));
+
+    // Сохраняем лицензию
+    localStorage.setItem('tvr_license', JSON.stringify({
+        sku: sku.toUpperCase(),
+        activatedAt: new Date().toISOString(),
+        days: days 
+    }));
+
+    updateAccountUI();
+    updateSessionHeader();
+    return true;
+}
+
+// --- 5. НАСТРОЙКА КНОПОК (ОБА ВАРИАНТА) ---
+function setupAccountListeners() {
+    // Кнопка в обычной модалке настроек
+    const accBtn = document.getElementById('acc-activate-btn');
+    if (accBtn) {
+        accBtn.onclick = function() {
+            const name = document.getElementById('acc-name-input').value.trim();
+            const sku = document.getElementById('acc-sku-input').value.trim();
+            if (name === "" || sku === "") {
+                showAlert("Заполните имя и SKU.", "warning");
+                return;
+            }
+            if (activateLicenseBySKU(sku, name)) {
+                closeAllModals();
+            }
+        };
+    }
+
+    // Кнопка "Сбросить" в модалке
+    const resetBtn = document.getElementById('acc-reset-btn');
+    if (resetBtn) {
+        resetBtn.onclick = function() {
+            if (confirm("Деактивировать лицензию?")) {
+                localStorage.removeItem('tvr_license');
+                updateAccountUI();
+                showAlert("Лицензия сброшена.");
+				closeAllModals();
+            }
+        };
+    }
+}
+
+// --- 6. МОДАЛКА ПРИ ПЕРВОМ ВХОДЕ ---
+function checkAndShowWelcome() {
+    const hasLicense = localStorage.getItem('tvr_license');
+    
+    if (!hasLicense) {
+        const modal = document.getElementById('welcomeModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            // Фокус на поле ввода
+            setTimeout(() => document.getElementById('welcome-name-input').focus(), 300);
+        }
+    } else {
+        updateAccountUI();
+    }
+	// --- ФУНКЦИЯ: Проверка истечения срока (Вызывать при старте) ---
+
+}
+function checkLicenseExpiry() {
+    const saved = localStorage.getItem('tvr_license');
+    
+    if (!saved) {
+        // Лицензии нет вообще — показываем приветствие
+        const modal = document.getElementById('welcomeModal');
+        if (modal) modal.style.display = 'flex';
+        return;
+    }
+
+    try {
+        const data = JSON.parse(saved);
+        const now = Date.now();
+        const expiresAt = new Date(data.activatedAt).getTime() + (data.days * 24 * 60 * 60 * 1000);
+
+        if (now > expiresAt) {
+            // СРОК ИСТЕК - показываем принудительное окно
+            const expiredModal = document.getElementById('license-expired-modal');
+            if (expiredModal) {
+                expiredModal.style.display = 'flex';
+                
+                // Очищаем поле ввода нового кода
+                const input = document.getElementById('renew-sku-input');
+                if (input) input.value = "";
+                
+                // Навешиваем обработчик на кнопку "Заменить код" внутри этого окна
+                const renewBtn = document.getElementById('renew-activate-btn');
+                if (renewBtn) {
+                    renewBtn.onclick = function() {
+                        const newSku = document.getElementById('renew-sku-input').value.trim();
+                        if (newSku === "") {
+                            showAlert("Введите новый код.", "warning");
+                            return;
+                        }
+                        
+                        // Пытаемся активировать новый код
+                        if (activateLicenseBySKU(newSku, "Пользователь")) { 
+                            closeAllModals(); // Закроет expiredModal
+                        }
+                    };
+                }
+            }
+        } else {
+            // Лицензия в порядке, обновляем шапку
+            updateAccountUI();
+        }
+
+    } catch(e) {
+        // Если данные в localStorage битые
+        const expiredModal = document.getElementById('license-expired-modal');
+        if (expiredModal) expiredModal.style.display = 'flex';
+    }
+}
+
+function setupWelcomeListeners() {
+    const btn = document.getElementById('welcome-activate-btn');
+    if (!btn) return;
+
+    btn.onclick = function() {
+        const name = document.getElementById('welcome-name-input').value.trim();
+        const sku = document.getElementById('welcome-sku-input').value.trim();
+
+        if (name === "" || sku === "") {
+            showAlert("Введите имя и код.", "warning");
+            return;
+        }
+
+        if (activateLicenseBySKU(sku, name)) {
+            closeAllModals(); // Закроет welcomeModal
+        }
+    };
+}
+
+// --- 7. ЗАПУСК ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ---
+
+document.addEventListener('DOMContentLoaded', function() {
+    setupAccountListeners();
+    setupWelcomeListeners();
+    
+    // Сначала проверяем, не истек ли срок. 
+    // Если истек - она сама покажет окно и ОСТАНОВИТ выполнение.
+    checkLicenseExpiry(); 
+    
+    // Если НЕ истек, то просто обновляем UI
+    updateAccountUI(); 
+});
 </script>
-<!-- МОДАЛКА АККАУНТА -->
 <div class="modal-backdrop" id="accountModal" style="display: none;">
     <div class="modal-window" style="width: 90%; max-width: 400px;">
         <button class="close-modal" onclick="closeAllModals()">&times;</button>
-        <h2 id="account-modal-title">Активация аккаунта</h2>
+        <h2 id="account-modal-title">Управление аккаунтом</h2>
         
         <div class="form-group">
-            <label class="form-label">Имя пользователя</label>
-            <input type="text" class="form-input" id="acc-name-input" placeholder="Иван Иванов">
+            <label class="form-label">Ваше имя (для шапки)</label>
+            <input type="text" class="form-input" id="acc-name-input" placeholder="Иванов Иван">
         </div>
+        
         <div class="form-group">
             <label class="form-label">Код доступа (SKU)</label>
-            <input type="text" class="form-input" id="acc-sku-input" placeholder="Введите код лицензии">
+            <input type="text" class="form-input" id="acc-sku-input" placeholder="Введите код из письма">
         </div>
         
-        <div class="btn-group" style="margin-top: 15px;">
-            <button class="btn btn-primary" id="acc-activate-btn">Активировать</button>
-            <button class="btn btn-outline" onclick="closeAllModals()">Отмена</button>
+        <div class="btn-group" style="margin-top: 15px; gap: 10px;">
+            <button class="btn btn-primary" id="acc-activate-btn" style="flex: 1;">Активировать</button>
+            <button class="btn btn-outline" id="acc-reset-btn" style="flex: 1;">Сбросить</button>
+        </div>
+        
+        <div style="margin-top: 20px; font-size: 12px; color: var(--gray-muted); text-align: center;">
+            <p>Лицензия привязана к этому устройству.</p>
+            <p><a href="mailto:q-acd@mail.ru" style="color: var(--primary-accent)">Получить код</a></p>
+        </div>
+    </div>
+</div>
+<!-- МОДАЛКА ПРИ ПЕРВОМ ВХОДЕ (ПРИВЕТСТВИЕ) -->
+<div class="modal-backdrop" id="welcomeModal" style="display: none;">
+    <div class="modal-window" style="width: 90%; max-width: 420px; text-align: center;">
+        
+        
+        <h2>Добро пожаловать в PRO! 🎉</h2>
+        <p style="font-size: 14px; color: var(--gray-muted); margin-bottom: 20px;">
+            Спасибо за покупку. Для начала работы активируйте вашу лицензию.
+        </p>
+
+        <div class="form-group">
+            <label class="form-label">Ваше имя (будет в шапке)</label>
+            <input type="text" class="form-input" id="welcome-name-input" placeholder="Например: Трофим">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Код доступа (SKU)</label>
+            <input type="text" class="form-input" id="welcome-sku-input" placeholder="PROD-QXXXXX-XXX">
+        </div>
+
+        <div class="btn-group" style="margin-top: 20px;">
+            <button class="btn btn-primary" id="welcome-activate-btn" style="flex: 1;">Активировать и начать</button>
+        </div>
+
+        <div style="margin-top: 20px; font-size: 12px; color: var(--gray-muted);">
+            <p>Лицензия привязывается к этому устройству.</p>
+			<p><a href="mailto:q-acd@mail.ru" style="color: var(--primary-accent)">Получить код</a></p>
+        </div>
+    </div>
+</div>
+<!-- МОДАЛКА: СРОК ЛИЦЕНЗИИ ИСТЕК -->
+<div class="modal-backdrop" id="license-expired-modal" style="display: none; z-index: 99999;">
+    <div class="modal-window" style="width: 90%; max-width: 500px; text-align: center;">
+        
+        <div style="background: var(--primary-accent); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
+            <h2 style="margin: 0;">⚠️ Лицензия истекла</h2>
+        </div>
+
+        <div style="padding: 30px 20px;">
+            <h3 style="margin-top: 0;">Действие лицензии завершено</h3>
+            <p style="color: var(--gray-muted); font-size: 15px;">
+                Срок использования вашей PRO-версии подошел к концу. 
+                Пожалуйста, введите новый код активации, чтобы продолжить работу.
+            </p>
+            
+            <!-- Форма ввода нового кода прямо в этом окне -->
+            <div class="form-group" style="margin-top: 20px;">
+                <label class="form-label">Новый код доступа (SKU)</label>
+                <input type="text" class="form-input" id="renew-sku-input" placeholder="Введите новый PROD-QXXXXX-XXX">
+            </div>
+        </div>
+
+        <div style="padding: 20px; border-top: 1px solid var(--border-light); display: flex; gap: 10px;">
+            <!-- Кнопка замены кода -->
+            <button class="btn btn-primary" id="renew-activate-btn" style="flex: 1;">
+                Заменить код
+            </button>
+            
+            <!-- Кнопка сохранения данных (второстепенная) -->
+            <button class="btn btn-outline" onclick="closeAllModals(); showAlert('Сначала активируйте код.', 'warning');" style="flex: 1;">
+                Сохранить товары
+            </button>
         </div>
     </div>
 </div>
