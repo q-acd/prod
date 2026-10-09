@@ -1,600 +1,1487 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Галерея</title>
-	<link rel="icon" href="logo.ico" type="image/x-icon">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Подключаем Font Awesome для иконок -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <style>
-        :root {
-            --bg-light: #ffffff;
-            --text-dark: #1e293b;
-            --primary-blue: #2563eb;
-			--primary-accent: #a4a4a4;
-            --gray-muted: #64748b;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Галерея</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root {
+    --bg-body: #f3f4f6;
+    --bg-card: #ffffff;
+    --bg-elevated: #ffffff;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --primary-blue: #2563eb;
+    --primary-accent: #a4a4a4;
+    --tag-bg: #e5edff;
+    --shadow-sm: 0 0 4px rgba(0,0,0,.15);
+    --shadow-md: 0 8px 20px rgba(0,0,0,.08);
+    --shadow-lg: 0 20px 60px rgba(0,0,0,.4);
+    --anim-duration: .35s;
+    --anim-easing: cubic-bezier(.16, 1, .3, 1);
+}
 
-        [data-theme="dark"] {
-            --bg-light: #0f172a;
-            --text-dark: #f1f5f9;
-            --primary-blue: #3b82f6;
-            --gray-muted: #94a3b8;
-        }
+[data-theme="dark"] {
+    --bg-body: #0f172a;
+    --bg-card: #1e293b;
+    --bg-elevated: #1e293b;
+    --text-dark: #f1f5f9;
+    --text-muted: #94a3b8;
+    --border: #334155;
+    --primary-blue: #3b82f6;
+    --primary-accent: #475569;
+    --tag-bg: #1e3a8a;
+    --shadow-sm: 0 0 4px rgba(0,0,0,.5);
+    --shadow-md: 0 8px 20px rgba(0,0,0,.3);
+}
 
-        body {
-            margin: 0; 
-            padding: 20px; 
-            font-family: 'Inter', sans-serif; 
-            background: #f3f3f3;
-            color: var(--text-dark);
-        }
-        
-        #search {
-            padding: 12px; 
-            width: calc(100% - 24px); 
-            max-width: 600px;
-            border: 1px solid #ccc; 
-            border-radius: 24px; 
-            
-            box-shadow: 0px 0px 4px gray;
-        }
+/* ---------- ОТКЛЮЧЕНИЕ АНИМАЦИЙ ---------- */
+html.no-anim *,
+html.no-anim *::before,
+html.no-anim *::after {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+}
 
-		@media (max-width: 767px) { #search { width: calc(100% - 150px); } }
+/* Автоуважение системной настройки */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .001s !important;
+        transition-duration: .001s !important;
+    }
+}
 
-        /* ИЗМЕНЕНО: minmax(300px) дает примерно 4 колонки на FullHD */
-        .grid {
-            display: grid; 
-            gap: 15px; 
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        }
-        
-        .card {
-            border: 1px solid #e2e8f0; 
-            border-radius: 12px; 
-            overflow: hidden; 
-            cursor: pointer; 
-            transition: all .2s; 
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-        
-        .card:hover {
-            transform: translateY(-4px); 
-            box-shadow: 0 8px 20px rgba(0,0,0,.08); 
-            border-color: var(--primary-blue);
-        }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
 
-        .thumb-wrapper {
-            padding: 10px;
-            
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .thumb {
-            width: 100%;
-            aspect-ratio: 4/3;
-            object-fit: cover; 
-            border-radius: 8px;
-            display: block;
-        }
-        
-        .info {
-            padding: 14px;
-            text-align: left; 
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .info div:nth-child(1) {
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 6px;
-        }
-        
-        .meta {
-            font-size: 11px;
-            color: var(--gray-muted);
-            margin-bottom: 8px;
-        }
-        
-        .tags { 
-            display:flex; 
-            flex-wrap: wrap;
-            gap: 4px;
-            margin-top: auto;
-         }
-         
-        .tag {
-            font-size: 10px; 
-            padding: 3px 8px; 
-            border-radius: 99px; 
-            background:#e5edff; 
-            color:var(--primary-blue);
-            white-space: nowrap;
-        }
+body {
+    padding: 16px;
+    padding-bottom: 60px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-body);
+    color: var(--text-dark);
+    transition: background .3s, color .3s;
+}
 
-        /* СТИЛИ МОДАЛЬНОГО ОКНА */
-        .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 1000; 
-            left: 0; top: 0;
-            width: 100%; height: 100%; 
-            overflow: auto; 
-            background-color: rgb(0,0,0); 
-            background-color: rgba(0,0,0,0.9); 
-            align-items: center;
-            justify-content: center;
-        }
-       
-        .modal-content {
-            background-color: #fff;
-            margin: auto;
-            padding: 0;
-            border: 1px solid #888;
-            max-width: 98%;
-            
-            border-radius: 16px;
-            display: flex;
-            height: 99vh;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-        }
-        
-        .close {
-            color: white;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            position: absolute;
-            right: 20px;
-            top: 15px;
-            z-index: 10;
-            background: rgba(0,0,0,0.3);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-        .close:hover { color: red; }
-        
-        .modal-body {
+/* ---------- ТОП-ПАНЕЛЬ ---------- */
+.topbar {
+    position: sticky;
+    top: 12px;
+    z-index: 999;
+    background: var(--bg-elevated);
+    padding: 8px;
+    border-radius: 24px;
+    box-shadow: var(--shadow-sm);
     display: flex;
-    gap: 20px;
-     /* Ограничиваем тело модалки видимой областью */
-    padding: 20px;
-	
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    transition: background .3s, box-shadow .3s;
+    animation: slideDown .5s var(--anim-easing) both;
 }
-        
-        .modal-image-wrapper {
-            flex: 1;
-            min-width: 300px;
-            position: relative;
-            
-            border-radius: 12px;
-            overflow: hidden;
-			width:50%;
-        }
-        
-        .modal-image {
-    width: 100%;
-    height: 100%;
-	
-    object-fit: cover; /* Меняем здесь */
-    transition: filter 0.3s;
-	
-}
-        
-        .modal-details {
-            
-            
-            flex-direction: column;
-            min-width:20%;
-            overflow-y: auto;
-        }
-        
-        .modal-details h2 {
-            margin-top: 0;
-            font-size: 1.8rem;
-            color: var(--text-dark);
-        }
-        
-        .modal-details p {
-            color: #64748b;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            white-space: pre-line;
-        }
-        
-        .modal-meta {
-            font-size: 0.9rem;
-            color: #94a3b8;
-            margin-bottom: 20px;
-        }
-        
-        .btn-download {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: var(--primary-blue);
-            color: white;
-            text-decoration: none;
-            border-radius: 24px;
-            text-align: center;
-            font-weight: 600;
-            transition: background 0.2s;
-            border: none;
-            cursor: pointer;
-            align-self: flex-start;
-			box-shadow: 0px 0px 4px gray;
-			width: calc(100% - 50px);
-        }
-        .btn-download:hover {
-            background-color: white;
-			color: var(--primary-blue);
-        }
 
-        /* БЛОК ПОХОЖИХ ФОТО */
-        .similar-section {
-            margin-top: 30px;
-            padding-top: 20px;
-            
-        }
-        .similar-section h3 {
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-            color: var(--text-dark);
-        }
-        .similar-grid {
-            display: grid;
-            gap: 10px;
-            
-        }
-        .similar-item {
-            cursor: pointer;
-            border-radius: 8px;
-            overflow: hidden;
-            background: #f8fafc;
-            transition: transform .2s;
-            position: relative;
-        }
-        .similar-item:hover {
-            transform: scale(0.95);
-        }
-        .similar-thumb {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-            display: block;
-        }
-        .similar-name {
-            font-size: 14px;
-            padding: 6px 8px;
-            color: #333;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-		.logo-text {
-    font-size: 24px;
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.topbar .logo-text { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+.topbar .btn-nav,
+.topbar .btn-primary,
+.topbar .btn-icon {
+    padding: 10px 14px;
+    background: dodgerblue;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: transform .15s, filter .15s, box-shadow .15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 40px;
+    font-family: inherit;
+    flex-shrink: 0;
+}
+.topbar .btn-icon { padding: 10px 12px; }
+.topbar .btn-nav:hover,
+.topbar .btn-primary:hover,
+.topbar .btn-icon:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+    box-shadow: 0 6px 14px rgba(37,99,235,.35);
+}
+.topbar .btn-nav:active,
+.topbar .btn-primary:active,
+.topbar .btn-icon:active { transform: translateY(0) scale(.97); }
+
+.topbar .search-group {
+    flex: 1 1 280px;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.search-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.search-wrap i.fa-magnifying-glass {
+    position: absolute;
+    left: 14px;
+    color: var(--text-muted);
+    pointer-events: none;
+    font-size: 14px;
+    z-index: 2;
+}
+#search {
+    width: 100%;
+    padding: 11px 16px 11px 38px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--bg-body);
+    color: var(--text-dark);
+    font-size: 14px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s, background .3s;
+    font-family: inherit;
+}
+#search:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+}
+
+/* ---------- ПОДСКАЗКИ ТЕГОВ ---------- */
+.search-suggestions {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow-lg);
+    padding: 8px;
+    max-height: 260px;
+    overflow-y: auto;
+    z-index: 1001;
+    display: none;
+}
+.search-suggestions.show {
+    display: block;
+    animation: dropIn .2s var(--anim-easing) both;
+}
+@keyframes dropIn {
+    from { opacity: 0; transform: translateY(-8px) scale(.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.suggestions-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--text-muted);
+    padding: 6px 10px 4px;
+    font-weight: 600;
+}
+.suggestion-item {
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background .12s, color .12s, transform .12s;
+    color: var(--text-dark);
+}
+.suggestion-item:hover,
+.suggestion-item.active {
+    background: var(--tag-bg);
+    color: var(--primary-blue);
+    transform: translateX(3px);
+}
+.suggestion-item i {
+    color: var(--primary-blue);
+    font-size: 12px;
+    width: 14px;
+    text-align: center;
+}
+.suggestion-item .count {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--bg-body);
+    padding: 2px 8px;
+    border-radius: 99px;
+}
+.suggestion-empty {
+    padding: 14px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+/* ---------- ЛОГОТИП ---------- */
+.logo-text {
+    font-size: 20px;
     font-weight: 700;
     letter-spacing: -0.5px;
-    
-    /* --- АНИМАЦИЯ ПЕРЕЛИВАНИЯ --- */
-    
-    /* Создаем фоновый градиент */
-    background-image: linear-gradient(40deg, violet, dodgerblue);
-    
-    /* Применяем градиент только к буквам */
+    background-image: linear-gradient(40deg, violet, dodgerblue, violet);
+    background-size: 200% 200%;
     -webkit-background-clip: text;
     background-clip: text;
-    
-    /* Делаем сами буквы прозрачными */
     -webkit-text-fill-color: transparent;
     color: transparent;
-    
-    /* Инициализируем анимацию */
-    animation: logo-pulse 4s ease-in-out infinite alternate;
-    
-    /* Тень для объема (чтобы текст не терялся на фоне) */
-    text-shadow: 
-        0 1px 2px rgba(0,0,0,0.2),
-        0 2px 8px rgba(37, 99, 235, 0.2);
+    animation: logo-flow 6s ease-in-out infinite;
+    padding: 0 8px;
+    white-space: nowrap;
 }
-
-/* Правило для темной темы (цвета меняются, чтобы светиться на черном) */
 [data-theme="dark"] .logo-text {
-    background-image: linear-gradient(90deg, cyan, blue);
-    text-shadow: 
-        0 1px 2px rgba(255,255,255,0.1),
-        0 2px 8px rgba(37, 99, 235, 0.4);
+    background-image: linear-gradient(90deg, cyan, #3b82f6, cyan);
+    background-size: 200% 200%;
+}
+@keyframes logo-flow {
+    0%   { background-position:   0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position:   0% 50%; }
 }
 
-/* Ключевые кадры анимации */
-@keyframes logo-pulse {
-    0% {
-        /* Смещение оттенка в более светлую сторону (влево по градиенту) */
-        filter: hue-rotate(0deg) saturate(1);
+/* ---------- СЕТКА ---------- */
+.grid {
+    display: grid;
+    gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+}
+
+.card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .25s var(--anim-easing),
+                box-shadow .25s var(--anim-easing),
+                border-color .2s;
+    background: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    animation: cardIn .45s var(--anim-easing) both;
+}
+
+@keyframes cardIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(.96);
     }
-    50% {
-        /* Смещение в более насыщенную синюю сторону */
-        filter: hue-rotate(15deg) saturate(1.2);
-    }
-    100% {
-        /* Возврат назад */
-        filter: hue-rotate(-10deg) saturate(1.1);
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 }
 
-/* Для совместимости со старыми браузерами Safari */
-@-webkit-keyframes logo-pulse {
-    0% { filter: hue-rotate(0deg); }
-    50% { filter: hue-rotate(150deg); }
-    100% { filter: hue-rotate(-100deg); }
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-blue);
 }
-/* Применяем ко всем скроллбарам страницы */
-*::-webkit-scrollbar {
-    width: 10px; /* Ширина вертикального скролла */
-    height: 10px; /* Высота горизонтального скролла */
+.card:focus-visible { outline: 3px solid var(--primary-blue); outline-offset: 2px; }
+
+.thumb-wrapper { padding: 10px; border-bottom: 1px solid var(--border); overflow: hidden; }
+.thumb {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+    background: var(--bg-body);
+    transition: transform .5s var(--anim-easing);
+}
+.card:hover .thumb { transform: scale(1.05); }
+
+.info {
+    padding: 14px;
+    text-align: left;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+.info .title {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.meta { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+.tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: auto; }
+.tag {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 99px;
+    background: var(--tag-bg);
+    color: var(--primary-blue);
+    white-space: nowrap;
+    transition: transform .15s;
+}
+.card:hover .tag { transform: translateY(-1px); }
+
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+    font-size: 15px;
+    animation: fadeIn .4s var(--anim-easing) both;
+}
+.empty-state i { font-size: 42px; margin-bottom: 12px; opacity: .4; display: block; }
+
+/* ---------- МОДАЛКА ---------- */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background-color: rgba(0,0,0,.85);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    overflow: auto;
+}
+.modal.open { display: flex; animation: fadeIn .25s ease both; }
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
-/* Трек (фон под полосой) — полностью прозрачный */
-*::-webkit-scrollbar-track {
+.modal-content {
+    background: var(--bg-elevated);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 1200px;
+    height: min(92vh, 860px);
+    display: flex;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    color: var(--text-dark);
+    animation: popIn .35s var(--anim-easing) both;
+}
+@keyframes popIn {
+    from { opacity: 0; transform: scale(.92) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    background: rgba(0,0,0,.5);
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+    transition: background .2s, transform .3s var(--anim-easing);
+}
+.close:hover { background: #ef4444; transform: rotate(90deg) scale(1.1); }
+
+.modal-body { display: flex; width: 100%; height: 100%; gap: 0; }
+
+.modal-image-wrapper {
+    flex: 1 1 60%;
+    min-width: 0;
+    background: #0b1220;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+.modal-image {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    animation: imgIn .5s var(--anim-easing) both;
+}
+@keyframes imgIn {
+    from { opacity: 0; transform: scale(.96); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.modal-details {
+    flex: 1 1 40%;
+    min-width: 0;
+    padding: 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+.modal-details h2 {
+    margin: 0 0 8px;
+    font-size: clamp(1.2rem, 2.5vw, 1.7rem);
+    line-height: 1.25;
+    color: var(--text-dark);
+}
+.modal-details p {
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0 0 16px;
+    white-space: pre-line;
+    font-size: 14px;
+}
+.modal-meta {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.8;
+}
+.modal-meta strong { color: var(--text-dark); }
+
+.modal-actions { margin-bottom: 20px; }
+
+.btn-download {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 20px;
+    background: var(--primary-blue);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 24px;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: background .2s, transform .15s, box-shadow .15s;
+}
+.btn-download:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37,99,235,.35);
+}
+.btn-download:active { transform: translateY(0) scale(.98); }
+
+.similar-section { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); }
+.similar-section h3 {
+    margin: 0 0 14px;
+    font-size: 15px;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.similar-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.similar-item {
+    cursor: pointer;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg-body);
+    transition: transform .25s var(--anim-easing), border-color .2s;
+    border: 1px solid var(--border);
+    animation: cardIn .4s var(--anim-easing) both;
+}
+.similar-item:nth-child(1) { animation-delay: .05s; }
+.similar-item:nth-child(2) { animation-delay: .10s; }
+.similar-item:nth-child(3) { animation-delay: .15s; }
+.similar-item:nth-child(4) { animation-delay: .20s; }
+.similar-item:nth-child(5) { animation-delay: .25s; }
+.similar-item:nth-child(6) { animation-delay: .30s; }
+.similar-item:hover { transform: scale(.96); border-color: var(--primary-blue); }
+.similar-thumb { width: 100%; height: 90px; object-fit: cover; display: block; transition: transform .4s var(--anim-easing); }
+.similar-item:hover .similar-thumb { transform: scale(1.06); }
+.similar-name {
+    font-size: 12px;
+    padding: 6px 8px;
+    color: var(--text-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.similar-name .tag { font-size: 9px; padding: 2px 6px; flex-shrink: 0; }
+
+/* ---------- НАСТРОЙКИ ---------- */
+.settings-content {
+    max-width: 480px !important;
+    height: auto !important;
+    max-height: 90vh;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+.settings-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.settings-header h2 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.settings-body { padding: 20px 24px; overflow-y: auto; }
+.settings-group { margin-bottom: 22px; }
+.settings-group:last-child { margin-bottom: 0; }
+.settings-group > label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+.theme-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.theme-option {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 8px;
+    cursor: pointer;
+    background: var(--bg-body);
+    color: var(--text-dark);
+    font-family: inherit;
+    font-size: 13px;
+    text-align: center;
+    transition: all .2s var(--anim-easing);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+.theme-option i { font-size: 18px; transition: transform .2s; }
+.theme-option:hover {
+    border-color: var(--primary-blue);
+    transform: translateY(-2px);
+}
+.theme-option:hover i { transform: scale(1.15); }
+.theme-option.active {
+    border-color: var(--primary-blue);
+    background: var(--tag-bg);
+    color: var(--primary-blue);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(37,99,235,.2);
+}
+
+/* ---------- ПЕРЕКЛЮЧАТЕЛЬ АНИМАЦИЙ ---------- */
+.toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: var(--bg-body);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+.toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-dark);
+}
+.toggle-label i { color: var(--primary-blue); font-size: 16px; }
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 26px;
+    flex-shrink: 0;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: #cbd5e1;
+    border-radius: 99px;
+    transition: background .25s var(--anim-easing);
+}
+.slider::before {
+    content: "";
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform .25s var(--anim-easing);
+    box-shadow: 0 2px 6px rgba(0,0,0,.2);
+}
+.switch input:checked + .slider {
+    background: var(--primary-blue);
+}
+.switch input:checked + .slider::before {
+    transform: translateX(20px);
+}
+.switch input:focus-visible + .slider {
+    box-shadow: 0 0 0 3px rgba(37,99,235,.3);
+}
+
+.contact-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    background: var(--bg-body);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+.contact-row i.fa-envelope { color: var(--primary-blue); font-size: 16px; }
+.contact-row a {
+    color: var(--text-dark);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color .15s;
+}
+.contact-row a:hover { color: var(--primary-blue); text-decoration: underline; }
+.copy-btn {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--text-dark);
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: inherit;
+    transition: all .2s var(--anim-easing);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.copy-btn:hover {
+    background: var(--primary-blue);
+    color: #fff;
+    border-color: var(--primary-blue);
+    transform: translateY(-1px);
+}
+.copy-btn.copied { background: #10b981; color: #fff; border-color: #10b981; }
+
+.reset-btn {
+    width: 100%;
+    padding: 12px;
     background: transparent;
+    border: 1px solid #ef4444;
+    color: #ef4444;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    transition: all .2s var(--anim-easing);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.reset-btn:hover {
+    background: #ef4444;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(239,68,68,.35);
 }
 
-/* Сам ползунок */
+.settings-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.6;
+}
+
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    background: #10b981;
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    opacity: 0;
+    transition: all .4s var(--anim-easing);
+    z-index: 2000;
+    pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ---------- АДАПТИВ ---------- */
+@media (max-width: 900px) {
+    .topbar { flex-wrap: wrap; }
+    .topbar .search-group { flex: 1 1 100%; order: 5; margin-top: 4px; }
+}
+
+@media (max-width: 768px) {
+    body { padding: 10px; padding-bottom: 40px; }
+
+    .topbar { top: 6px; padding: 6px; border-radius: 20px; gap: 6px; }
+    .topbar .logo-text { font-size: 16px; padding: 0 4px; }
+    .topbar .btn-nav, .topbar .btn-primary, .topbar .btn-icon {
+        padding: 8px 10px;
+        font-size: 13px;
+        min-height: 36px;
+        border-radius: 16px;
+    }
+    .topbar .btn-primary span { display: none; }
+
+    .grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr)); gap: 10px; }
+    .info { padding: 10px; }
+    .info .title { font-size: 13px; }
+    .tag { font-size: 9px; padding: 2px 6px; }
+
+    .modal { padding: 0; align-items: stretch; }
+    .modal-content {
+        border-radius: 0;
+        height: 100vh;
+        height: 100dvh;
+        max-width: 100%;
+        flex-direction: column;
+    }
+    .modal-body { flex-direction: column; }
+
+    .modal-image-wrapper {
+        flex: 0 0 auto;
+        height: 45vh;
+        min-height: 220px;
+        max-height: 55vh;
+    }
+    .modal-details { flex: 1 1 auto; padding: 16px 16px 24px; overflow-y: auto; }
+    .modal-details h2 { font-size: 1.15rem; }
+    .similar-grid { grid-template-columns: repeat(3, 1fr); }
+    .similar-thumb { height: 70px; }
+    .similar-name { font-size: 11px; padding: 4px 6px; }
+    .close { top: 10px; right: 10px; width: 34px; height: 34px; font-size: 18px; }
+
+    .settings-content { max-width: 100% !important; height: 100vh !important; height: 100dvh !important; border-radius: 0 !important; }
+}
+
+@media (max-width: 420px) {
+    .similar-grid { grid-template-columns: repeat(2, 1fr); }
+    .topbar .logo-text { display: none; }
+}
+
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
 *::-webkit-scrollbar-thumb {
     background-color: var(--primary-accent);
-    border-radius: 5px; /* Скругление углов */
-    border: 2px solid transparent; /* Чтобы сохранить размер 10px при рендеринге */
-    background-clip: content-box; /* Цвет применяется только к контенту, бордер остается прозрачным */
-	transition:0.3s;
+    border-radius: 5px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+    transition: background .2s;
 }
-
-/* Состояние при наведении (опционально, можно сделать полосу чуть ярче или шире) */
-*::-webkit-scrollbar-thumb:hover {
-    background-color: var(--primary-accent); /* Если используете препроцессор вроде Sass */
-    /* Или просто укажите более светлый HEX-код вручную */
-	transition:0.3s;
-	scale:1.1;
-}
-.modal-details::-webkit-scrollbar-thumb {
-    background-color: transparent;
-    border-radius: 5px; /* Скругление углов */
-    border: 2px solid transparent; /* Чтобы сохранить размер 10px при рендеринге */
-    background-clip: content-box; /* Цвет применяется только к контенту, бордер остается прозрачным */
-	transition:0.3s;
-}
-    </style>
+*::-webkit-scrollbar-thumb:hover { background-color: var(--primary-blue); background-clip: content-box; }
+</style>
 </head>
 <body>
-    
-    <div style="position:sticky;top:15px;left:5%;z-index:999;background:white;padding:5px;border-radius:24px;box-shadow: 0px 0px 4px gray;">
-	<button style="padding:12px 15px;background:dodgerblue;color:white;border:none;margin-left:8px;border-radius:20px;font-size:15px;box-shadow: 0px 0px 4px gray;float:right" onclick="alert('Реализация случайного фото в разработке.')"><i class="fa-solid fa-random"></i></button>
-	<button style="padding:12px 15px;background:dodgerblue;color:white;border:none;margin-right:8px;border-radius:20px;font-size:15px;box-shadow: 0px 0px 4px gray;float:left" onclick="window.location.href = 'index.html'"><i class="fa-solid fa-arrow-left"></i></button>
-	<input type="text" id="search" placeholder="Поиск по названию или описанию...">
-		
-	</div><br><br><br>
-    <div class="grid" id="grid"></div>
 
+<!-- ============================================================
+     ФОТОГРАФИИ
+     Добавляй новые прямо сюда. Пример строки:
+     {
+         url: "images/имя-файла.jpg",
+         name: "Название",
+         tags: ["тег1", "тег2"],
+         resolution: "1920x1080",
+         source: "Источник",
+         description: "Описание фото."
+     },
+     ============================================================ -->
 <script>
-const photos = [
-    {
-        url:"images/autumn-forest.png", 
-        name:"Осенний лес", 
-        tags:["природа","осень"],
-        resolution:"1440х900",
-        source:"Unknown",
-        description:"Красивый пейзаж осеннего леса и реки."
-    },
-    {
-        url:"images/tree.jpg", 
-        name:"Дерево", 
-        tags:["природа","осень", "дерево"],
-        resolution:"1440x900",
-        source:"Unknown",
-        description:"Нет описания"
-    },
-    {
-        url:"images/wall.png", 
-        name:"Осенняя дорога", 
-        tags:["дорога","осень"],
-        resolution:"1440x900",
-        source:"Unknown",
-        description:"Шоссе, уходящее в закат."
-    },
-    {
-        url:"images/leaves.png", 
-        name:"Осенние листья", 
-        tags:["природа","осень", "листья"], 
-        resolution:"1440х900",
-        source:"Unknown",
-        description:"Макросъемка кленового листа."
-    }, 
-    {
-        url:"images/winter.png", 
-        name:"Зима", 
-        tags:["зима"],
-        resolution:"1080х1920",
-        source:"Pinterest",
-        description:"Заснеженный лес."
-    },    
-    {
-        url:"images/winter-night.png", 
-        name:"Зимняя ночь", 
-        tags:["зима", "ночь"], 
-        resolution:"768х1408",
-        source:"Pinterest",
-        description:"Северное сияние над мостом."
-    }, 
-    {
-        url:"images/winter-landscape.png", 
-        name:"Зимний пейзаж", 
-        tags:["зима", "пейзаж", "елка", "ёлка"], 
-        resolution:"768х1408",
-        source:"Pinterest",
-        description:"Еловый лес после снегопада."
-    }, 
-	{
-        url:"images/winter-house.jpg", 
-        name:"Зимний домик", 
-        tags:["зима", "новый год", "дом"], 
-        resolution:"1456х832",
-        source:"Pinterest",
-        description:"Еловый лес после снегопада."
-    },
-];
-
-function render(data){
-    document.getElementById('grid').innerHTML = data.map((p, index)=>`
-        <div class="card" onclick="openModal(${index})">
-            <div class="thumb-wrapper">
-                <img src="${p.url}" onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg%20viewBox=%220%200%2024%2024%22%3E%3Cpath%20fill=%22%23ccc%22%20d=%22M21%2015v4a2%202%200%200%201-2%202H5a2%202%200%200%201-2-2v-4%22/%3E%3Cpolyline%20points=%227%2010%2012%2015%2017%2010%22/%3E%3Cline%20x1=%2212%22%20y1=%2215%22%20x2=%2212%22%20y2=%223%22/%3E%3C/svg%3E'" class="thumb">
-            </div>
-            <div class="info">
-                <div style="font-weight:bold;">${p.name}</div>
-                <div class="meta">${p.resolution} • ${p.source}</div>
-                <div class="tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
-            </div>
-        </div>`).join('');
-}
-
-let currentPhotoIndex = 0;
-
-// Функция поиска похожих фото по тегам
-function findSimilarTags(currentTags) {
-    const similar = [];
-    photos.forEach((p, index) => {
-        if (currentPhotoIndex !== index) {
-            // Проверяем, есть ли хотя бы один общий тег
-            const hasMatch = p.tags.some(tag => currentTags.includes(tag));
-            if (hasMatch) {
-                similar.push({...p, index: index});
-            }
+    const photos = [
+        {
+            url: "images/autumn-forest.png",
+            name: "Осенний лес",
+            tags: ["природа", "осень"],
+            resolution: "1440х900",
+            source: "Unknown",
+            description: "Красивый пейзаж осеннего леса и реки."
+        },
+        {
+            url: "images/tree.jpg",
+            name: "Дерево",
+            tags: ["природа", "осень", "дерево"],
+            resolution: "1440x900",
+            source: "Unknown",
+            description: "Нет описания"
+        },
+        {
+            url: "images/wall.png",
+            name: "Осенняя дорога",
+            tags: ["дорога", "осень"],
+            resolution: "1440x900",
+            source: "Unknown",
+            description: "Шоссе, уходящее в закат."
+        },
+        {
+            url: "images/leaves.png",
+            name: "Осенние листья",
+            tags: ["природа", "осень", "листья"],
+            resolution: "1440х900",
+            source: "Unknown",
+            description: "Макросъемка кленового листа."
+        },
+        {
+            url: "images/winter.png",
+            name: "Зима",
+            tags: ["зима"],
+            resolution: "1080х1920",
+            source: "Pinterest",
+            description: "Заснеженный лес."
+        },
+        {
+            url: "images/winter-night.png",
+            name: "Зимняя ночь",
+            tags: ["зима", "ночь"],
+            resolution: "1280х960",
+            source: "Pinterest",
+            description: "Северное сияние над мостом."
+        },
+        {
+            url: "images/winter-landscape.png",
+            name: "Зимний пейзаж",
+            tags: ["зима", "пейзаж", "елка", "ёлка"],
+            resolution: "768х1408",
+            source: "Pinterest",
+            description: "Еловый лес после снегопада."
+        },
+        {
+            url: "images/winter-house.jpg",
+            name: "Зимний домик",
+            tags: ["зима", "новый год", "дом"],
+            resolution: "1456х832",
+            source: "Pinterest",
+            description: "Еловый лес после снегопада."
         }
-    });
-    // Сортируем по количеству совпадений и берем первые 6
-    return similar.sort((a, b) => {
-        const aMatches = a.tags.filter(t => currentTags.includes(t)).length;
-        const bMatches = b.tags.filter(t => currentTags.includes(t)).length;
-        return bMatches - aMatches;
-    }).slice(0, 6);
-}
-
-function renderSimilar(similarList) {
-    const container = document.getElementById('similarGrid');
-    if (similarList.length === 0) {
-        container.innerHTML = '<p style="color: #94a3b8; grid-column: 1/-1; text-align:center;">Похожих фото не найдено</p>';
-        return;
-    }
-    container.innerHTML = similarList.map(p => `
-        <div class="similar-item" onclick="openModal(${p.index})">
-            <img class="similar-thumb" alt="${p.name}" id="01a0d89a-17bb-74ff-b637-1902f2f35ba4" src="${p.url}">
-            <div class="similar-name"><span style="float:right" class="tag">${p.resolution}</span>${p.name}</div>
-        </div>
-    `).join('');
-}
-
-function openModal(index) {
-    currentPhotoIndex = index;
-    const p = photos[index];
-    
-    const modal = document.getElementById('modal');
-    const img = document.getElementById('modalImage');
-    const wrapper = img.closest('.modal-image-wrapper');
-    
-    document.getElementById('modalName').innerText = p.name;
-    document.getElementById('modalDescription').innerText = p.description;
-    document.getElementById('modalResolution').innerText = p.resolution;
-    document.getElementById('modalSource').innerText = p.source;
-	document.getElementById('modalTag').innerHTML = p.tags.map(t=>`<span class="tag">${t}</span>`).join('');
-    
-    const downloadBtn = document.getElementById('downloadBtn');
-    downloadBtn.href = p.url;
-    
-    const [w, h] = p.resolution.split('x').map(Number);
-    if (w < 1920 || h < 1080) {
-        wrapper.classList.add('blurred');
-    } else {
-        wrapper.classList.remove('blurred');
-    }
-    
-    img.src = p.url;
-    
-    // Загрузка блока похожих фото
-    const similar = findSimilarTags(p.tags);
-    renderSimilar(similar);
-    
-    modal.style.display = 'flex';
-}
-
-function closeModal() {
-    document.getElementById('modal').style.display = 'none';
-    document.getElementById('modalImage').src = '';
-}
-
-window.onclick = function(event) {
-    const modal = document.getElementById('modal');
-    if (event.target == modal) {
-        closeModal();
-    }
-}
-
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeModal();
-    }
-});
-
-document.getElementById('search').addEventListener('input', e=>{
-    const q = e.target.value.toLowerCase();
-    const filtered = photos.filter(p => 
-        p.name.toLowerCase().includes(q) || 
-        p.description.toLowerCase().includes(q) || 
-        p.tags.some(t=>t.includes(q))
-    );
-    render(filtered);
-});
-
-render(photos);
+    ];
 </script>
 
-<!-- HTML Модального окна -->
-<div id="modal" class="modal">
+<!-- ТОП-ПАНЕЛЬ -->
+<div class="topbar">
+    <button class="btn-nav" onclick="window.location.href='index.html'" title="Назад">
+        <i class="fa-solid fa-arrow-left"></i>
+    </button>
+    <span class="logo-text"><i class="fa-solid fa-image"></i> Галерея</span>
+
+    <div class="search-group">
+        <div class="search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="search" placeholder="Поиск по названию, описанию или тегу..." autocomplete="off">
+            <div class="search-suggestions" id="searchSuggestions"></div>
+        </div>
+
+        <button class="btn-primary" id="randomBtn" title="Случайное фото">
+            <i class="fa-solid fa-dice"></i>
+            <span>Случайное</span>
+        </button>
+
+        <button class="btn-icon" id="settingsBtn" title="Настройки">
+            <i class="fa-solid fa-gear"></i>
+        </button>
+    </div>
+</div>
+
+<!-- СЕТКА -->
+<div class="grid" id="grid"></div>
+
+<!-- МОДАЛКА ПРОСМОТРА -->
+<div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalName">
     <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
+        <button class="close" onclick="closeModal()" aria-label="Закрыть">&times;</button>
         <div class="modal-body">
             <div class="modal-image-wrapper">
-                <img id="modalImage" class="modal-image" src="" alt="Превью фото">
+                <img id="modalImage" class="modal-image" src="" alt="Просмотр фото">
             </div>
             <div class="modal-details">
                 <h2 id="modalName"></h2>
                 <p id="modalDescription"></p>
                 <div class="modal-meta">
-                    <span id="modalResolution"></span> • <span id="modalSource"></span><br><br>
-					<span>Теги: <span id="modalTag" style="font-size:14px;"></span></span><br>
+                    <div><strong>Разрешение:</strong> <span id="modalResolution"></span></div>
+                    <div><strong>Источник:</strong> <span id="modalSource"></span></div>
+                    <div style="margin-top:8px;"><strong>Теги:</strong> <span id="modalTag"></span></div>
                 </div>
                 <div class="modal-actions">
-                    <a id="downloadBtn" class="btn-download" href="#"><i class="fa-solid fa-download"></i> Скачать оригинал</a>
+                    <a id="downloadBtn" class="btn-download" href="#" download>
+                        <i class="fa-solid fa-download"></i> Скачать оригинал
+                    </a>
                 </div>
-                
-                <!-- Блок похожих фото -->
+
                 <div class="similar-section">
-                    <h3>Похожие фото</h3>
+                    <h3><i class="fa-solid fa-images"></i> Похожие фото</h3>
                     <div class="similar-grid" id="similarGrid"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- МОДАЛКА НАСТРОЕК -->
+<div id="settingsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="modal-content settings-content">
+        <button class="close" onclick="closeSettings()" aria-label="Закрыть">&times;</button>
+        <div class="settings-header">
+            <h2 id="settingsTitle"><i class="fa-solid fa-gear"></i> Настройки</h2>
+        </div>
+
+        <div class="settings-body">
+            <div class="settings-group">
+                <label>Оформление</label>
+                <div class="theme-options" id="themeOptions">
+                    <button class="theme-option" data-theme-choice="light">
+                        <i class="fa-solid fa-sun"></i>
+                        <span>Светлая</span>
+                    </button>
+                    <button class="theme-option" data-theme-choice="dark">
+                        <i class="fa-solid fa-moon"></i>
+                        <span>Тёмная</span>
+                    </button>
+                    <button class="theme-option" data-theme-choice="auto">
+                        <i class="fa-solid fa-circle-half-stroke"></i>
+                        <span>Авто</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <label>Анимации интерфейса</label>
+                <div class="toggle-row">
+                    <div class="toggle-label">
+                        <i class="fa-solid fa-wand-sparkles"></i>
+                        <span>Плавные переходы и эффекты</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="animToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <label>Обратная связь</label>
+                <div class="contact-row">
+                    <i class="fa-solid fa-envelope"></i>
+                    <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>
+                    <button class="copy-btn" id="copyEmailBtn" title="Скопировать адрес">
+                        <i class="fa-solid fa-copy"></i>
+                        <span>Копировать</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <label>Сброс</label>
+                <button class="reset-btn" id="resetBtn">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    Сбросить все настройки
+                </button>
+            </div>
+        </div>
+
+        <div class="settings-footer">
+            Галерея • <span id="year"></span><br>
+            По вопросам и предложениям — пишите на почту выше.
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   УТИЛИТЫ
+   ============================================================ */
+
+const escapeHtml = function(s) {
+    return String(s).replace(/[&<>"']/g, function(c) {
+        return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+};
+
+const FALLBACK_IMG = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ccc' stroke-width='1.5'%3E%3Crect x='3' y='3' width='18' height='18' rx='2'/%3E%3Ccircle cx='8.5' cy='8.5' r='1.5'/%3E%3Cpath d='M21 15l-5-5L5 21'/%3E%3C/svg%3E";
+
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(showToast._timer);
+    showToast._timer = setTimeout(function() { t.classList.remove('show'); }, 2200);
+}
+
+/* ============================================================
+   РЕНДЕР СЕТКИ
+   ============================================================ */
+
+function render(list) {
+    const grid = document.getElementById('grid');
+
+    if (!list.length) {
+        grid.innerHTML =
+            '<div class="empty-state">' +
+                '<i class="fa-solid fa-magnifying-glass"></i>' +
+                'Ничего не найдено. Попробуйте изменить запрос.' +
+            '</div>';
+        return;
+    }
+
+    let html = '';
+    for (let k = 0; k < list.length; k++) {
+        const item = list[k];
+        const p = item.data;
+        const delay = Math.min(k * 0.04, 0.6);
+        html +=
+            '<div class="card" data-index="' + item.origIndex + '" tabindex="0" role="button" ' +
+                 'aria-label="' + escapeHtml(p.name) + '" ' +
+                 'style="animation-delay:' + delay + 's">' +
+                '<div class="thumb-wrapper">' +
+                    '<img src="' + escapeHtml(p.url) + '" loading="lazy" alt="' + escapeHtml(p.name) + '" ' +
+                         'onerror="this.onerror=null;this.src=\'' + FALLBACK_IMG + '\'" class="thumb">' +
+                '</div>' +
+                '<div class="info">' +
+                    '<div class="title">' + escapeHtml(p.name) + '</div>' +
+                    '<div class="meta">' + escapeHtml(p.resolution) + ' • ' + escapeHtml(p.source) + '</div>' +
+                    '<div class="tags">' + p.tags.map(function(t){ return '<span class="tag">' + escapeHtml(t) + '</span>'; }).join('') + '</div>' +
+                '</div>' +
+            '</div>';
+    }
+    grid.innerHTML = html;
+}
+
+/* ============================================================
+   ПОИСК + ПОДСКАЗКИ ПО ТЕГАМ
+   ============================================================ */
+
+const searchInput = document.getElementById('search');
+const suggestionsBox = document.getElementById('searchSuggestions');
+let activeSuggestionIndex = -1;
+let currentSuggestions = [];
+
+const allTagsMap = {};
+photos.forEach(function(p) {
+    p.tags.forEach(function(t) {
+        allTagsMap[t] = (allTagsMap[t] || 0) + 1;
+    });
+});
+const allTags = Object.keys(allTagsMap).sort(function(a, b) {
+    return allTagsMap[b] - allTagsMap[a] || a.localeCompare(b, 'ru');
+});
+
+function filterByQuery(q) {
+    const all = photos.map(function(p, i) { return { data: p, origIndex: i }; });
+    if (!q) return all;
+    return all.filter(function(item) {
+        const p = item.data;
+        return p.name.toLowerCase().indexOf(q) !== -1 ||
+               p.description.toLowerCase().indexOf(q) !== -1 ||
+               p.tags.some(function(t) { return t.toLowerCase().indexOf(q) !== -1; });
+    });
+}
+
+function updateSuggestions(q) {
+    if (!q) {
+        currentSuggestions = allTags.slice(0, 12);
+    } else {
+        currentSuggestions = allTags.filter(function(t) {
+            return t.toLowerCase().indexOf(q) !== -1;
+        }).slice(0, 12);
+    }
+
+    if (!currentSuggestions.length) {
+        suggestionsBox.innerHTML =
+            '<div class="suggestions-title">Теги</div>' +
+            '<div class="suggestion-empty">Совпадений нет</div>';
+        suggestionsBox.classList.add('show');
+        return;
+    }
+
+    let html = '<div class="suggestions-title">' +
+        (q ? 'Подходящие теги' : 'Популярные теги') +
+        '</div>';
+
+    for (let i = 0; i < currentSuggestions.length; i++) {
+        const t = currentSuggestions[i];
+        html +=
+            '<div class="suggestion-item" data-tag="' + escapeHtml(t) + '">' +
+                '<i class="fa-solid fa-hashtag"></i>' +
+                '<span>' + escapeHtml(t) + '</span>' +
+                '<span class="count">' + allTagsMap[t] + '</span>' +
+            '</div>';
+    }
+    suggestionsBox.innerHTML = html;
+    suggestionsBox.classList.add('show');
+    activeSuggestionIndex = -1;
+}
+
+function hideSuggestions() {
+    suggestionsBox.classList.remove('show');
+    activeSuggestionIndex = -1;
+}
+
+searchInput.addEventListener('input', function(e) {
+    const q = e.target.value.trim().toLowerCase();
+    render(filterByQuery(q));
+    updateSuggestions(q);
+});
+
+searchInput.addEventListener('focus', function() {
+    updateSuggestions(searchInput.value.trim().toLowerCase());
+});
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.search-wrap')) hideSuggestions();
+});
+
+suggestionsBox.addEventListener('mousedown', function(e) {
+    const item = e.target.closest('.suggestion-item');
+    if (!item) return;
+    e.preventDefault();
+    const tag = item.dataset.tag;
+    searchInput.value = tag;
+    render(filterByQuery(tag.toLowerCase()));
+    hideSuggestions();
+});
+
+searchInput.addEventListener('keydown', function(e) {
+    const items = suggestionsBox.querySelectorAll('.suggestion-item');
+
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (!suggestionsBox.classList.contains('show')) updateSuggestions(searchInput.value.trim().toLowerCase());
+        activeSuggestionIndex = Math.min(activeSuggestionIndex + 1, items.length - 1);
+        highlightSuggestion(items);
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeSuggestionIndex = Math.max(activeSuggestionIndex - 1, -1);
+        highlightSuggestion(items);
+    } else if (e.key === 'Enter') {
+        if (activeSuggestionIndex >= 0 && items[activeSuggestionIndex]) {
+            e.preventDefault();
+            const tag = items[activeSuggestionIndex].dataset.tag;
+            searchInput.value = tag;
+            render(filterByQuery(tag.toLowerCase()));
+            hideSuggestions();
+        } else {
+            hideSuggestions();
+        }
+    } else if (e.key === 'Escape') {
+        hideSuggestions();
+    }
+});
+
+function highlightSuggestion(items) {
+    for (let i = 0; i < items.length; i++) {
+        items[i].classList.toggle('active', i === activeSuggestionIndex);
+    }
+    if (activeSuggestionIndex >= 0 && items[activeSuggestionIndex]) {
+        items[activeSuggestionIndex].scrollIntoView({ block: 'nearest' });
+    }
+}
+
+/* ============================================================
+   КЛИК ПО КАРТОЧКЕ
+   ============================================================ */
+
+document.getElementById('grid').addEventListener('click', function(e) {
+    const card = e.target.closest('.card');
+    if (card) openModal(Number(card.dataset.index));
+});
+document.getElementById('grid').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+        const card = e.target.closest('.card');
+        if (card) { e.preventDefault(); openModal(Number(card.dataset.index)); }
+    }
+});
+
+/* ============================================================
+   КНОПКА "СЛУЧАЙНОЕ ФОТО"
+   ============================================================ */
+
+let currentPhotoIndex = 0;
+
+document.getElementById('randomBtn').addEventListener('click', function() {
+    if (!photos.length) return;
+    if (photos.length === 1) return openModal(0);
+
+    let idx;
+    do {
+        idx = Math.floor(Math.random() * photos.length);
+    } while (idx === currentPhotoIndex);
+    openModal(idx);
+});
+
+/* ============================================================
+   ПОХОЖИЕ
+   ============================================================ */
+
+function findSimilar(currentIndex) {
+    const currentTags = photos[currentIndex].tags;
+    const result = [];
+    for (let i = 0; i < photos.length; i++) {
+        if (i === currentIndex) continue;
+        const matches = photos[i].tags.filter(function(t) { return currentTags.indexOf(t) !== -1; }).length;
+        if (matches > 0) result.push({ p: photos[i], i: i, matches: matches });
+    }
+    result.sort(function(a, b) { return b.matches - a.matches; });
+    return result.slice(0, 6);
+}
+
+function renderSimilar(list) {
+    const container = document.getElementById('similarGrid');
+    if (!list.length) {
+        container.innerHTML = '<p style="color:var(--text-muted);grid-column:1/-1;text-align:center;font-size:13px;">Похожих фото не найдено</p>';
+        return;
+    }
+    let html = '';
+    for (let k = 0; k < list.length; k++) {
+        const p = list[k].p;
+        const i = list[k].i;
+        html +=
+            '<div class="similar-item" data-index="' + i + '" role="button" tabindex="0">' +
+                '<img class="similar-thumb" src="' + escapeHtml(p.url) + '" loading="lazy" ' +
+                     'alt="' + escapeHtml(p.name) + '" ' +
+                     'onerror="this.onerror=null;this.src=\'' + FALLBACK_IMG + '\'">' +
+                '<div class="similar-name">' +
+                    '<span class="tag">' + escapeHtml(p.resolution) + '</span>' +
+                    '<span style="overflow:hidden;text-overflow:ellipsis;">' + escapeHtml(p.name) + '</span>' +
+                '</div>' +
+            '</div>';
+    }
+    container.innerHTML = html;
+}
+
+document.getElementById('similarGrid').addEventListener('click', function(e) {
+    const item = e.target.closest('.similar-item');
+    if (item) openModal(Number(item.dataset.index));
+});
+
+/* ============================================================
+   МОДАЛКА ПРОСМОТРА
+   ============================================================ */
+
+function openModal(index) {
+    if (index < 0 || index >= photos.length) return;
+    currentPhotoIndex = index;
+    const p = photos[index];
+
+    document.getElementById('modalName').textContent = p.name;
+    document.getElementById('modalDescription').textContent = p.description || 'Нет описания';
+    document.getElementById('modalResolution').textContent = p.resolution;
+    document.getElementById('modalSource').textContent = p.source;
+    document.getElementById('modalTag').innerHTML = p.tags.map(function(t) {
+        return '<span class="tag">' + escapeHtml(t) + '</span>';
+    }).join(' ');
+
+    const dl = document.getElementById('downloadBtn');
+    dl.href = p.url;
+    dl.setAttribute('download', p.name);
+
+    const img = document.getElementById('modalImage');
+    img.src = p.url;
+    img.alt = p.name;
+
+    renderSimilar(findSimilar(index));
+
+    const modal = document.getElementById('modal');
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    const modal = document.getElementById('modal');
+    modal.classList.remove('open');
+    document.getElementById('modalImage').src = '';
+    document.body.style.overflow = '';
+}
+
+document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target.id === 'modal') closeModal();
+});
+
+/* ============================================================
+   НАСТРОЙКИ
+   ============================================================ */
+
+const SETTINGS_KEY = 'gallery_settings';
+const DEFAULT_SETTINGS = {
+    theme: 'auto',
+    animations: true
+};
+
+function loadSettings() {
+    try {
+        const raw = localStorage.getItem(SETTINGS_KEY);
+        if (!raw) return Object.assign({}, DEFAULT_SETTINGS);
+        return Object.assign({}, DEFAULT_SETTINGS, JSON.parse(raw));
+    } catch (e) {
+        return Object.assign({}, DEFAULT_SETTINGS);
+    }
+}
+
+function saveSettings(s) {
+    try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch (e) {}
+}
+
+function applyTheme(themeChoice) {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const resolved = themeChoice === 'auto' ? (prefersDark ? 'dark' : 'light') : themeChoice;
+    if (resolved === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    else document.documentElement.removeAttribute('data-theme');
+
+    const btns = document.querySelectorAll('.theme-option');
+    for (let i = 0; i < btns.length; i++) {
+        btns[i].classList.toggle('active', btns[i].dataset.themeChoice === themeChoice);
+    }
+}
+
+function applyAnimations(enabled) {
+    const html = document.documentElement;
+    if (enabled) html.classList.remove('no-anim');
+    else html.classList.add('no-anim');
+
+    const toggle = document.getElementById('animToggle');
+    if (toggle) toggle.checked = !!enabled;
+}
+
+let currentSettings = loadSettings();
+applyTheme(currentSettings.theme);
+applyAnimations(currentSettings.animations);
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
+    if (currentSettings.theme === 'auto') applyTheme('auto');
+});
+
+document.getElementById('themeOptions').addEventListener('click', function(e) {
+    const btn = e.target.closest('.theme-option');
+    if (!btn) return;
+    const choice = btn.dataset.themeChoice;
+    currentSettings.theme = choice;
+    saveSettings(currentSettings);
+    applyTheme(choice);
+    const labels = { light: 'Светлая тема', dark: 'Тёмная тема', auto: 'Авто (по системе)' };
+    showToast(labels[choice] || 'Тема изменена');
+});
+
+document.getElementById('animToggle').addEventListener('change', function(e) {
+    currentSettings.animations = e.target.checked;
+    saveSettings(currentSettings);
+    applyAnimations(currentSettings.animations);
+    showToast(currentSettings.animations ? 'Анимации включены' : 'Анимации выключены');
+});
+
+function openSettings() {
+    document.getElementById('settingsModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+function closeSettings() {
+    document.getElementById('settingsModal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+document.getElementById('settingsBtn').addEventListener('click', openSettings);
+document.getElementById('settingsModal').addEventListener('click', function(e) {
+    if (e.target.id === 'settingsModal') closeSettings();
+});
+
+document.getElementById('copyEmailBtn').addEventListener('click', function() {
+    const email = 'q-acd@mail.ru';
+    const btn = this;
+    const done = function() {
+        btn.classList.add('copied');
+        btn.innerHTML = '<i class="fa-solid fa-check"></i><span>Скопировано</span>';
+        showToast('Адрес скопирован: ' + email);
+        setTimeout(function() {
+            btn.classList.remove('copied');
+            btn.innerHTML = '<i class="fa-solid fa-copy"></i><span>Копировать</span>';
+        }, 2000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).then(done).catch(function() {
+            fallbackCopy(email); done();
+        });
+    } else {
+        fallbackCopy(email); done();
+    }
+});
+
+function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+}
+
+document.getElementById('resetBtn').addEventListener('click', function() {
+    if (!confirm('Сбросить все настройки: тему и анимации?')) return;
+    currentSettings = Object.assign({}, DEFAULT_SETTINGS);
+    try { localStorage.removeItem(SETTINGS_KEY); } catch (e) {}
+    applyTheme(currentSettings.theme);
+    applyAnimations(currentSettings.animations);
+    showToast('Настройки сброшены');
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        if (document.getElementById('modal').classList.contains('open')) closeModal();
+        if (document.getElementById('settingsModal').classList.contains('open')) closeSettings();
+        hideSuggestions();
+    }
+});
+
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ============================================================
+   СТАРТ
+   ============================================================ */
+
+render(photos.map(function(p, i) { return { data: p, origIndex: i }; }));
+</script>
 
 </body>
 </html>
