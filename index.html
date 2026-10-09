@@ -1,1081 +1,1936 @@
 <!DOCTYPE html>
 <html lang="ru" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <title>Продуктор для бизнеса</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GSQ1XVY3XW"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Продуктор для бизнеса — умный контроль продаж</title>
+
+<!-- Font Awesome: сначала локально, потом CDN как fallback -->
+<link rel="stylesheet" href="css/all.min.css" onerror="this.onerror=null;this.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GSQ1XVY3XW"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-GSQ1XVY3XW');
-	  </script>
-    <!-- Google Fonts -->
-	<link rel="icon" href="logo.ico" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<meta name="description" content="Продуктор - умные решения для вашего бизнеса! 16+">
-	<!-- Ключевые слова (сегодня почти не влияют на Google/Yandex, но лишними не будут) -->
-	<meta name="keywords" content="программа для магазина, учет товаров, касса в браузере, умный контроль продаж, Продуктор, бизнес софт">
-	<!-- Авторство --> <meta name="author" content="Quantum ACD">
-	<!-- Запрет индексации дублей страниц поисковиками (рекомендуется добавить) --> <link rel="canonical" href="https://q-acd.github.io/prod">
-    <style>
-        :root {
-            --bg-light: #ffffff;
-            --text-dark: #1e293b;
-            --border-light: #e2e8f0;
-            --primary-blue: #2563eb;
-            --success-green: #10b981;
-            --gray-muted: #64748b;
-        }
+</script>
 
-        [data-theme="dark"] {
-            --bg-light: #0f172a;
-            --text-dark: #f1f5f9;
-            --border-light: #334155;
-            --primary-blue: #3b82f6;
-            --success-green: #10b981;
-            --gray-muted: #94a3b8;
-        }
+<link rel="icon" href="logo.ico" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
-        
-        body { 
-            background-color: var(--bg-light); 
-            color: var(--text-dark); 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column;
-        }
+<meta name="description" content="Продуктор — умные решения для вашего бизнеса! Полноценное рабочее место кассира прямо в браузере. 16+">
+<meta name="keywords" content="программа для магазина, учет товаров, касса в браузере, умный контроль продаж, Продуктор, бизнес софт">
+<meta name="author" content="Quantum ACD">
+<link rel="canonical" href="https://q-acd.github.io/prod">
 
-        /* HEADER */
-        .header {
-            height: 70px; width: calc(100% - 16px - 10%); background: #e6e6e6;
-            color: #1d4ed8; display: flex; align-items: center; justify-content: space-between; padding: 0 30px;
-            z-index: 10; position: sticky; top: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-			border-radius:70px;margin:8px;margin-left:5%;margin-right:5%;margin-top:15px;
-        }
-        .logo-text { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
-        .header-right { display: flex; align-items: center; gap: 8px; position: relative; }
-        .btn-start {
-            background-image: linear-gradient(200deg, violet, dodgerblue); color: white; border: none; padding: 10px 20px;
-            border-radius: 24px; font-size: 15px; font-weight: 600; cursor: pointer;
-            transition: transform 0.1s ease, background-color 0.2s ease;
-        }
-        .btn-start:active { transform: scale(0.98); }
-        .btn-start:hover { transform: scale(1.05) }
-
-        /* DOWNLOAD DROPDOWN */
-        .download-dropdown {
-            position: absolute; right: 0; top: 70px; background: white; color: var(--text-dark);
-            border: 1px solid var(--border-light); border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            min-width: 280px; z-index: 100; display: none; flex-direction: column; overflow: hidden;
-            animation: slideDown 0.2s ease-out;
-        }
-        [data-theme="dark"] .download-dropdown { background: #1e293b; border-color: #334155; }
-        .download-dropdown.active { display: flex; }
-        .download-item { padding: 14px 20px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px; transition: background 0.2s; font-size: 14px; }
-        [data-theme="dark"] .download-item { border-bottom: 1px solid #334155; }
-        .download-item:last-child { border: none; }
-        .download-item:hover { background-color: #f8fafc; }
-        [data-theme="dark"] .download-item:hover { background: #334155; }
-        .file-info small { display: block; color: var(--gray-muted); font-size: 11px; opacity: 0.8; }
-
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* ОБНОВЛЕННЫЕ СТИЛИ ДЛЯ КАРУСЕЛИ */
-
-/* Ограничиваем ширину контейнера и центрируем его */
-.carousel-container {
-    background-color: var(--primary-blue);
-    color: white;
-    max-width: 900px;
-    margin: 0 auto 40px;
-    width: 95%;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+<style>
+/* ============================================================
+   ПЕРЕМЕННЫЕ
+   ============================================================ */
+:root {
+    --bg: #ffffff;
+    --bg-alt: #f6f8fc;
+    --bg-elev: #ffffff;
+    --text: #0f172a;
+    --text-soft: #475569;
+    --text-muted: #94a3b8;
+    --border: #e2e8f0;
+    --primary: #2563eb;
+    --primary-soft: #dbeafe;
+    --violet: #8b5cf6;
+    --cyan: #06b6d4;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --grad-main: linear-gradient(135deg, #8b5cf6 0%, #2563eb 50%, #06b6d4 100%);
+    --grad-soft: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(37,99,235,0.08));
+    --shadow-sm: 0 2px 8px rgba(15,23,42,0.06);
+    --shadow-md: 0 12px 32px rgba(15,23,42,0.08);
+    --shadow-lg: 0 30px 70px rgba(37,99,235,0.18);
+    --radius-sm: 12px;
+    --radius: 20px;
+    --radius-lg: 28px;
+    --header-h: 64px;
 }
 
-/* Сами слайды-карточки */
-.carousel-item {
-    background-color: var(--primary-blue);
-    color: white;
+[data-theme="dark"] {
+    --bg: #070b18;
+    --bg-alt: #0b1224;
+    --bg-elev: #111a30;
+    --text: #f1f5f9;
+    --text-soft: #cbd5e1;
+    --text-muted: #64748b;
+    --border: #1e293b;
+    --primary: #3b82f6;
+    --primary-soft: #1e3a8a;
+    --grad-soft: linear-gradient(135deg, rgba(139,92,246,0.18), rgba(37,99,235,0.12));
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+    --shadow-md: 0 12px 32px rgba(0,0,0,0.4);
+    --shadow-lg: 0 30px 70px rgba(59,130,246,0.28);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; scroll-padding-top: 90px; -webkit-text-size-adjust: 100%; }
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 30px 20px;
-    min-height: 280px;
+    transition: background-color 0.4s ease, color 0.4s ease;
+    -webkit-font-smoothing: antialiased;
 }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
+i.fa-solid, i.fa-brands, i.fa-regular { display: inline-block; }
 
-/* Заголовки внутри карточек */
-.carousel-item h3 {
-    margin: 15px 0 10px;
-    font-size: 1.4rem;
-    font-weight: 600;
-}
-
-/* Текст описания */
-.carousel-item p {
-    color: #e0e7ff;
-    font-size: 0.95rem;
-    line-height: 1.5;
-}
-
-/* ФИКС ВЫСОТЫ: все картинки теперь строго 150px в высоту */
-.carousel-item img {
-    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
-}
-
-/* Стрелки: современный полупрозрачный синий стиль */
-.prev, .next {
+/* ============================================================
+   ФОН
+   ============================================================ */
+.bg-canvas { position: fixed; inset: 0; z-index: -2; pointer-events: none; }
+.bg-orbs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.orb {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(37, 99, 235, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    width: 50px;
-    height: 50px;
     border-radius: 50%;
-    cursor: pointer;
-    font-size: 24px;
-    z-index: 20;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
+    filter: blur(100px);
+    opacity: 0.4;
+    will-change: transform;
 }
-.prev { left: 20px; }
-.next { right: 20px; }
-.prev:hover, .next:hover {
-    background: rgba(37, 99, 235, 0.5);
-    border-color: white;
-    transform: scale(1.1) translateY(-50%);
-}
+.orb-1 { width: 520px; height: 520px; background: radial-gradient(circle, #8b5cf6, transparent 70%); top: -180px; left: -140px; animation: float1 20s ease-in-out infinite; }
+.orb-2 { width: 620px; height: 620px; background: radial-gradient(circle, #06b6d4, transparent 70%); bottom: -240px; right: -180px; animation: float2 24s ease-in-out infinite; }
+.orb-3 { width: 420px; height: 420px; background: radial-gradient(circle, #2563eb, transparent 70%); top: 45%; left: 55%; animation: float3 28s ease-in-out infinite; }
+[data-theme="dark"] .orb { opacity: 0.25; }
 
-/* Точки навигации: увеличены и сделаны контрастными */
-.dots-container {
-    text-align: center;
-    margin-top: 20px;
-    padding-bottom: 15px;
-}
-.dot {
-    height: 12px;
-    width: 12px;
-    margin: 0 8px;
-    background-color: rgba(255, 255, 255, 0.4);
-    border: 2px solid white;
-    border-radius: 50%;
-    display: inline-block;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-.dot.active {
-    background-color: var(--primary-blue);
-    border-color: var(--primary-blue);
-    transform: scale(1.2);
-}
-.dot:hover {
-    background-color: rgba(255, 255, 255, 0.7);
-}
+@keyframes float1 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(90px,70px) scale(1.15);} }
+@keyframes float2 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-100px,-60px) scale(1.1);} }
+@keyframes float3 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-70px,90px) scale(1.2);} }
 
-        /* MAIN CONTENT */
-        /* Основной контейнер */
-.hero-container.flex {
-    display: flex; /* Включаем режим сетки */
-    align-items: center; /* Выравнивание по вертикали (по центру) */
-    justify-content: space-between; /* Элементы занимают всю ширину с отступами по краям */
-    gap: 0px; /* Отступ между текстом и картинкой */
-    padding: 40px 20px;
-    
-    margin: 0 auto;
-}
-
-/* Блок с текстом */
-.hero-text {
-    flex: 1; /* Занимает всё свободное пространство слева */
-    max-width: 700px; /* Ограничиваем ширину, чтобы строки не были слишком длинными */
-}
-
-.main-title {
-    font-size: 3rem;
-    margin-bottom: 16px;
-    line-height: 1.1;
-}
-
-.subtitle {
-    font-size: 1.1rem;
-    color: #555;
-    margin-bottom: 24px;
-    line-height: 1.5;
-}
-
-/* Стили для кнопки */
-.cta-button {
-    padding: 12px 24px;
-    background-image: linear-gradient(140deg, violet, dodgerblue);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition:  0.3s ease;
-	
-}
-
-.cta-button:hover {
-   scale:1.1; /* Если используете препроцессор, иначе укажите цвет вручную */
-   transition: 0.3s;
-}
-
-/* Блок с изображением */
-.hero-image {
-    flex-shrink: 0; /* Запрещаем блоку с картинкой сжиматься */
-}
-
-.hero-image img {
-    width: 100%;
-    height: auto;
-    max-width: 600px; /* Максимальная ширина картинки, чтобы она не стала гигантской на больших экранах */
-    border-radius: 20px;
-    box-shadow: 0px 0px 30px var(--primary-blue);
-    display: block; /* Убираем нижний отступ под картинкой */
-}
-
-/* Адаптивность для мобильных устройств */
-@media (max-width: 768px) {
-    .hero-container.flex {
-        flex-direction: column-reverse; /* Сначала картинка, потом текст (стекаются друг под друга) */
-        text-align: center;
-        gap: 30px;
-    }
-
-    .hero-text {
-        max-width: 100%; /* На мобильных текст занимает всю ширину */
-    }
-
-    
-}
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-
-        .main-title { font-size: 42px; font-weight: 700; margin-bottom: 12px; background: linear-gradient(135deg, var(--text-dark), var(--gray-muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        [data-theme="dark"] .main-title { background: linear-gradient(135deg, #f1f5f9, #94a3b8); }
-        .subtitle { font-size: 18px; color: var(--gray-muted); }
-
-        /* FOOTER */
-        footer {
-            background: var(--bg-light); padding: 40px 20px 20px; text-align: center; border-top: 1px solid var(--border-light);
-        }
-        [data-theme="dark"] footer {
-            background: #0f172a; border-color: #334155;
-        }
-        .footer-contact a { color: var(--primary-blue); text-decoration: none; font-weight: 500; }
-        .footer-contact a:hover { text-decoration: underline; }
-        .footer-year { color: var(--gray-muted); font-size: 14px; margin-top: 10px; }
-
-        .hidden { display: none !important; }
-		#warnbox { display:block; }
-.scroll-track {
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+    position: sticky;
+    top: 10px;
+    z-index: 500;
+    height: var(--header-h);
+    width: min(1400px, calc(100% - 24px));
+    margin: 10px auto 0;
     display: flex;
-    gap: 24px; 
-    padding: 20px;
-    margin: 20px auto;
-    background-color: var(--primary-blue);
-    color: white;
-    border-radius: 16px;
-    max-width:98%;
-    /* ГЛАВНЫЕ СВОЙСТВА ДЛЯ СКРОЛЛА */
-    overflow-x: auto; /* Разрешаем скроллить контент вбок */
-    overscroll-behavior-x: contain; /* Чтобы страница не дергалась при достижении края */
-    scrollbar-width: none; /* Прячем ползунок в Firefox */
-    
-    /* Отключаем выравнивание, которое мешало */
-    align-items: normal; 
-    justify-content: flex-start; 
-}
-
-/* Скрываем полосу прокрутки в Chrome/Safari */
-.scroll-track::-webkit-scrollbar {
-    display: none;
-}
-
-/* Карточки должны быть зафиксированы и не тянуться */
-.scroll-card {
-    min-width: 280px;
-    max-width: 320px;
-    flex-shrink: 0; /* КРИТИЧЕСКИ ВАЖНО: запрещаем карточке сжиматься, если она не влезает */
-    text-align: center;
-    padding: 30px 20px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #1e40af, #2563eb);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-	transition: 0.3s ease;
-}
-
-/* Эффект приподнимания при наведении */
-.scroll-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.3);
-	transition: 0.3s ease;
-}
-
-/* Картинки внутри карточек */
-.scroll-card img {
-    margin-bottom: 15px;
-    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
-    border-radius: 10px;
-	object-fit: cover;
-	width: 100px;
-	height:100px;
-}
-
-/* Текст внутри карточек */
-.scroll-card h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-.scroll-card p {
-    font-size: 0.9rem;
-    color: #bfdbfe;
-    line-height: 1.5;
-}
-
-/* АДАПТИВНОСТЬ: убираем обводки и делаем края полукруглыми на краях контейнера */
-@media (max-width: 768px) {
-    .scroll-track {
-        padding: 15px 10px;
-        border-radius: 12px;
-    }
-    .scroll-card:first-child {
-        border-top-left-radius: 12px;
-        border-bottom-left-radius: 12px;
-    }
-    .scroll-card:last-child {
-        border-top-right-radius: 12px;
-        border-bottom-right-radius: 12px;
-    }
-}
-/* СТИЛИ ДЛЯ БЛОКА ОТЗЫВОВ */
-.reviews-section {
-    max-width: 900px;
-    margin: 60px auto 40px;
-    padding: 0 20px;
-}
-
-.review-card {
-    background: white;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-left: 4px solid var(--primary-blue);
-    text-align: left;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.review-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.12);
-}
-
-/* Звезды внутри отзыва */
-.stars-small {
-    color: #fbbf24; /* Янтарный цвет звезд */
-    font-size: 1.1rem;
-    margin-bottom: 12px;
-    line-height: 1;
-}
-
-/* Текст отзыва */
-.review-card p {
-    color: var(--text-dark);
-    font-size: 1rem;
-    line-height: 1.6;
-    flex-grow: 1;
-    margin-bottom: 15px;
-}
-
-/* Имя автора */
-.author {
-    margin-top: auto;
-    font-size: 0.9rem;
-    color: #64748b;
-    font-style: italic;
-}
-
-/* Сетка для отзывов на больших экранах */
-@media (min-width: 768px) {
-    .reviews-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 24px;
-    }
-}
-
-/* На мобильных отзывы идут друг под другом или по два */
-@media (max-width: 767px) {
-    .reviews-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-    .review-card {
-        padding: 20px;
-    }
-}
-
-/* Для средних экранов (планшеты) - по два в ряд */
-@media (min-width: 481px) and (max-width: 767px) {
-    .reviews-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-/* СТИЛИ ДЛЯ БЛОКА ОТЗЫВОВ V2 */
-.reviews-section-v2 {
-    max-width: 800px;
-    margin: 60px auto 40px;
-    padding: 0 20px;
-}
-
-.reviews-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.review-item {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    border-left: 4px solid var(--primary-blue);
-}
-
-.review-header {
-    display: flex;
+    align-items: center;
     justify-content: space-between;
-    margin-bottom: 8px;
-    font-size: 0.95rem;
-    color: #64748b;
+    gap: 12px;
+    padding: 0 16px;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    box-shadow: var(--shadow-sm);
+    animation: headerDrop 0.7s cubic-bezier(0.22,1,0.36,1) both;
 }
-.review-author { font-weight: 600; color: var(--text-dark); }
-.review-date { font-weight: 400; }
+[data-theme="dark"] .header { background: rgba(17,26,48,0.75); }
+@keyframes headerDrop { from{opacity:0;transform:translateY(-30px);} to{opacity:1;transform:translateY(0);} }
 
-.review-stars {
-    color: #fbbf24;
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-}
-
-.review-text {
-    color: var(--text-dark);
-    line-height: 1.6;
-    margin: 0;
-}
-
-/* Кнопка */
-.btn-open-form {
-    background: var(--primary-blue);
-    color: white;
-    border: none;
-    padding: 12px 30px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.btn-open-form:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
-}
-
-/* Звезды в модальном окне */
-.modal-stars {
+.logo {
     display: flex;
-    gap: 4px;
-    font-size: 2rem;
-    color: #e0e0e0;
-    cursor: pointer;
-    margin-bottom: 10px;
+    align-items: center;
+    gap: 9px;
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
-.modal-stars span:hover,
-.modal-stars span.active {
-    color: #fbbf24;
+.logo-mark {
+    width: 32px; height: 32px;
+    border-radius: 9px;
+    background: var(--grad-main);
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 15px;
+    box-shadow: 0 6px 18px rgba(37,99,235,0.35);
+    flex-shrink: 0;
+    animation: logoSpin 8s ease-in-out infinite;
 }
-
-/* Затемнение фона при открытом диалоге */
-body.dialog-open {
-    overflow: hidden;
-}
-body.dialog-open::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(2px);
-    z-index: 1999;
+@keyframes logoSpin {
+    0%,100% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(8deg) scale(1.06); }
 }
 .logo-text {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    
-    /* --- АНИМАЦИЯ ПЕРЕЛИВАНИЯ --- */
-    
-    /* Создаем фоновый градиент */
-    background-image: linear-gradient(40deg, violet, dodgerblue);
-    
-    /* Применяем градиент только к буквам */
+    background: var(--grad-main);
+    background-size: 200% 100%;
     -webkit-background-clip: text;
     background-clip: text;
-    
-    /* Делаем сами буквы прозрачными */
     -webkit-text-fill-color: transparent;
-    color: transparent;
-    
-    /* Инициализируем анимацию */
-    animation: logo-pulse 4s ease-in-out infinite alternate;
-    
-    /* Тень для объема (чтобы текст не терялся на фоне) */
-    text-shadow: 
-        0 1px 2px rgba(0,0,0,0.2),
-        0 2px 8px rgba(37, 99, 235, 0.2);
+    animation: logoFlow 6s linear infinite;
+}
+@keyframes logoFlow { 0%{background-position:0% 50%;} 100%{background-position:200% 50%;} }
+
+.nav-links {
+    display: flex;
+    gap: 2px;
+    margin: 0 auto;
+}
+.nav-links a {
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-soft);
+    transition: color 0.25s, background 0.25s;
+}
+.nav-links a:hover { color: var(--primary); background: var(--primary-soft); }
+
+.header-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 999px;
+    padding: 11px 20px;
+    transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s, background 0.25s;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+}
+.btn:active { transform: scale(0.96); }
+.btn i { font-size: 0.95em; }
+
+.btn-icon {
+    width: 42px; height: 42px;
+    padding: 0;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-soft);
+}
+.btn-icon:hover { background: var(--bg-alt); color: var(--primary); border-color: var(--primary); transform: translateY(-2px); }
+
+.btn-primary {
+    background: var(--grad-main);
+    background-size: 200% 200%;
+    color: white;
+    box-shadow: 0 6px 20px rgba(37,99,235,0.28);
+}
+.btn-primary:hover {
+    background-position: 100% 50%;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 14px 32px rgba(37,99,235,0.42);
+}
+.btn-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.4), transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+.btn-primary:hover::after { opacity: 1; }
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text-soft);
+    border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: var(--bg-alt); color: var(--primary); border-color: var(--primary); transform: translateY(-3px); }
+
+/* Dropdown */
+.dropdown-wrap { position: relative; }
+.dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 12px);
+    min-width: 300px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    display: none;
+    z-index: 600;
+}
+.dropdown.open { display: block; animation: dropIn 0.3s cubic-bezier(0.22,1,0.36,1); }
+@keyframes dropIn { from{opacity:0;transform:translateY(-12px) scale(0.96);} to{opacity:1;transform:translateY(0) scale(1);} }
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s, padding-left 0.2s;
+}
+.dropdown-item:last-child { border-bottom: none; }
+.dropdown-item:hover { background: var(--bg-alt); padding-left: 24px; }
+.dropdown-item strong { display: block; font-size: 0.9rem; }
+.dropdown-item small { color: var(--text-muted); font-size: 0.75rem; line-height: 1.4; }
+.dropdown-item > i { color: var(--primary); }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 70px 32px 50px;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 22px;
+    animation: fadeUp 0.7s 0.1s cubic-bezier(0.22,1,0.36,1) both;
+}
+.hero-badge .dot-live {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 0 rgba(16,185,129,0.6);
+    animation: pulseDot 2s infinite;
+}
+@keyframes pulseDot {
+    0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.6); }
+    70% { box-shadow: 0 0 0 10px rgba(16,185,129,0); }
+    100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+}
+.hero h1 {
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, var(--text) 0%, var(--primary) 55%, var(--violet) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fadeUp 0.7s 0.15s cubic-bezier(0.22,1,0.36,1) both;
+}
+[data-theme="dark"] .hero h1 {
+    background: linear-gradient(135deg, #f1f5f9 0%, #60a5fa 55%, #a78bfa 100%);
+    -webkit-background-clip: text; background-clip: text;
+}
+.hero p.lead {
+    font-size: 1.1rem;
+    color: var(--text-soft);
+    max-width: 560px;
+    margin-bottom: 30px;
+    animation: fadeUp 0.7s 0.2s cubic-bezier(0.22,1,0.36,1) both;
+}
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 36px;
+    animation: fadeUp 0.7s 0.25s cubic-bezier(0.22,1,0.36,1) both;
+}
+.hero-actions .btn { padding: 13px 24px; font-size: 0.95rem; }
+.hero-stats {
+    display: flex;
+    gap: 36px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.7s 0.3s cubic-bezier(0.22,1,0.36,1) both;
+}
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: var(--grad-main);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+}
+.stat-label { font-size: 0.83rem; color: var(--text-muted); margin-top: 6px; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(30px);} to{opacity:1;transform:translateY(0);} }
+
+.hero-visual {
+    position: relative;
+    perspective: 1400px;
+    animation: fadeUp 0.9s 0.3s cubic-bezier(0.22,1,0.36,1) both;
+}
+.hero-visual::before {
+    content: "";
+    position: absolute;
+    inset: -6%;
+    background: var(--grad-main);
+    filter: blur(70px);
+    opacity: 0.35;
+    border-radius: 50%;
+    z-index: -1;
+    animation: glowPulse 5s ease-in-out infinite;
+}
+@keyframes glowPulse {
+    0%,100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.05); }
+}
+.hero-visual img {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+    will-change: transform;
+}
+.float-badge {
+    position: absolute;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 10px 14px;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 5;
+    white-space: nowrap;
+}
+.float-badge i {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+.float-badge small { display: block; color: var(--text-muted); font-weight: 500; font-size: 0.7rem; }
+.fb-1 { top: 8%; left: -6%; animation: floatY 5s ease-in-out infinite; }
+.fb-1 i { background: linear-gradient(135deg, #10b981, #059669); }
+.fb-2 { bottom: 12%; right: -6%; animation: floatY 6s ease-in-out infinite 1s; }
+.fb-2 i { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.fb-3 { bottom: 42%; left: -8%; animation: floatY 7s ease-in-out infinite 0.5s; }
+.fb-3 i { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+@keyframes floatY {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
 }
 
-/* Правило для темной темы (цвета меняются, чтобы светиться на черном) */
-[data-theme="dark"] .logo-text {
-    background-image: linear-gradient(90deg, cyan, blue);
-    text-shadow: 
-        0 1px 2px rgba(255,255,255,0.1),
-        0 2px 8px rgba(37, 99, 235, 0.4);
+/* ============================================================
+   СЕКЦИИ
+   ============================================================ */
+section { padding: 80px 32px; }
+.container { max-width: 1400px; margin: 0 auto; }
+.section-head {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 50px;
+}
+.section-eyebrow {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+.section-head h2 {
+    font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 14px;
+}
+.section-head p { color: var(--text-soft); font-size: 1rem; }
+
+/* ============================================================
+   КАРУСЕЛЬ
+   ============================================================ */
+.carousel-section { background: var(--bg-alt); }
+.carousel { position: relative; max-width: 1200px; margin: 0 auto; }
+.carousel-viewport {
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    padding: 10px 0;
+    cursor: grab;
+}
+.carousel-viewport:active { cursor: grabbing; }
+.carousel-track {
+    display: flex;
+    gap: 22px;
+    transition: transform 0.6s cubic-bezier(0.22,1,0.36,1);
+    will-change: transform;
+}
+.feature-card {
+    flex: 0 0 calc((100% - 44px) / 3);
+    min-width: 0;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px 26px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s, border-color 0.4s;
+}
+.feature-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--grad-soft);
+    opacity: 0;
+    transition: opacity 0.4s;
+    z-index: 0;
+}
+.feature-card > * { position: relative; z-index: 1; }
+.feature-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); border-color: transparent; }
+.feature-card:hover::before { opacity: 1; }
+
+.feature-icon {
+    width: 60px; height: 60px;
+    border-radius: 17px;
+    display: grid;
+    place-items: center;
+    font-size: 24px;
+    color: white;
+    margin-bottom: 22px;
+    box-shadow: 0 10px 24px rgba(37,99,235,0.25);
+    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+}
+.feature-card:hover .feature-icon { transform: scale(1.1) rotate(-6deg); }
+.icon-grad-1 { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+.icon-grad-2 { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+.icon-grad-3 { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+.icon-grad-4 { background: linear-gradient(135deg, #10b981, #059669); }
+.icon-grad-5 { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.icon-grad-6 { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+.feature-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.01em; }
+.feature-card p { color: var(--text-soft); font-size: 0.93rem; line-height: 1.6; }
+
+.carousel-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin-top: 36px;
+}
+.carousel-arrow {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg-elev);
+    color: var(--text-soft);
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    font-size: 17px;
+    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+    box-shadow: var(--shadow-sm);
+    -webkit-tap-highlight-color: transparent;
+}
+.carousel-arrow:hover {
+    background: var(--grad-main);
+    color: white;
+    border-color: transparent;
+    transform: scale(1.1);
+    box-shadow: 0 10px 25px rgba(37,99,235,0.35);
+}
+.carousel-arrow:active { transform: scale(0.95); }
+.carousel-arrow:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+.carousel-arrow:disabled:hover { background: var(--bg-elev); color: var(--text-soft); border-color: var(--border); }
+
+.carousel-dots { display: flex; gap: 8px; align-items: center; }
+.carousel-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: none;
+    background: var(--border);
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+    -webkit-tap-highlight-color: transparent;
+}
+.carousel-dot.active { width: 28px; border-radius: 999px; background: var(--grad-main); }
+.carousel-dot:hover:not(.active) { background: var(--text-muted); transform: scale(1.2); }
+
+/* ============================================================
+   BENTO
+   ============================================================ */
+.bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.bento-item {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 30px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s;
+}
+.bento-item:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+.bento-item.wide { grid-column: span 2; }
+.bento-item.tall { grid-row: span 2; }
+.bento-item h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+.bento-item p { color: var(--text-soft); font-size: 0.93rem; }
+
+.bento-num {
+    font-size: 2.6rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    background: var(--grad-main);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    margin-bottom: 12px;
+}
+.bento-visual {
+    margin-top: 18px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+.bento-visual img { width: 100%; }
+
+.mini-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 80px;
+    margin-top: 18px;
+}
+.mini-chart span {
+    flex: 1;
+    background: var(--grad-main);
+    border-radius: 6px 6px 0 0;
+    opacity: 0.75;
+    animation: barGrow 1.4s cubic-bezier(0.22,1,0.36,1) both;
+    transform-origin: bottom;
+}
+.mini-chart span:nth-child(1) { height: 40%; animation-delay: 0.1s; }
+.mini-chart span:nth-child(2) { height: 65%; animation-delay: 0.2s; }
+.mini-chart span:nth-child(3) { height: 45%; animation-delay: 0.3s; }
+.mini-chart span:nth-child(4) { height: 85%; animation-delay: 0.4s; }
+.mini-chart span:nth-child(5) { height: 70%; animation-delay: 0.5s; }
+.mini-chart span:nth-child(6) { height: 100%; animation-delay: 0.6s; }
+@keyframes barGrow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+/* ============================================================
+   STEPS
+   ============================================================ */
+.steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    position: relative;
+}
+.steps::before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    left: 12%;
+    right: 12%;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, var(--border) 0 8px, transparent 8px 16px);
+    z-index: 0;
+}
+.step { text-align: center; position: relative; z-index: 1; }
+.step-num {
+    width: 76px; height: 76px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: var(--bg-elev);
+    border: 2px solid var(--border);
+    display: grid;
+    place-items: center;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--primary);
+    transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+    box-shadow: var(--shadow-sm);
+}
+.step:hover .step-num {
+    background: var(--grad-main);
+    color: white;
+    border-color: transparent;
+    transform: scale(1.1) rotate(-8deg);
+    box-shadow: 0 15px 35px rgba(37,99,235,0.35);
+}
+.step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+.step p { color: var(--text-soft); font-size: 0.93rem; max-width: 300px; margin: 0 auto; }
+
+/* ============================================================
+   ОТЗЫВЫ
+   ============================================================ */
+.reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.review {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s;
+}
+.review::before {
+    content: "\201C";
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 5rem;
+    font-family: Georgia, serif;
+    color: var(--primary);
+    opacity: 0.08;
+    line-height: 1;
+}
+.review:hover { transform: translateY(-8px); box-shadow: var(--shadow-md); }
+.review-stars { color: var(--amber); font-size: 0.95rem; letter-spacing: 2px; margin-bottom: 14px; }
+.review p { color: var(--text-soft); flex-grow: 1; margin-bottom: 20px; font-size: 0.95rem; }
+.review-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+.avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--grad-main);
+    display: grid;
+    place-items: center;
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+.review-author strong { display: block; font-size: 0.9rem; }
+.review-author small { color: var(--text-muted); font-size: 0.78rem; }
+
+/* ============================================================
+   ТАБЛИЦА
+   ============================================================ */
+.download-section { background: var(--bg-alt); }
+.table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg-elev);
+    box-shadow: var(--shadow-md);
+    -webkit-overflow-scrolling: touch;
+}
+table { width: 100%; min-width: 680px; border-collapse: collapse; }
+thead { background: var(--grad-main); color: white; }
+th {
+    padding: 16px 18px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+td { padding: 16px 18px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+tbody tr { transition: background 0.2s; }
+tbody tr:hover { background: var(--bg-alt); }
+tbody tr:last-child td { border-bottom: none; }
+.ver-tag {
+    display: inline-block;
+    padding: 3px 9px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-left: 6px;
+}
+.badge-soon {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    background: var(--bg-alt);
+    color: var(--text-muted);
+    border: 1px dashed var(--border);
+}
+.badge-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 9px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: white;
+    background: var(--grad-main);
+    background-size: 200% 200%;
+    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+    box-shadow: 0 4px 14px rgba(37,99,235,0.25);
+}
+.badge-dl:hover {
+    background-position: 100% 50%;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 10px 24px rgba(37,99,235,0.4);
 }
 
-/* Ключевые кадры анимации */
-@keyframes logo-pulse {
-    0% {
-        /* Смещение оттенка в более светлую сторону (влево по градиенту) */
-        filter: hue-rotate(0deg) saturate(1);
-    }
-    50% {
-        /* Смещение в более насыщенную синюю сторону */
-        filter: hue-rotate(15deg) saturate(1.2);
-    }
-    100% {
-        /* Возврат назад */
-        filter: hue-rotate(-10deg) saturate(1.1);
-    }
+/* ============================================================
+   CTA
+   ============================================================ */
+.cta-block {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px 36px;
+    border-radius: var(--radius-lg);
+    background: var(--grad-main);
+    background-size: 200% 200%;
+    animation: gradShift 12s ease infinite;
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+@keyframes gradShift { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
+.cta-block::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.2), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.15), transparent 40%);
+    pointer-events: none;
+}
+.cta-block h2 { font-size: clamp(1.5rem, 3vw, 2.3rem); font-weight: 800; margin-bottom: 14px; position: relative; }
+.cta-block p { font-size: 1rem; opacity: 0.9; margin-bottom: 28px; max-width: 560px; margin-left: auto; margin-right: auto; position: relative; }
+.cta-block .btn {
+    background: white;
+    color: var(--primary);
+    padding: 14px 32px;
+    font-size: 0.98rem;
+    position: relative;
+}
+.cta-block .btn:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 20px 40px rgba(0,0,0,0.25); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+    margin-top: auto;
+    padding: 55px 32px 26px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-alt);
+}
+.footer-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 36px;
+    margin-bottom: 36px;
+}
+.footer-brand p { color: var(--text-soft); font-size: 0.9rem; margin-top: 14px; max-width: 320px; }
+.footer-col h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 14px; }
+.footer-col a { display: block; color: var(--text-soft); font-size: 0.9rem; padding: 6px 0; transition: color 0.2s, padding-left 0.2s; }
+.footer-col a:hover { color: var(--primary); padding-left: 6px; }
+.footer-bottom {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    color: var(--text-muted);
+    font-size: 0.82rem;
 }
 
-/* Для совместимости со старыми браузерами Safari */
-@-webkit-keyframes logo-pulse {
-    0% { filter: hue-rotate(0deg); }
-    50% { filter: hue-rotate(150deg); }
-    100% { filter: hue-rotate(-100deg); }
+/* ============================================================
+   DIALOGS — ПРАВИЛЬНОЕ ЦЕНТРИРОВАНИЕ
+   ============================================================ */
+dialog {
+    /* Ключ: явное позиционирование по центру + сброс auto-margin от UA */
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(900px, calc(100% - 32px));
+    max-width: 900px;
+    max-height: calc(100dvh - 32px);
+    height: fit-content;
+    border: none;
+    border-radius: var(--radius-lg);
+    padding: 0;
+    background: var(--bg-elev);
+    color: var(--text);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.4);
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
 }
-    </style>
-	
+dialog[open] {
+    display: flex;
+    animation: dialogIn 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+@keyframes dialogIn {
+    from { opacity: 0; transform: scale(0.94) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+dialog::backdrop { background: rgba(15,23,42,0.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+
+.dialog-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+.dialog-head h2 { font-size: 1.15rem; font-weight: 700; }
+.dialog-close {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: var(--bg-alt);
+    color: var(--text-soft);
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    display: grid;
+    place-items: center;
+    transition: all 0.25s;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+.dialog-close:hover { background: #ef4444; color: white; transform: rotate(90deg); }
+
+.dialog-body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1 1 auto;
+    -webkit-overflow-scrolling: touch;
+}
+.dialog-actions {
+    display: flex;
+    gap: 10px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    background: var(--bg-elev);
+}
+
+/* ============================================================
+   REVEAL
+   ============================================================ */
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ============================================================
+   АДАПТИВ — ПЛАНШЕТ
+   ============================================================ */
+@media (max-width: 1100px) {
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; gap: 44px; text-align: center; padding-top: 50px; }
+    .hero p.lead { margin-left: auto; margin-right: auto; }
+    .hero-actions, .hero-stats { justify-content: center; }
+    .bento { grid-template-columns: repeat(2, 1fr); }
+    .bento-item.wide { grid-column: span 2; }
+    .bento-item.tall { grid-row: auto; }
+    .reviews-grid { grid-template-columns: 1fr 1fr; }
+    .reviews-grid .review:last-child { grid-column: span 2; }
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+    .steps::before { display: none; }
+    .steps { grid-template-columns: 1fr; gap: 40px; }
+    .feature-card { flex: 0 0 calc((100% - 22px) / 2); }
+}
+
+/* ============================================================
+   АДАПТИВ — ТЕЛЕФОН
+   ============================================================ */
+@media (max-width: 720px) {
+    :root { --header-h: 58px; }
+
+    section { padding: 55px 18px; }
+
+    /* Header: компактнее, кнопка "Попробовать" скрывается в пользу иконки */
+    .header {
+        width: calc(100% - 16px);
+        padding: 0 12px;
+        gap: 8px;
+        top: 8px;
+        margin: 8px auto 0;
+    }
+    .logo { font-size: 0.9rem; gap: 7px; }
+    .logo-mark { width: 28px; height: 28px; font-size: 13px; border-radius: 8px; }
+    .logo-text { max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
+    .header-actions { gap: 4px; }
+    .btn-icon { width: 38px; height: 38px; font-size: 0.9rem; }
+    .btn-primary .btn-label { display: none; }
+    .btn-primary { padding: 0; width: 38px; height: 38px; font-size: 0.9rem; }
+
+    /* Hero */
+    .hero { padding: 40px 18px 30px; gap: 32px; }
+    .hero h1 { font-size: 1.9rem; letter-spacing: -0.02em; }
+    .hero p.lead { font-size: 0.98rem; }
+    .hero-actions { flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .hero-actions .btn { width: 100%; padding: 13px 20px; }
+    .hero-stats { gap: 22px; justify-content: space-around; width: 100%; }
+    .stat-value { font-size: 1.4rem; }
+    .stat-label { font-size: 0.75rem; }
+    .float-badge { display: none; }
+    .hero-visual::before { inset: -4%; }
+
+    /* Карусель */
+    .carousel-section { padding: 55px 0; }
+    .carousel-section .container { padding: 0 18px; }
+    .carousel-viewport { padding: 6px 0; border-radius: var(--radius); }
+    .feature-card { flex: 0 0 82%; padding: 26px 22px; }
+    .feature-icon { width: 52px; height: 52px; font-size: 20px; border-radius: 14px; margin-bottom: 18px; }
+    .feature-card h3 { font-size: 1.05rem; }
+    .feature-card p { font-size: 0.88rem; }
+    .carousel-controls { margin-top: 24px; gap: 14px; }
+    .carousel-arrow { width: 44px; height: 44px; font-size: 15px; }
+
+    /* Bento */
+    .bento { grid-template-columns: 1fr; gap: 14px; }
+    .bento-item.wide, .bento-item.tall { grid-column: auto; grid-row: auto; }
+    .bento-item { padding: 24px; }
+    .bento-num { font-size: 2.1rem; }
+    .mini-chart { height: 60px; }
+
+    /* Steps */
+    .steps { gap: 32px; }
+    .step-num { width: 64px; height: 64px; font-size: 1.25rem; margin-bottom: 16px; }
+    .step h3 { font-size: 1rem; }
+    .step p { font-size: 0.88rem; }
+
+    /* Отзывы */
+    .reviews-grid { grid-template-columns: 1fr; gap: 16px; }
+    .reviews-grid .review:last-child { grid-column: auto; }
+    .review { padding: 22px; }
+
+    /* Таблица */
+    .table-wrap { border-radius: var(--radius-sm); }
+    table { min-width: 560px; }
+    th, td { padding: 12px 14px; font-size: 0.85rem; }
+    th { font-size: 0.72rem; }
+    .badge-dl { padding: 8px 12px; font-size: 0.75rem; }
+
+    /* CTA */
+    .cta-block { padding: 44px 22px; border-radius: var(--radius); }
+    .cta-block h2 { font-size: 1.5rem; }
+    .cta-block p { font-size: 0.92rem; margin-bottom: 22px; }
+    .cta-block .btn { padding: 13px 26px; font-size: 0.92rem; }
+
+    /* Footer */
+    footer { padding: 44px 18px 22px; }
+    .footer-inner { grid-template-columns: 1fr; gap: 28px; margin-bottom: 28px; }
+    .footer-bottom { flex-direction: column; text-align: center; gap: 8px; }
+
+    /* Dialogs — адаптация под телефон */
+    dialog {
+        width: calc(100% - 20px);
+        max-height: calc(100dvh - 20px);
+        border-radius: var(--radius);
+    }
+    .dialog-head { padding: 16px 18px; }
+    .dialog-head h2 { font-size: 1rem; }
+    .dialog-close { width: 34px; height: 34px; font-size: 18px; }
+    .dialog-body { padding: 18px; }
+    .dialog-actions {
+        padding: 14px 18px;
+        justify-content: stretch;
+    }
+    .dialog-actions .btn { flex: 1 1 auto; padding: 11px 16px; font-size: 0.85rem; }
+    iframe { height: 42vh !important; }
+}
+
+@media (max-width: 400px) {
+    .logo-text { display: none; }
+    .hero h1 { font-size: 1.7rem; }
+    .stat-value { font-size: 1.25rem; }
+    .feature-card { flex: 0 0 88%; }
+}
+</style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="header">
-    <div class="logo-container">
-    <h1 class="logo-text">Продуктор для бизнеса</h1>
+<!-- ФОН -->
+<canvas class="bg-canvas" id="bgCanvas"></canvas>
+<div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
 </div>
-    <div class="header-right">
-		<button class="btn-start" onclick="window.location.href = 'gallery.html'">
-    <i class="fa-solid fa-image"></i><small> &beta;</small>
-</button>
-        <button class="btn-start" onclick="document.getElementById('startup').showModal()">
-    <i class="fa-solid fa-play"></i>
-</button>
-        <div style="position:relative; display:inline-block;">
-            <button class="btn-start" id="downloadBtn">
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header class="header">
+    <a href="#" class="logo">
+        <span class="logo-mark"><i class="fa-solid fa-store"></i></span>
+        <span class="logo-text">Продуктор</span>
+    </a>
+
+    <nav class="nav-links">
+        <a href="#features">Возможности</a>
+        <a href="#how">Как работает</a>
+        <a href="#reviews">Отзывы</a>
+        <a href="#download">Скачать</a>
+    </nav>
+
+    <div class="header-actions">
+        <button class="btn btn-icon" onclick="window.location.href='gallery.html'" title="Галерея" aria-label="Галерея">
+            <i class="fa-solid fa-image"></i>
+        </button>
+        <button class="btn btn-icon" onclick="window.location.href='stab.html'" title="О программе" aria-label="О программе">
+            <i class="fa-solid fa-circle-info"></i>
+        </button>
+        <div class="dropdown-wrap">
+            <button class="btn btn-icon" id="downloadBtn" title="Скачать" aria-label="Скачать">
                 <i class="fa-solid fa-download"></i>
             </button>
-			<button class="btn-start" onclick="window.location.href = 'stab.html'">
-    <i class="fa-solid fa-info"></i>
-</button>
-            <div class="download-dropdown" id="downloadDropdown">
-                <div class="download-item" onclick="startDirectDownload('prod9_27.zip')">
-                    <div class="file-info"><strong>Веб-приложение</strong><small>Совместимо со всеми устройствами<br>v.26.9.27.0</small></div>
-                    <span><i class="fa-solid fa-arrow-to-bottom"></i></span>
+            <div class="dropdown" id="downloadDropdown">
+                <div class="dropdown-item" onclick="startDirectDownload('prod9_27.zip')">
+                    <div><strong>Веб-приложение</strong><small>Все устройства · v.26.9.27.0</small></div>
+                    <i class="fa-solid fa-arrow-down"></i>
                 </div>
-                <div class="download-item" onclick="alert('Beta')">
-                    <div class="file-info"><strong>Для Windows</strong><small>v.26.8.20.2</small></div>
-                    <span><i class="fa-solid fa-arrow-to-bottom"></i></span>
+                <div class="dropdown-item" onclick="alert('Beta')">
+                    <div><strong>Для Windows</strong><small>v.26.8.20.2</small></div>
+                    <i class="fa-solid fa-arrow-down"></i>
                 </div>
-				<div class="download-item" onclick="alert('Ещё в разработке')">
-                    <div class="file-info"><strong>Для Linux</strong><small>Недоступно</small></div>
-                    <span><i class="fa-solid fa-arrow-to-bottom"></i></span>
+                <div class="dropdown-item" onclick="alert('Ещё в разработке')">
+                    <div><strong>Для Linux</strong><small>Недоступно</small></div>
+                    <i class="fa-solid fa-arrow-down"></i>
                 </div>
             </div>
         </div>
+        <button class="btn btn-primary" onclick="document.getElementById('startup').showModal()" aria-label="Попробовать">
+            <i class="fa-solid fa-rocket"></i> <span class="btn-label">Попробовать</span>
+        </button>
     </div>
 </header>
 
-<!-- HERO SECTION -->
-<div class="hero-container flex"> <div class="hero-text"> <h1 class="main-title">Умный контроль продаж</h1> <p class="subtitle">Полноценное рабочее место кассира прямо в браузере. Управление товарами, гибкие скидки, сохранение сессий и стильный интерфейс.</p> <!-- Кнопка действия (опционально) -->
-	<button class="cta-button" onclick="document.getElementById('startup').showModal()">Попробовать бесплатно</button>
-	<button class="cta-button" onclick="window.location.href = 'https://github.com/q-acd/prod/'">Посмотреть исходный код</button>
-</div>
-<div class="hero-image"> <img src="interface.png" alt="Интерфейс программы Умный контроль продаж"> </div>
-    <!-- КАРУСЕЛЬ (исправлено: добавлены контейнеры и элементы управления) -->
- </div>   
- 
-<!-- КАРУСЕЛЬ-СКРОЛЛЕР -->
-<div class="scroll-track">
-    <div class="scroll-card">
-        <img alt="Работайте где угодно" width="80" height="80" id="01a0d856-e408-74fa-a4c8-968b44a41609" src="zip.png">
-        <h3>Работайте где угодно</h3>
-        <p>Приложение работает онлайн и оффлайн.</p>
-    </div>
-    <div class="scroll-card">
-        <img src="lock.webp" alt="Полная приватность" width="80" height="80">
-        <h3>Полная приватность</h3>
-        <p>Все ваши данные хранятся только на компьютере.</p>
-    </div>
-    <div class="scroll-card">
-        <img alt="Никаких платежей" width="80" height="80" id="01a0d856-e7ef-733e-9623-6901f33773ca" src="money.jpg">
-        <h3>Никаких платежей</h3>
-        <p>В приложении нет способов оплаты, а сама программа абсолютно бесплатна</p>
-    </div>
-	<div class="scroll-card">
-        <img alt="Никаких платежей" width="80" height="80" id="01a0d856-e7ef-733e-9623-6901f33773ca" src="style.png">
-        <h3>Персонализация</h3>
-        <p>Устанавливайте обои и меняйте цвет акцента.</p>
-    </div>
-	<div class="scroll-card">
-        <img alt="Никаких платежей" width="80" height="80" id="01a0d856-e7ef-733e-9623-6901f33773ca" src="night.png">
-        <h3>Тёмная тема</h3>
-        <p>Для комфортной работы в тёмное время суток.</p>
-    </div>
-	<div class="scroll-card">
-        <img alt="Никаких платежей" width="80" height="80" id="01a0d856-e7ef-733e-9623-6901f33773ca" src="git.jpg">
-        <h3>Открытый исходный код</h3>
-        <p>Используйте "Продуктор" в своих проектах, указав первоначальное авторство.</p>
-    </div>
-</div>
-
-<!-- БЛОК ОТЗЫВОВ V2 -->
-<div class="reviews-section-v2">
-    <h2 style="text-align: center; margin-bottom: 10px;">Нас выбирают пользователи</h2>
-    
-    <!-- Список отзывов -->
-    <div class="reviews-list">
-        <!-- Пример отзыва (шаблон). В реальности сюда будут подставляться данные -->
-        <div class="review-item">
-            <div class="review-header">
-                <span class="review-author">Ксения Воробьёва</span>
-                <span class="review-date">(10.09.2026)</span>
-            </div>
-            <div class="review-stars">★★★★★</div>
-            <p class="review-text">Программа просто находка! Перевел весь магазин, кассир освоил за 10 минут. Спасибо за бесплатный функционал.</p>
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero">
+    <div>
+        <span class="hero-badge"><span class="dot-live"></span> Бесплатно · Открытый код</span>
+        <h1>Умный контроль продаж прямо в браузере</h1>
+        <p class="lead">Полноценное рабочее место кассира без установки. Управление товарами, гибкие скидки, сохранение сессий и стильный интерфейс — всё в одном приложении.</p>
+        <div class="hero-actions">
+            <button class="btn btn-primary" onclick="document.getElementById('startup').showModal()">
+                <i class="fa-solid fa-play"></i> Попробовать бесплатно
+            </button>
+            <a class="btn btn-ghost" href="https://github.com/q-acd/prod/" target="_blank" rel="noopener">
+                <i class="fa-brands fa-github"></i> Исходный код
+            </a>
         </div>
-		<div class="review-item">
-            <div class="review-header">
-                <span class="review-author">Петр Киселёв</span>
-                <span class="review-date">(08.09.2026)</span>
+        <div class="hero-stats">
+            <div>
+                <div class="stat-value" data-count="100">0</div>
+                <div class="stat-label">% бесплатно</div>
             </div>
-            <div class="review-stars">★★★★☆</div>
-            <p class="review-text">Не ожидал, что такая простая программа сможет меня удивить! Тут и работа с товарами, и инструменты, и даже можно поставить обои! Разработчикам респект! Но не хватает большего функционала по поводу скана штрих-кодов. Буду ждать обновлений!</p>
+            <div>
+                <div class="stat-value" data-count="3">0</div>
+                <div class="stat-label">МБ занимает</div>
+            </div>
+            <div>
+                <div class="stat-value" data-count="10">0</div>
+                <div class="stat-label">минут на освоение</div>
+            </div>
         </div>
     </div>
-<div style="text-align: center; margin-top: 40px;">
-        <button class="btn-open-form" onclick="window.location.href = 'rate.html'" >Смотреть все отзывы</button>
-    </div>
-    <!-- Кнопка открытия формы -->
-    <div style="text-align: center; margin-top: 40px;">
-        <button class="btn-open-form" id="openReviewBtn" >Оставить отзыв</button>
-    </div>
-</div>
 
-<!-- МОДАЛЬНОЕ ОКНО ОСТАВИТЬ ОТЗЫВ -->
-<dialog id="reviewModal" style="
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: none;
-    border-radius: 16px;
-    padding: 0;
-    max-width: 500px;
-    width: 90%;
-    background: var(--bg-light);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-    z-index: 2000;
-">
-    <div style="position: relative; padding: 30px;">
-        <button type="button" onclick="document.getElementById('reviewModal').close();document.body.classList.remove('dialog-open');" style="
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: transparent;
-            border: none;
-            font-size: 24px;
-            line-height: 1;
-            cursor: pointer;
-            color: #64748b;
-        ">&times;</button>
-        
-        <h2 style="margin-top: 0; text-align: center;">Ваш отзыв</h2>
-        
-        <p>Оставить отзыв можно <a href="https://forms.yandex.ru/u/6ab7636049af475334c00f05">тут</a>.</p>
-		<p>Также вы можете рассмотреть отзывы <a href="rate.html">других пользователей тут</a>.</p>
+    <div class="hero-visual">
+        <img id="tiltImage" src="interface.png" alt="Интерфейс Продуктора">
+        <div class="float-badge fb-1">
+            <i class="fa-solid fa-lock"></i>
+            <div>Приватность<small>Данные локально</small></div>
+        </div>
+        <div class="float-badge fb-2">
+            <i class="fa-solid fa-bolt"></i>
+            <div>Мгновенно<small>Без установки</small></div>
+        </div>
+        <div class="float-badge fb-3">
+            <i class="fa-solid fa-wifi"></i>
+            <div>Офлайн<small>Работает всегда</small></div>
+        </div>
     </div>
-</dialog>
+</section>
 
-<!-- БЛОК СКАЧИВАНИЯ ВЕРСИЙ -->
-<div style="max-width: 800px; margin: 40px auto; padding: 20px;">
-    <h2 style="text-align: center; margin-bottom: 20px;">Файлы для загрузки</h2>
-    
-    <!-- ТАБЛИЦА ВЕРСИЙ -->
-    <div style="overflow-x:auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); background: white;">
-        <table style="width: 100%; min-width: 600px; border-collapse: collapse; text-align: left;">
-            <thead>
-                <tr style="background-color: #f8fafc; color: var(--primary-accent); font-weight: 600;">
-                    <th style="padding: 15px;">Версия</th>
-                    <th>Платформа</th>
-                    <th>Размер</th>
-                    <th>Дата</th>
-                    <th>Ссылка</th>
-                </tr>
-            </thead>
-            <tbody>
-				<tr style="background: #f9fafb;">
-                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.10.11.1</strong></td>
-                    <td style="padding: 15px;">WEB (Браузер)</td>
-                    <td style="padding: 15px;">Неизвестно</td>
-                    <td style="padding: 15px;">С 11 октября</td>
-                    <td style="padding: 15px; text-align: right;">
-                        <a class="btn btn-outline" style="padding: 8px 16px; font-size: 13px;">СКОРО!</a>
-                    </td>
-                </tr>
-				<tr style="border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.9.27.0 (С Lite 26.9.27.0)</strong></td>
-                    <td style="padding: 15px;">WEB (Браузер)</td>
-                    <td style="padding: 15px;">~ 3 MB</td>
-                    <td style="padding: 15px;">27.09.2026</td>
-                    <td style="padding: 15px; text-align: right;">
-                        <a href="prod9_27.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
-                    </td>
-                </tr>
-                <!-- АКТУАЛЬНАЯ ВЕРСИЯ -->
-				<tr style="border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.9.21.1 (С Lite 26.9.8.1)</strong></td>
-                    <td style="padding: 15px;">WEB (Браузер)</td>
-                    <td style="padding: 15px;">~ 3 MB</td>
-                    <td style="padding: 15px;">21.09.2026</td>
-                    <td style="padding: 15px; text-align: right;">
-                        <a href="prod9_21.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
-                    </td>
-                </tr>
-				<tr style="border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.9.9.1 (С Lite 26.9.8.1)</strong></td>
-                    <td style="padding: 15px;">WEB (Браузер)</td>
-                    <td style="padding: 15px;">~ 2 MB</td>
-                    <td style="padding: 15px;">09.09.2026</td>
-                    <td style="padding: 15px; text-align: right;">
-                        <a href="prod9_9.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
-                    </td>
-                </tr>
-				<tr style="border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.9.8.1</strong></td>
-                    <td style="padding: 15px;">WEB (Браузер)</td>
-                    <td style="padding: 15px;">~ 2 MB</td>
-                    <td style="padding: 15px;">08.09.2026</td>
-                    <td style="padding: 15px; text-align: right;">
-                        <a href="prod9_8.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
-                    </td>
-                </tr>
-                <tr style="border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.9.7.1</strong></td>
-                    <td style="padding: 15px;">WEB (Браузер)</td>
-                    <td style="padding: 15px;">~ 1 MB</td>
-                    <td style="padding: 15px;">07.09.2026</td>
-                    <td style="padding: 15px; text-align: right;">
-                        <a href="prod9_7.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
-                    </td>
-                </tr>
-				<tr style="border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.9.1.1</strong></td>
-                    <td style="padding: 15px;">WEB (Браузер)</td>
-                    <td style="padding: 15px;">~ 1 MB</td>
-                    <td style="padding: 15px;">01.09.2026</td>
-                    <td style="padding: 15px; text-align: right;">
-                        <a href="prod9_1.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
-                    </td>
-                </tr>
-				<tr style="border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.8.27.1</strong></td>
-                    <td style="padding: 15px;">WEB (Браузер)</td>
-                    <td style="padding: 15px;">~ 1 MB</td>
-                    <td style="padding: 15px;">27.08.2026</td>
-                    <td style="padding: 15px; text-align: right;">
-                        <a href="prod27.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
-                    </td>
-                </tr>
-				<tr style="border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.8.20.1</strong></td>
-                    <td style="padding: 15px;">WEB (Браузер)</td>
-                    <td style="padding: 15px;">~ 1 MB</td>
-                    <td style="padding: 15px;">21.08.2026</td>
-                    <td style="padding: 15px; text-align: right;">
-                        <a href="prod20.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
-                    </td>
-                </tr>
-				<tr style="border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.8.19.1</strong></td>
-                    <td style="padding: 15px;">WEB (Браузер)</td>
-                    <td style="padding: 15px;">~ 1 MB</td>
-                    <td style="padding: 15px;">19.08.2026</td>
-                    <td style="padding: 15px; text-align: right;">
-                        <a href="prod19.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
-                    </td>
-                </tr>
-				<tr style="border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.8.18.1</strong></td>
-                    <td style="padding: 15px;">WEB (Браузер)</td>
-                    <td style="padding: 15px;">~ 1 MB</td>
-                    <td style="padding: 15px;">18.08.2026</td>
-                    <td style="padding: 15px; text-align: right;">
-                        <a href="prod18.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
-                    </td>
-                </tr>
-				<tr style="border-bottom: 1px solid #e2e8f0;">
-                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.8.17.1</strong></td>
-                    <td style="padding: 15px;">WEB (Браузер)</td>
-                    <td style="padding: 15px;">~ 1 MB</td>
-                    <td style="padding: 15px;">17.08.2026</td>
-                    <td style="padding: 15px; text-align: right;">
-                        <a href="prod.zip" download class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
-                    </td>
-                </tr>
-                
-                <!-- СТАРЫЕ ВЕРСИИ -->
-                <tr style="background: #f9fafb;">
-                    <td style="padding: 15px; font-weight: 600;"><strong>v.26.8.20.2</strong></td>
-                    <td style="padding: 15px;">Windows (.exe)</td>
-                    <td style="padding: 15px;">~ 2 MB</td>
-                    <td style="padding: 15px;">20.08.2026</td>
-                    <td style="padding: 15px; text-align: right;">
-                        <a href="prod20.exe" download class="btn btn-outline" style="padding: 8px 16px; font-size: 13px;">СКАЧАТЬ</a>
-                    </td>
-                </tr>
-                
-                
-            </tbody>
-        </table>
+<!-- ============================================================
+     КАРУСЕЛЬ ФУНКЦИЙ
+     ============================================================ -->
+<section id="features" class="carousel-section">
+    <div class="container">
+        <div class="section-head reveal">
+            <span class="section-eyebrow">Возможности</span>
+            <h2>Всё, что нужно для работы</h2>
+            <p>Продуманные инструменты для кассира и владельца магазина</p>
+        </div>
+
+        <div class="carousel reveal" id="featureCarousel">
+            <div class="carousel-viewport" id="carouselViewport">
+                <div class="carousel-track" id="carouselTrack">
+                    <article class="feature-card">
+                        <div class="feature-icon icon-grad-1"><i class="fa-solid fa-cloud"></i></div>
+                        <h3>Работайте где угодно</h3>
+                        <p>Приложение одинаково хорошо работает онлайн и офлайн. Все данные синхронизируются автоматически.</p>
+                    </article>
+                    <article class="feature-card">
+                        <div class="feature-icon icon-grad-2"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h3>Полная приватность</h3>
+                        <p>Все ваши данные хранятся только на вашем компьютере. Никаких облачных серверов и слежки.</p>
+                    </article>
+                    <article class="feature-card">
+                        <div class="feature-icon icon-grad-4"><i class="fa-solid fa-gift"></i></div>
+                        <h3>Никаких платежей</h3>
+                        <p>В приложении нет способов оплаты, а сама программа абсолютно бесплатна. Навсегда.</p>
+                    </article>
+                    <article class="feature-card">
+                        <div class="feature-icon icon-grad-3"><i class="fa-solid fa-palette"></i></div>
+                        <h3>Персонализация</h3>
+                        <p>Устанавливайте свои обои, меняйте цвет акцента и настраивайте интерфейс под себя.</p>
+                    </article>
+                    <article class="feature-card">
+                        <div class="feature-icon icon-grad-5"><i class="fa-solid fa-moon"></i></div>
+                        <h3>Тёмная тема</h3>
+                        <p>Комфортная работа в тёмное время суток. Глаза скажут спасибо, а кассир — тем более.</p>
+                    </article>
+                    <article class="feature-card">
+                        <div class="feature-icon icon-grad-6"><i class="fa-brands fa-github"></i></div>
+                        <h3>Открытый исходный код</h3>
+                        <p>Используйте «Продуктор» в своих проектах, указав первоначальное авторство.</p>
+                    </article>
+                </div>
+            </div>
+
+            <div class="carousel-controls">
+                <button class="carousel-arrow" id="prevBtn" aria-label="Назад"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="carousel-dots" id="carouselDots"></div>
+                <button class="carousel-arrow" id="nextBtn" aria-label="Вперёд"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
-<!-- FOOTER -->
+<!-- ============================================================
+     BENTO
+     ============================================================ -->
+<section>
+    <div class="container">
+        <div class="section-head reveal">
+            <span class="section-eyebrow">Почему мы</span>
+            <h2>Продуктор в цифрах</h2>
+            <p>Мы создали инструмент, которым приятно пользоваться каждый день</p>
+        </div>
+
+        <div class="bento reveal">
+            <div class="bento-item wide">
+                <div class="bento-num">~3 МБ</div>
+                <h3>Вес приложения</h3>
+                <p>Легче любой фотографии. Открывается мгновенно даже на слабом оборудовании.</p>
+                <div class="mini-chart">
+                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+            </div>
+            <div class="bento-item tall">
+                <div class="bento-num">0 ₽</div>
+                <h3>Стоимость навсегда</h3>
+                <p>Никаких подписок, скрытых платежей и «премиум-тарифов». Всё честно.</p>
+                <div class="bento-visual">
+                    <img src="money.jpg" alt="Бесплатно">
+                </div>
+            </div>
+            <div class="bento-item">
+                <div class="bento-num">100%</div>
+                <h3>Данные локально</h3>
+                <p>Ваша информация не покидает ваш компьютер. Полный контроль.</p>
+            </div>
+            <div class="bento-item">
+                <div class="bento-num">24/7</div>
+                <h3>Работает всегда</h3>
+                <p>Онлайн и офлайн — приложение не подведёт в самый нужный момент.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     КАК ЭТО РАБОТАЕТ
+     ============================================================ -->
+<section id="how">
+    <div class="container">
+        <div class="section-head reveal">
+            <span class="section-eyebrow">Просто</span>
+            <h2>Начните за три шага</h2>
+            <p>Развернуть рабочее место кассира проще, чем кажется</p>
+        </div>
+
+        <div class="steps reveal">
+            <div class="step">
+                <div class="step-num">01</div>
+                <h3>Скачайте архив</h3>
+                <p>Загрузите веб-приложение или версию для вашей платформы из таблицы ниже.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">02</div>
+                <h3>Откройте в браузере</h3>
+                <p>Распакуйте архив и откройте index.html. Установка не требуется.</p>
+            </div>
+            <div class="step">
+                <div class="step-num">03</div>
+                <h3>Начните продавать</h3>
+                <p>Добавьте товары, настройте скидки и приступайте к работе за кассой.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     ОТЗЫВЫ
+     ============================================================ -->
+<section id="reviews">
+    <div class="container">
+        <div class="section-head reveal">
+            <span class="section-eyebrow">Отзывы</span>
+            <h2>Нас выбирают пользователи</h2>
+            <p>Реальные истории от владельцев магазинов и кассиров</p>
+        </div>
+
+        <div class="reviews-grid reveal">
+            <article class="review">
+                <div class="review-stars">★★★★★</div>
+                <p>Программа просто находка! Перевёл весь магазин, кассир освоил за 10 минут. Спасибо за бесплатный функционал.</p>
+                <div class="review-author">
+                    <div class="avatar">КВ</div>
+                    <div><strong>Ксения Воробьёва</strong><small>10.09.2026</small></div>
+                </div>
+            </article>
+            <article class="review">
+                <div class="review-stars">★★★★☆</div>
+                <p>Не ожидал, что такая простая программа сможет меня удивить! Тут и работа с товарами, и инструменты, и даже можно поставить обои. Буду ждать обновлений!</p>
+                <div class="review-author">
+                    <div class="avatar">ПК</div>
+                    <div><strong>Пётр Киселёв</strong><small>08.09.2026</small></div>
+                </div>
+            </article>
+            <article class="review">
+                <div class="review-stars">★★★★★</div>
+                <p>Идеально для небольшого магазина. Ничего лишнего, всё под рукой. Отдельное спасибо за тёмную тему — вечером самое то.</p>
+                <div class="review-author">
+                    <div class="avatar">АМ</div>
+                    <div><strong>Алексей Морозов</strong><small>01.09.2026</small></div>
+                </div>
+            </article>
+        </div>
+
+        <div style="text-align:center; margin-top:44px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap;" class="reveal">
+            <button class="btn btn-primary" onclick="window.location.href='rate.html'">
+                <i class="fa-solid fa-comments"></i> Смотреть все отзывы
+            </button>
+            <button class="btn btn-ghost" id="openReviewBtn">
+                <i class="fa-solid fa-pen"></i> Оставить отзыв
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     СКАЧИВАНИЕ
+     ============================================================ -->
+<section id="download" class="download-section">
+    <div class="container">
+        <div class="section-head reveal">
+            <span class="section-eyebrow">Загрузки</span>
+            <h2>Выберите версию</h2>
+            <p>Актуальные и предыдущие сборки «Продуктора»</p>
+        </div>
+
+        <div class="table-wrap reveal">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Версия</th>
+                        <th>Платформа</th>
+                        <th>Размер</th>
+                        <th>Дата</th>
+                        <th style="text-align:right;">Ссылка</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>v.26.10.11.1</strong><span class="ver-tag">NEW</span></td>
+                        <td>WEB (Браузер)</td>
+                        <td>Неизвестно</td>
+                        <td>С 11 октября</td>
+                        <td style="text-align:right;"><span class="badge-soon">СКОРО</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v.26.9.27.0</strong><span class="ver-tag">Lite 26.9.27.0</span></td>
+                        <td>WEB (Браузер)</td>
+                        <td>~ 3 MB</td>
+                        <td>27.09.2026</td>
+                        <td style="text-align:right;"><a href="prod9_27.zip" download class="badge-dl"><i class="fa-solid fa-download"></i> Скачать</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v.26.9.21.1</strong><span class="ver-tag">Lite 26.9.8.1</span></td>
+                        <td>WEB (Браузер)</td>
+                        <td>~ 3 MB</td>
+                        <td>21.09.2026</td>
+                        <td style="text-align:right;"><a href="prod9_21.zip" download class="badge-dl"><i class="fa-solid fa-download"></i> Скачать</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v.26.9.9.1</strong><span class="ver-tag">Lite 26.9.8.1</span></td>
+                        <td>WEB (Браузер)</td>
+                        <td>~ 2 MB</td>
+                        <td>09.09.2026</td>
+                        <td style="text-align:right;"><a href="prod9_9.zip" download class="badge-dl"><i class="fa-solid fa-download"></i> Скачать</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v.26.9.8.1</strong></td>
+                        <td>WEB (Браузер)</td>
+                        <td>~ 2 MB</td>
+                        <td>08.09.2026</td>
+                        <td style="text-align:right;"><a href="prod9_8.zip" download class="badge-dl"><i class="fa-solid fa-download"></i> Скачать</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v.26.9.7.1</strong></td>
+                        <td>WEB (Браузер)</td>
+                        <td>~ 1 MB</td>
+                        <td>07.09.2026</td>
+                        <td style="text-align:right;"><a href="prod9_7.zip" download class="badge-dl"><i class="fa-solid fa-download"></i> Скачать</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v.26.9.1.1</strong></td>
+                        <td>WEB (Браузер)</td>
+                        <td>~ 1 MB</td>
+                        <td>01.09.2026</td>
+                        <td style="text-align:right;"><a href="prod9_1.zip" download class="badge-dl"><i class="fa-solid fa-download"></i> Скачать</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v.26.8.27.1</strong></td>
+                        <td>WEB (Браузер)</td>
+                        <td>~ 1 MB</td>
+                        <td>27.08.2026</td>
+                        <td style="text-align:right;"><a href="prod27.zip" download class="badge-dl"><i class="fa-solid fa-download"></i> Скачать</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v.26.8.20.1</strong></td>
+                        <td>WEB (Браузер)</td>
+                        <td>~ 1 MB</td>
+                        <td>21.08.2026</td>
+                        <td style="text-align:right;"><a href="prod20.zip" download class="badge-dl"><i class="fa-solid fa-download"></i> Скачать</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v.26.8.19.1</strong></td>
+                        <td>WEB (Браузер)</td>
+                        <td>~ 1 MB</td>
+                        <td>19.08.2026</td>
+                        <td style="text-align:right;"><a href="prod19.zip" download class="badge-dl"><i class="fa-solid fa-download"></i> Скачать</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v.26.8.18.1</strong></td>
+                        <td>WEB (Браузер)</td>
+                        <td>~ 1 MB</td>
+                        <td>18.08.2026</td>
+                        <td style="text-align:right;"><a href="prod18.zip" download class="badge-dl"><i class="fa-solid fa-download"></i> Скачать</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v.26.8.17.1</strong></td>
+                        <td>WEB (Браузер)</td>
+                        <td>~ 1 MB</td>
+                        <td>17.08.2026</td>
+                        <td style="text-align:right;"><a href="prod.zip" download class="badge-dl"><i class="fa-solid fa-download"></i> Скачать</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>v.26.8.20.2</strong></td>
+                        <td>Windows (.exe)</td>
+                        <td>~ 2 MB</td>
+                        <td>20.08.2026</td>
+                        <td style="text-align:right;"><a href="prod20.exe" download class="badge-dl"><i class="fa-solid fa-download"></i> Скачать</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     CTA
+     ============================================================ -->
+<section>
+    <div class="container">
+        <div class="cta-block reveal">
+            <h2>Готовы начать?</h2>
+            <p>Присоединяйтесь к пользователям, которые уже перевели свой бизнес на «Продуктор».</p>
+            <button class="btn" onclick="document.getElementById('startup').showModal()">
+                <i class="fa-solid fa-rocket"></i> Попробовать бесплатно
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
 <footer>
-    <div class="footer-contact">
-        Связаться с разработчиком: <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <div class="logo">
+                <span class="logo-mark"><i class="fa-solid fa-store"></i></span>
+                <span class="logo-text">Продуктор</span>
+            </div>
+            <p>Умные решения для вашего бизнеса. Полноценное рабочее место кассира прямо в браузере.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Продукт</h4>
+            <a href="#features">Возможности</a>
+            <a href="#how">Как работает</a>
+            <a href="#download">Скачать</a>
+            <a href="gallery.html">Галерея</a>
+        </div>
+        <div class="footer-col">
+            <h4>Поддержка</h4>
+            <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>
+            <a href="stab.html">О программе</a>
+            <a href="rate.html">Отзывы</a>
+            <a href="https://github.com/q-acd/prod/" target="_blank" rel="noopener">GitHub</a>
+        </div>
     </div>
-    <div class="footer-year">© <span id="currentYear"></span> Морковчик. Версия сайта: 26.9.29.1</div>
+    <div class="footer-bottom">
+        <span>© <span id="currentYear">2026</span> Морковчик. Все права защищены.</span>
+        <span>Версия сайта: 26.10.09.2</span>
+    </div>
 </footer>
 
-<!-- DIALOG WINDOW (исправлено: добавлена кнопка закрытия) -->
-<dialog id="startup" style="
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: none;
-    border-radius: 15px;
-    padding: 0;
-    max-width: 800px;
-    width: 90%;
-    z-index: 1000;
-    background: var(--bg-light);
-">
-    <div style="position: relative; padding: 30px; max-height: 80vh; overflow-y: auto;">
-        <button type="button" onclick="document.getElementById('startup').close()" style="
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: transparent;
-            border: none;
-            font-size: 28px;
-            line-height: 1;
-            cursor: pointer;
-            color: #64748b;
-        ">&times;</button>
-        
-        <h2 style="margin-top: 0;">Перед началом работы</h2>
-        <p>Пожалуйста, ознакомьтесь с лицензионным соглашением:<br><i style="color:gray">С 1 октября условися лицензии изменятся!<i></p>
-        
-        <iframe src="license.html" style="width: 100%; height: 50vh; border: 1px solid var(--border-light); border-radius: 8px;"></iframe><br><br>
-        
-        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-		<button type="button" onclick="window.location.href='Лицензионное соглашение.pdf'" style="background: red; border: 1px solid var(--border-light); padding: 10px 20px; border-radius: 8px; cursor: pointer;color:white;width: calc(50% - 40px)">Скачать в PDF</button>
-            <button type="button" onclick="window.location.href='version.html'" style="background-color: var(--success-green); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;width: calc(50% - 40px)">Я согласен</button>
-            <button type="button" onclick="document.getElementById('startup').close()" style="background: transparent; border: 1px solid var(--border-light); padding: 10px 20px; border-radius: 8px; cursor: pointer;">Отмена</button>
-			
-        </div>
+<!-- ============================================================
+     ДИАЛОГ ЛИЦЕНЗИИ
+     ============================================================ -->
+<dialog id="startup">
+    <div class="dialog-head">
+        <h2><i class="fa-solid fa-file-contract" style="color:var(--primary);margin-right:8px;"></i> Перед началом</h2>
+        <button class="dialog-close" onclick="document.getElementById('startup').close()" aria-label="Закрыть">×</button>
+    </div>
+    <div class="dialog-body">
+        <p style="margin-bottom:14px;">Пожалуйста, ознакомьтесь с лицензионным соглашением.<br>
+        <i style="color:var(--text-muted);font-size:0.88rem;">С 1 октября условия лицензии изменятся!</i></p>
+        <iframe src="license.html" style="width:100%; height:50vh; border:1px solid var(--border); border-radius:12px; display:block;"></iframe>
+    </div>
+    <div class="dialog-actions">
+        <button class="btn btn-ghost" style="color:#ef4444;border-color:#ef4444;" onclick="window.location.href='Лицензионное соглашение.pdf'">
+            <i class="fa-solid fa-file-pdf"></i> PDF
+        </button>
+        <button class="btn btn-ghost" onclick="document.getElementById('startup').close()">Отмена</button>
+        <button class="btn btn-primary" onclick="window.location.href='version.html'">
+            <i class="fa-solid fa-check"></i> Я согласен
+        </button>
     </div>
 </dialog>
+
+<!-- ============================================================
+     ДИАЛОГ ОТЗЫВА
+     ============================================================ -->
+<dialog id="reviewModal">
+    <div class="dialog-head">
+        <h2><i class="fa-solid fa-pen" style="color:var(--primary);margin-right:8px;"></i> Оставить отзыв</h2>
+        <button class="dialog-close" onclick="document.getElementById('reviewModal').close()" aria-label="Закрыть">×</button>
+    </div>
+    <div class="dialog-body">
+        <p style="margin-bottom:16px;">Мы будем рады услышать ваше мнение о «Продукторе»!</p>
+        <p style="margin-bottom:12px;">Оставить отзыв можно <a href="https://forms.yandex.ru/u/6ab7636049af475334c00f05" style="color:var(--primary);font-weight:600;text-decoration:underline;">по этой ссылке</a>.</p>
+        <p>Также вы можете посмотреть отзывы <a href="rate.html" style="color:var(--primary);font-weight:600;text-decoration:underline;">других пользователей тут</a>.</p>
+    </div>
+    <div class="dialog-actions">
+        <button class="btn btn-primary" onclick="document.getElementById('reviewModal').close()">Понятно</button>
+    </div>
+</dialog>
+
 <script>
-// --- РЕФЕРЕНСЫ ---
+/* ============================================================
+   ГОД
+   ============================================================ */
+document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+/* ============================================================
+   DROPDOWN
+   ============================================================ */
 const downloadBtn = document.getElementById('downloadBtn');
 const downloadDropdown = document.getElementById('downloadDropdown');
 
-
-// ГОД В ФУТЕРЕ
-document.getElementById('currentYear').textContent = new Date().getFullYear();
-
-function hideWarning() {
-    const box = document.getElementById('warnbox');
-    if (box) {
-        box.style.display = 'none';
-    }
-}
-
-
-// --- ЛОГИКА МЕНЮ СКАЧИВАНИЯ ---
 downloadBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    downloadDropdown.classList.toggle('active');
+    downloadDropdown.classList.toggle('open');
 });
-window.addEventListener('click', () => {
-    if (downloadDropdown.classList.contains('active')) {
-        downloadDropdown.classList.remove('active');
+window.addEventListener('click', () => downloadDropdown.classList.remove('open'));
+function startDirectDownload(filename) { window.location.href = filename; }
+
+/* ============================================================
+   ФИЗИКА: ЧАСТИЦЫ (отключаем на слабых устройствах)
+   ============================================================ */
+(function initParticles() {
+    const canvas = document.getElementById('bgCanvas');
+    if (!canvas) return;
+    const isMobile = window.matchMedia('(max-width: 720px)').matches;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) { canvas.style.display = 'none'; return; }
+
+    const ctx = canvas.getContext('2d');
+    let w, h, particles = [];
+    const mouse = { x: null, y: null, radius: isMobile ? 0 : 170 };
+
+    function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
     }
-});
-function startDirectDownload(filename) {
-    window.location.href = filename;
-}
+    window.addEventListener('resize', resize);
+    resize();
 
-// --- ЛОГИКА МОДАЛЬНОГО ОКНА ОТЗЫВОВ ---
-
-// Открытие окна
-document.getElementById('openReviewBtn').addEventListener('click', function() {
-    document.getElementById('reviewModal').showModal();
-    document.body.classList.add('dialog-open');
-    // Сброс формы при открытии
-    document.getElementById('reviewForm').reset();
-    setRating(5); 
-});
-
-
-
-// Работа звезд в форме
-const modalStars = document.querySelectorAll('#modalStars span');
-const ratingInput = document.getElementById('reviewRating');
-
-modalStars.forEach(star => {
-    star.addEventListener('click', function() {
-        const value = this.getAttribute('data-value');
-        setRating(value);
-    });
-});
-
-function setRating(value) {
-    ratingInput.value = value;
-    modalStars.forEach(star => {
-        if (star.getAttribute('data-value') <= value) {
-            star.classList.add('active');
-        } else {
-            star.classList.remove('active');
+    class Particle {
+        constructor() {
+            this.x = Math.random() * w;
+            this.y = Math.random() * h;
+            this.vx = (Math.random() - 0.5) * 0.45;
+            this.vy = (Math.random() - 0.5) * 0.45;
+            this.size = Math.random() * 2.4 + 1;
         }
-    });
-}
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            if (this.x < 0 || this.x > w) this.vx *= -1;
+            if (this.y < 0 || this.y > h) this.vy *= -1;
 
-// Отправка формы
-async function submitReview(event) {
-        event.preventDefault();
-    
-    const name = document.getElementById('reviewName').value;
-    const email = document.getElementById('reviewEmail').value;
-    const rating = document.getElementById('reviewRating').value;
-    const text = document.getElementById('reviewText').value;
-
-    const submitBtn = event.target.querySelector('button[type="submit"]');
-    const btnText = submitBtn.innerHTML;
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Отправка...';
-
-    try {
-        // Отправляем данные на Formspree через Fetch API
-        const response = await fetch('https://formspree.io/f/mppwlggg', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json'
-            },
-            body: new FormData(event.target)
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            alert('Спасибо! Ваш отзыв отправлен на модерацию.');
-            
-            /* === ОПЦИОНАЛЬНО: АВТОДОБАВЛЕНИЕ ОТЗЫВА НА СТРАНИЦУ === */
-            // Если вы хотите, чтобы отзыв появлялся сразу без перезагрузки,
-            // раскомментируйте код ниже (уберите /* и */):
-           
-            const reviewsList = document.querySelector('.reviews-list');
-            const date = new Date().toLocaleDateString('ru-RU'); // Текущая дата
-
-            const newItem = document.createElement('div');
-            newItem.className = 'review-item';
-            newItem.innerHTML = `
-                <div class="review-header">
-                    <span class="review-author">${name}</span>
-                    <span class="review-date">(${date})</span>
-                </div>
-                <div class="review-stars">${"★".repeat(rating)}${"☆".repeat(5 - rating)}</div>
-                <p class="review-text">${text}</p>
-            `;
-            reviewsList.prepend(newItem); // Добавляем в начало списка
-            
-
-        } else {
-            // Если сервер вернул ошибку (например, спам-фильтр или невалидная почта)
-            if (result.message) {
-                alert('Ошибка: ' + result.message);
-            } else {
-                alert('Что-то пошло не так. Попробуйте позже.');
+            if (mouse.x !== null && mouse.radius > 0) {
+                const dx = this.x - mouse.x;
+                const dy = this.y - mouse.y;
+                const dist = Math.hypot(dx, dy);
+                if (dist < mouse.radius) {
+                    const force = (mouse.radius - dist) / mouse.radius;
+                    const angle = Math.atan2(dy, dx);
+                    this.x += Math.cos(angle) * force * 4.5;
+                    this.y += Math.sin(angle) * force * 4.5;
+                }
             }
         }
-        
-    } catch (error) {
-        // Если пропал интернет или запрос заблокирован провайдером
-        alert('Не удалось отправить отзыв. Проверьте подключение к интернету.');
-    } finally {
-        // Возвращаем кнопку в исходное состояние и закрываем окно
-        document.getElementById('reviewModal').close();
-        document.body.classList.remove('dialog-open');
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = btnText;
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            const c = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+            ctx.fillStyle = c + '55';
+            ctx.fill();
+        }
     }
+
+    function createParticles() {
+        particles = [];
+        const count = isMobile ? Math.min(28, Math.floor(w / 30)) : Math.min(85, Math.floor(w / 18));
+        for (let i = 0; i < count; i++) particles.push(new Particle());
+    }
+    createParticles();
+    window.addEventListener('resize', createParticles);
+
+    if (!isMobile) {
+        window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        window.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+    }
+
+    function connect() {
+        if (isMobile) return;
+        for (let a = 0; a < particles.length; a++) {
+            for (let b = a + 1; b < particles.length; b++) {
+                const dx = particles[a].x - particles[b].x;
+                const dy = particles[a].y - particles[b].y;
+                const d = Math.hypot(dx, dy);
+                if (d < 130) {
+                    ctx.beginPath();
+                    ctx.moveTo(particles[a].x, particles[a].y);
+                    ctx.lineTo(particles[b].x, particles[b].y);
+                    const c = getComputedStyle(document.documentElement).getPropertyValue('--violet').trim();
+                    ctx.strokeStyle = c + '22';
+                    ctx.lineWidth = 0.6;
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach(p => { p.update(); p.draw(); });
+        connect();
+        requestAnimationFrame(animate);
+    }
+    animate();
+})();
+
+/* ============================================================
+   МАГНИТНЫЕ КНОПКИ (только на устройствах с мышью)
+   ============================================================ */
+if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.querySelectorAll('.btn-primary, .btn-ghost').forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+            const r = btn.getBoundingClientRect();
+            const x = e.clientX - r.left - r.width / 2;
+            const y = e.clientY - r.top - r.height / 2;
+            btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px) scale(1.04)`;
+            btn.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+            btn.style.setProperty('--my', (e.clientY - r.top) + 'px');
+        });
+        btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+    });
 }
 
-// Назначаем обработчик отправки на форму
-document.getElementById('reviewForm').addEventListener('submit', submitReview);
+/* ============================================================
+   3D НАКЛОН HERO (только на desktop)
+   ============================================================ */
+if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    (function initTilt() {
+        const img = document.getElementById('tiltImage');
+        if (!img) return;
+        const parent = img.parentElement;
+        parent.addEventListener('mousemove', (e) => {
+            const r = parent.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width - 0.5;
+            const y = (e.clientY - r.top) / r.height - 0.5;
+            img.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 14}deg) translateZ(20px) scale(1.02)`;
+        });
+        parent.addEventListener('mouseleave', () => {
+            img.style.transform = 'rotateY(0) rotateX(0) translateZ(0) scale(1)';
+        });
+    })();
+}
 
-// Закрытие по клику на затемнение
-document.body.addEventListener('click', function(e) {
-    const modal = document.getElementById('reviewModal');
-    if (e.target === document.body && modal.open) {
-        modal.close();
-        document.body.classList.remove('dialog-open');
+/* ============================================================
+   ПАРАЛЛАКС ORBS (только desktop)
+   ============================================================ */
+if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    window.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 2;
+        const y = (e.clientY / window.innerHeight - 0.5) * 2;
+        document.querySelectorAll('.orb').forEach((orb, i) => {
+            const speed = (i + 1) * 12;
+            orb.style.marginLeft = `${x * speed}px`;
+            orb.style.marginTop = `${y * speed}px`;
+        });
+    });
+}
+
+/* ============================================================
+   КАРУСЕЛЬ
+   ============================================================ */
+(function initCarousel() {
+    const track = document.getElementById('carouselTrack');
+    const viewport = document.getElementById('carouselViewport');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const dotsContainer = document.getElementById('carouselDots');
+    if (!track) return;
+
+    const cards = Array.from(track.children);
+    let currentIndex = 0;
+    let autoTimer = null;
+
+    function getVisibleCount() {
+        if (window.innerWidth < 720) return 1;
+        if (window.innerWidth < 1100) return 2;
+        return 3;
     }
+    function getMaxIndex() { return Math.max(0, cards.length - getVisibleCount()); }
+    function getCardWidth() {
+        const card = cards[0];
+        const gap = parseFloat(getComputedStyle(track).gap) || 22;
+        return card.getBoundingClientRect().width + gap;
+    }
+
+    function buildDots() {
+        dotsContainer.innerHTML = '';
+        const max = getMaxIndex();
+        for (let i = 0; i <= max; i++) {
+            const dot = document.createElement('button');
+            dot.className = 'carousel-dot' + (i === currentIndex ? ' active' : '');
+            dot.setAttribute('aria-label', `Слайд ${i + 1}`);
+            dot.addEventListener('click', () => { goTo(i); restartAuto(); });
+            dotsContainer.appendChild(dot);
+        }
+    }
+    function updateDots() {
+        Array.from(dotsContainer.children).forEach((d, i) => {
+            d.classList.toggle('active', i === currentIndex);
+        });
+    }
+    function goTo(index) {
+        const max = getMaxIndex();
+        currentIndex = Math.max(0, Math.min(index, max));
+        const offset = -currentIndex * getCardWidth();
+        track.style.transform = `translateX(${offset}px)`;
+        updateDots();
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex === max;
+    }
+    function next() { goTo(currentIndex >= getMaxIndex() ? 0 : currentIndex + 1); }
+    function prev() { goTo(currentIndex <= 0 ? getMaxIndex() : currentIndex - 1); }
+
+    function startAuto() { stopAuto(); autoTimer = setInterval(next, 4500); }
+    function stopAuto() { if (autoTimer) clearInterval(autoTimer); }
+    function restartAuto() { stopAuto(); startAuto(); }
+
+    prevBtn.addEventListener('click', () => { prev(); restartAuto(); });
+    nextBtn.addEventListener('click', () => { next(); restartAuto(); });
+
+    // Свайп
+    let startX = 0, startY = 0, isDragging = false;
+    viewport.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        isDragging = true;
+        stopAuto();
+    }, { passive: true });
+    viewport.addEventListener('touchend', (e) => {
+        if (!isDragging) return;
+        const dx = e.changedTouches[0].clientX - startX;
+        const dy = e.changedTouches[0].clientY - startY;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+            dx < 0 ? next() : prev();
+        }
+        isDragging = false;
+        startAuto();
+    });
+
+    // Мышь-drag
+    viewport.addEventListener('mousedown', (e) => {
+        startX = e.clientX;
+        isDragging = true;
+        stopAuto();
+        viewport.style.cursor = 'grabbing';
+    });
+    window.addEventListener('mouseup', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        if (Math.abs(dx) > 60) { dx < 0 ? next() : prev(); }
+        isDragging = false;
+        startAuto();
+        viewport.style.cursor = 'grab';
+    });
+
+    viewport.addEventListener('mouseenter', stopAuto);
+    viewport.addEventListener('mouseleave', startAuto);
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            currentIndex = Math.min(currentIndex, getMaxIndex());
+            buildDots();
+            goTo(currentIndex);
+        }, 150);
+    });
+
+    buildDots();
+    goTo(0);
+    startAuto();
+})();
+
+/* ============================================================
+   REVEAL ON SCROLL
+   ============================================================ */
+(function initReveal() {
+    const items = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) {
+        items.forEach(i => i.classList.add('visible'));
+        return;
+    }
+    const obs = new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+            if (en.isIntersecting) {
+                en.target.classList.add('visible');
+                obs.unobserve(en.target);
+            }
+        });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    items.forEach(i => obs.observe(i));
+})();
+
+/* ============================================================
+   СЧЁТЧИКИ
+   ============================================================ */
+(function initCounters() {
+    const counters = document.querySelectorAll('[data-count]');
+    if (!('IntersectionObserver' in window)) return;
+    const obs = new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+            if (!en.isIntersecting) return;
+            const el = en.target;
+            const target = parseInt(el.dataset.count, 10);
+            let current = 0;
+            const step = Math.max(1, Math.floor(target / 40));
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) { current = target; clearInterval(timer); }
+                el.textContent = current;
+            }, 30);
+            obs.unobserve(el);
+        });
+    }, { threshold: 0.5 });
+    counters.forEach(c => obs.observe(c));
+})();
+
+/* ============================================================
+   ДИАЛОГИ
+   ============================================================ */
+document.getElementById('openReviewBtn').addEventListener('click', () => {
+    document.getElementById('reviewModal').showModal();
+});
+['reviewModal', 'startup'].forEach(id => {
+    const dlg = document.getElementById(id);
+    dlg.addEventListener('click', (e) => {
+        // Закрытие по клику на backdrop (клик вне dialog)
+        if (e.target === dlg) {
+            const r = dlg.getBoundingClientRect();
+            const inDialog =
+                e.clientX >= r.left && e.clientX <= r.right &&
+                e.clientY >= r.top && e.clientY <= r.bottom;
+            if (!inDialog) dlg.close();
+        }
+    });
+});
+
+/* ============================================================
+   ПЛАВНЫЙ СКРОЛЛ
+   ============================================================ */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+        const id = a.getAttribute('href');
+        if (id.length > 1 && document.querySelector(id)) {
+            e.preventDefault();
+            document.querySelector(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
 });
 </script>
-
 </body>
 </html>
