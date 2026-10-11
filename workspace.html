@@ -81,6 +81,32 @@ input, textarea, [contenteditable] {
     50% { box-shadow: 0 0 10px var(--primary-accent), 0 0 40px var(--primary-accent), 0 0 70px var(--primary-accent); }
 }
 @keyframes modalSlide { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+@keyframes snowFall {
+    0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0.3; }
+}
+@keyframes freezeIn {
+    0% { filter: brightness(1) saturate(1); }
+    50% { filter: brightness(1.3) saturate(0.5) hue-rotate(180deg); }
+    100% { filter: brightness(1) saturate(1); }
+}
+@keyframes frostPulse {
+    0%, 100% { box-shadow: inset 0 0 30px rgba(200,230,255,0.3); }
+    50% { box-shadow: inset 0 0 60px rgba(200,230,255,0.7); }
+}
+@keyframes snowballRoll {
+    0% { transform: translateY(0) scale(0.3) rotate(0deg); opacity: 1; }
+    70% { transform: translateY(120px) scale(1) rotate(180deg); opacity: 0.9; }
+    100% { transform: translateY(300px) scale(1.3) rotate(360deg); opacity: 0; }
+}
+@keyframes snowballFall {
+    0% { transform: translateY(0) scale(0.3); opacity: 1; }
+    100% { transform: translateY(250px) scale(1.4); opacity: 0; }
+}
+@keyframes creditsScroll {
+    0% { transform: translateY(100%); }
+    100% { transform: translateY(-100%); }
+}
 
 .modal-window { animation: modalSlide 0.3s ease-out; }
 .menu-item, .product-card, .pay-button, .search-input,
@@ -113,7 +139,7 @@ body { display: flex; flex-direction: column; background-size: cover;
     padding: 0 15px; gap: 10px; flex-shrink: 0; z-index: 9000; position: relative;
     margin: 7px; border-radius: 50px; box-shadow: 0px 0px 30px var(--primary-accent); }
 .session-info { font-weight: 500; overflow: hidden; text-overflow: ellipsis;
-    white-space: nowrap; max-width: 300px; font-size: 14px; }
+    white-space: nowrap; max-width: 300px; font-size: 14px; cursor: pointer; }
 .settings-toggle { background: none; border: none; color: white; font-size: 24px;
     cursor: pointer; padding: 5px; line-height: 1; transform: rotateZ(90deg); }
 .top-nav-menu { display: flex; align-items: center; gap: 12px; }
@@ -500,20 +526,29 @@ body { display: flex; flex-direction: column; background-size: cover;
 .pm-tool-btn:hover { background: rgba(255,255,255,0.35); }
 .pm-tool-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .pm-tool-btn-primary { background: white; color: var(--primary-accent); font-weight: 600; }
-.pm-body { display: flex; flex-grow: 1; overflow: hidden; }
+.pm-body { display: flex; flex-grow: 1; overflow: hidden; position: relative; }
 .pm-sidebar { width: 300px; padding: 15px; border-right: 1px solid var(--border-light);
     overflow-y: auto; display: flex; flex-direction: column; gap: 10px;
     flex-shrink: 0; }
 [data-theme="dark"] .pm-sidebar { border-right-color: #334155; }
 .pm-canvas { flex-grow: 1; position: relative; overflow: auto;
     background: #f0f0f0; display: flex; align-items: center;
-    justify-content: center; padding: 20px; }
+    justify-content: center; padding: 20px;
+    transform-origin: top left; cursor: grab; }
+.pm-canvas:active { cursor: grabbing; }
 [data-theme="dark"] .pm-canvas { background: #0a0f1a; }
 
 .pm-price-tag { width: 594px; height: 420px; background: white;
     border: 2px solid #ccc; position: relative;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15); color: #000;
-    overflow: hidden; flex-shrink: 0; }
+    overflow: hidden; flex-shrink: 0;
+    transform-origin: top left; }
+.pm-watermark {
+    position: absolute; bottom: 6px; right: 8px;
+    font-size: 9px; color: rgba(0,0,0,0.25); text-align: right;
+    line-height: 1.3; pointer-events: none; z-index: 5;
+    white-space: pre-line;
+}
 
 .pm-element { position: absolute; cursor: move;
     min-width: 20px; min-height: 20px;
@@ -587,6 +622,179 @@ body { display: flex; flex-direction: column; background-size: cover;
 
 #customPromptModal.active,
 #customConfirmModal.active { display: flex !important; }
+
+/* ====== ИСПРАВЛЕННЫЕ ИНСТРУМЕНТЫ ====== */
+.tool-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 18px; border-radius: 12px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-light);
+    cursor: pointer; transition: all 0.2s ease;
+    margin-bottom: 8px;
+    text-align: left;
+}
+.tool-item:hover {
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 15px rgba(37,99,235,0.15);
+    transform: translateX(3px);
+}
+.tool-item .tool-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--stat-bg); color: var(--primary-accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+}
+.tool-item .tool-text {
+    flex: 1; min-width: 0;
+}
+.tool-item .tool-title {
+    font-weight: 600; font-size: 15px; margin-bottom: 2px;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.tool-item .tool-desc {
+    font-size: 12px; color: var(--gray-muted); line-height: 1.4;
+}
+.tool-item .tool-badge {
+    font-size: 10px; padding: 2px 8px; border-radius: 999px;
+    background: var(--primary-accent); color: white;
+    font-weight: 700; flex-shrink: 0;
+}
+.tool-item .tool-badge.pro {
+    background: gold; color: black;
+}
+.tool-item .tool-arrow {
+    color: var(--gray-muted); flex-shrink: 0;
+}
+
+/* Snow cursor */
+body.winter-cursor, body.winter-cursor * {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28"><circle cx="14" cy="14" r="12" fill="white" opacity="0.9" stroke="%232563eb" stroke-width="1.5"/><text x="14" y="19" font-size="14" text-anchor="middle">❄</text></svg>') 14 14, auto !important;
+}
+
+/* Snowball */
+.snowball {
+    position: fixed; z-index: 9999995; pointer-events: none;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ffffff, #d0e4f5 60%, #a8c8e8);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2), inset -3px -3px 6px rgba(0,0,0,0.1);
+    animation: snowballRoll 2.5s cubic-bezier(0.4, 0, 0.8, 1) forwards;
+}
+.snowball::after {
+    content: ''; position: absolute;
+    top: 6px; left: 6px; width: 8px; height: 8px;
+    border-radius: 50%; background: rgba(255,255,255,0.9);
+}
+
+/* Snowflakes */
+.snowflake {
+    position: fixed; top: -10px; z-index: 9999997; pointer-events: none;
+    color: white; font-size: 1.5em; text-shadow: 0 0 5px rgba(255,255,255,0.8);
+    animation: snowFall linear forwards;
+}
+.trail-snowflake {
+    position: fixed; z-index: 9999996; pointer-events: none;
+    color: rgba(255,255,255,0.7); font-size: 0.8em;
+    text-shadow: 0 0 4px rgba(255,255,255,0.5);
+    animation: snowFall linear forwards;
+}
+
+/* Freeze overlay */
+.freeze-overlay {
+    position: fixed; inset: 0; z-index: 9999996; pointer-events: none;
+    background: radial-gradient(circle at center, rgba(200,230,255,0) 0%, rgba(200,230,255,0.4) 100%);
+    animation: freezeIn 1s ease-out, frostPulse 2s ease-in-out infinite;
+    display: none;
+}
+.freeze-overlay.active { display: block; }
+
+/* Developer menu */
+.dev-menu-btn {
+    position: fixed; bottom: 60px; right: 20px; z-index: 9999995;
+    background: var(--primary-accent); color: white; border: none;
+    width: 48px; height: 48px; border-radius: 50%; cursor: pointer;
+    font-size: 22px; display: none; align-items: center; justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.dev-menu-btn.active { display: flex; }
+
+/* Welcome greeting */
+.welcome-greeting {
+    position: fixed; top: 60px; left: 50%; transform: translateX(-50%);
+    background: var(--primary-accent); color: white; padding: 14px 28px;
+    border-radius: 30px; font-size: 18px; font-weight: 600; z-index: 9999994;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3); display: none;
+    animation: modalSlide 0.5s ease-out;
+}
+.welcome-greeting.active { display: block; }
+
+/* Receipt editor */
+.receipt-editor-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    z-index: 9999993; display: none; align-items: center; justify-content: center;
+}
+.receipt-editor-overlay.active { display: flex; }
+.receipt-editor-container {
+    width: 98%; height: 92vh; background: white; border-radius: 16px;
+    display: flex; flex-direction: column; overflow: hidden;
+}
+[data-theme="dark"] .receipt-editor-container { background: #1e293b; }
+
+/* Sales stats */
+.sales-stat-card {
+    background: var(--stat-bg); border-radius: 12px; padding: 20px;
+    text-align: center; flex: 1; min-width: 150px;
+}
+.sales-stat-card .value {
+    font-size: 28px; font-weight: 700; color: var(--primary-accent);
+}
+.sales-stat-card .label {
+    font-size: 13px; color: var(--gray-muted); margin-top: 4px;
+}
+
+/* Progress modal for price tags */
+.pm-progress-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+    z-index: 9999999; display: none; align-items: center; justify-content: center;
+}
+.pm-progress-overlay.active { display: flex; }
+.pm-progress-window {
+    background: var(--bg-light); border-radius: 16px; padding: 30px;
+    text-align: center; min-width: 320px; max-width: 90vw;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+.pm-progress-bar {
+    width: 100%; height: 8px; background: var(--border-light);
+    border-radius: 999px; overflow: hidden; margin: 20px 0;
+}
+.pm-progress-fill {
+    height: 100%; width: 0%; background: var(--primary-accent);
+    border-radius: 999px; transition: width 0.3s;
+}
+
+/* Credits modal */
+.credits-modal {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+    z-index: 9999999; display: none; align-items: center; justify-content: center;
+    overflow: hidden;
+}
+.credits-modal.active { display: flex; }
+.credits-content {
+    text-align: center; color: white; animation: creditsScroll 20s linear forwards;
+}
+.credits-content h1 { font-size: 2.5rem; margin-bottom: 20px; color: var(--primary-accent); }
+.credits-content h2 { font-size: 1.5rem; margin: 15px 0; }
+.credits-content p { font-size: 1.1rem; margin: 8px 0; opacity: 0.8; }
+
+/* Receipt preview */
+#receiptPreview {
+    transition: all 0.2s;
+}
+.receipt-element {
+    position: absolute; cursor: pointer; padding: 2px;
+    border: 1px solid transparent; border-radius: 4px;
+}
+.receipt-element:hover { border-color: rgba(37,99,235,0.4); }
+.receipt-element.selected { border-color: var(--primary-accent); border-style: dashed; }
 </style>
 </head>
 <body>
@@ -596,7 +804,7 @@ body { display: flex; flex-direction: column; background-size: cover;
 <div class="loader-container" id="pageLoader">
     <div style="text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px;">
         <div class="logo-wrapper">П</div>
-        <h1 style="font-size:1.8rem; font-weight:700; color:var(--text-dark); margin:0;">Продуктор</h1>
+        <h1 style="font-size:1.8rem; font-weight:700; color:var(--text-dark); margin:0;" id="loaderTitle">Продуктор для бизнеса</h1>
         <p style="color:var(--gray-muted); font-size:14px;">Рабочее пространство кассира</p>
     </div>
     <div class="progress-wrapper">
@@ -607,7 +815,7 @@ body { display: flex; flex-direction: column; background-size: cover;
 
 <header class="header" id="mainHeader" style="display:none;">
     <div style="display:flex; align-items:center; gap:12px;">
-        <span class="session-info" id="sessionInfo">Продуктор v.26.10.11.0</span>
+        <span class="session-info" id="sessionInfo">Продуктор v.26.10.11.4</span>
     </div>
     <div class="top-nav-menu">
         <div id="helper-toggle-btn" style="cursor:pointer; display:flex; align-items:center; gap:8px; font-size:14px; color:white;">
@@ -703,22 +911,58 @@ body { display: flex; flex-direction: column; background-size: cover;
     </div>
 </div>
 
+<!-- ИНСТРУМЕНТЫ — исправленные отступы -->
 <div class="modal-backdrop" id="pluginModal">
-    <div class="modal-window">
+    <div class="modal-window" style="max-width:520px;">
         <button class="close-modal" onclick="closeAllModals()">&times;</button>
-        <h2 style="font-size:1.5rem;">Инструменты <span style="background:var(--primary-accent);color:white;padding:5px 10px;border-radius:10px;font-size:14px;">β</span></h2>
-        <br>
-        <div class="menu-item" onclick="toggleNotes();closeAllModals()" style="border-radius:15px;border:1px solid var(--border-light);">
-            <span class="mi">sticky_note_2</span> Заметки<br><small>Записывайте то, что нельзя забыть!</small><span class="hotkey">v.1.1</span>
-        </div><br>
-        <div class="menu-item" onclick="toggleCalculator();closeAllModals()" style="border-radius:15px;border:1px solid var(--border-light);">
-            <span class="mi">calculate</span> Калькулятор<br><small>Считайте не отходя от кассы!</small><span class="hotkey">v.1.1</span>
-        </div><br>
-        <div class="menu-item" onclick="closeAllModals();openPriceMaker()" style="border-radius:15px;border:1px solid var(--border-light);">
-            <span class="mi">sell</span> Создать ценник<br><small>Редактор ценников (A4)</small><span class="hotkey" style="background:gold;color:black;">PRO</span>
-        </div><br>
-        <div class="menu-item" onclick="closeAllModals();openModal('statistics')" style="border-radius:15px;border:1px solid var(--border-light);">
-            <span class="mi">analytics</span> Статистика<br><small>Анализ последних операций</small><span class="hotkey">Alt+U</span>
+        <h2 style="font-size:1.5rem;margin-bottom:20px;">Инструменты <span style="background:var(--primary-accent);color:white;padding:5px 12px;border-radius:10px;font-size:14px;margin-left:8px;">β</span></h2>
+        <div class="tool-item" onclick="toggleNotes();closeAllModals()">
+            <div class="tool-icon"><span class="mi">sticky_note_2</span></div>
+            <div class="tool-text">
+                <div class="tool-title">Заметки</div>
+                <div class="tool-desc">Записывайте то, что нельзя забыть!</div>
+            </div>
+            <span class="tool-badge">v.1.1</span>
+        </div>
+        <div class="tool-item" onclick="toggleCalculator();closeAllModals()">
+            <div class="tool-icon"><span class="mi">calculate</span></div>
+            <div class="tool-text">
+                <div class="tool-title">Калькулятор</div>
+                <div class="tool-desc">Считайте не отходя от кассы!</div>
+            </div>
+            <span class="tool-badge">v.1.1</span>
+        </div>
+        <div class="tool-item" onclick="closeAllModals();openPriceMaker()">
+            <div class="tool-icon"><span class="mi">sell</span></div>
+            <div class="tool-text">
+                <div class="tool-title">Создать ценник</div>
+                <div class="tool-desc">Редактор ценников (A4)</div>
+            </div>
+            <span class="tool-badge pro">PRO</span>
+        </div>
+        <div class="tool-item" onclick="closeAllModals();openModal('statistics')">
+            <div class="tool-icon"><span class="mi">analytics</span></div>
+            <div class="tool-text">
+                <div class="tool-title">Статистика</div>
+                <div class="tool-desc">Анализ последних операций</div>
+            </div>
+            <span class="tool-badge">Alt+U</span>
+        </div>
+        <div class="tool-item" onclick="closeAllModals();openReceiptEditor()">
+            <div class="tool-icon"><span class="mi">receipt_long</span></div>
+            <div class="tool-text">
+                <div class="tool-title">Изменить вид чека</div>
+                <div class="tool-desc">Настройка шаблона чека</div>
+            </div>
+            <span class="tool-badge pro">PRO</span>
+        </div>
+        <div class="tool-item" onclick="closeAllModals();openSalesStats()">
+            <div class="tool-icon"><span class="mi">bar_chart</span></div>
+            <div class="tool-text">
+                <div class="tool-title">Статистика продаж</div>
+                <div class="tool-desc">Продажи и прибыль</div>
+            </div>
+            <span class="tool-badge pro">PRO</span>
         </div>
     </div>
 </div>
@@ -824,7 +1068,7 @@ body { display: flex; flex-direction: column; background-size: cover;
     <div class="modal-window">
         <button class="close-modal" onclick="closeAllModals()">&times;</button>
         <h2>О Продукторе</h2>
-        <p>Рабочая среда кассира версии <strong>26.10.11.0</strong>.</p>
+        <p>Рабочая среда кассира версии <strong>26.10.11.4</strong>.</p>
         <p>&copy; 2026 Морковчик. Все права защищены.</p>
     </div>
 </div>
@@ -864,6 +1108,7 @@ body { display: flex; flex-direction: column; background-size: cover;
             <div class="tab-item" data-tab="personal" onclick="switchTab('personal')"><span class="mi">person</span> Персональные</div>
             <div class="tab-item" data-tab="performance" onclick="switchTab('performance')"><span class="mi">bolt</span> Скорость</div>
             <div class="tab-item" data-tab="pro" onclick="switchTab('pro')"><span class="mi">star</span> PRO</div>
+            <div class="tab-item" id="experimentsTab" data-tab="experiments" onclick="switchTab('experiments')" style="display:none;"><span class="mi">science</span> Эксперименты</div>
             <div class="tab-item" data-tab="about" onclick="switchTab('about')"><span class="mi">info</span> О программе</div>
         </div>
 
@@ -955,8 +1200,6 @@ body { display: flex; flex-direction: column; background-size: cover;
 
         <div class="settings-content" id="content-pro">
             <h2 style="margin-top:0;">Активация PRO</h2>
-
-            <!-- ИМЯ БЕЗ КОДА -->
             <div style="margin-bottom:20px;padding:15px;border-radius:8px;background:var(--stat-bg);">
                 <h3 style="font-size:14px;margin-bottom:8px;">Ваше имя в приложении</h3>
                 <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -965,13 +1208,11 @@ body { display: flex; flex-direction: column; background-size: cover;
                 </div>
                 <p style="font-size:12px;color:var(--gray-muted);margin-top:8px;">Это имя будет показано в меню вместо "Пользователь". Код не требуется.</p>
             </div>
-
             <div style="margin-bottom:20px;padding:15px;border-radius:8px;background:var(--stat-bg);">
                 <p style="font-weight:600;margin-bottom:5px;">Статус PRO: <span id="proStatusText" style="color:var(--danger-accent);">Не активирован</span></p>
                 <p style="font-size:13px;color:var(--gray-muted);" id="proExpiryText"></p>
                 <p style="font-size:12px;color:var(--gray-muted);margin-top:8px;" id="proKeyMasked"></p>
             </div>
-
             <div class="form-group"><label class="form-label">Код доступа (SKU)</label><input type="text" class="form-input" id="proSkuInput" placeholder="PROD-QXXXXX-XXX"></div>
             <div class="btn-group">
                 <button class="btn btn-primary" onclick="activateLicenseFromSettings()">Активировать PRO</button>
@@ -979,10 +1220,61 @@ body { display: flex; flex-direction: column; background-size: cover;
             </div>
         </div>
 
+        <div class="settings-content" id="content-experiments">
+            <h2 style="margin-top:0;">Экспериментальные функции</h2>
+            <p style="font-size:13px;color:var(--gray-muted);margin-bottom:20px;">Эти функции находятся в разработке и могут работать нестабильно.</p>
+
+            <div class="form-group" style="flex-direction:row;align-items:center;gap:10px;">
+                <input type="checkbox" id="toggleNewYear" onchange="toggleNewYearMode(this.checked)">
+                <label for="toggleNewYear" style="margin:0;">Новогоднее настроение</label>
+                <span class="hotkey" style="background:gold;color:black;">Эксперимент</span>
+            </div>
+            <p style="font-size:12px;color:var(--gray-muted);margin:-10px 0 15px 30px;">Включает снег, анимацию замерзания и зимний курсор. Удерживайте ЛКМ 2-3 секунды для снежка.</p>
+
+            <div class="form-group" style="flex-direction:row;align-items:center;gap:10px;">
+                <input type="checkbox" id="toggleGreeting" onchange="toggleGreetingMode(this.checked)">
+                <label for="toggleGreeting" style="margin:0;">Показывать имя при входе</label>
+                <span class="hotkey" style="background:gold;color:black;">Эксперимент</span>
+            </div>
+            <p style="font-size:12px;color:var(--gray-muted);margin:-10px 0 15px 30px;">Показывает приветствие на экране загрузки (только с PRO).</p>
+
+            <div class="form-group">
+                <label class="form-label">Вид чека</label>
+                <select id="receiptViewSelect" onchange="changeReceiptView(this.value)" style="padding:8px;border-radius:6px;width:100%;box-sizing:border-box;">
+                    <option value="standard">Стандартный</option>
+                    <option value="custom">Свой</option>
+                    <option value="ask">Спрашивать при оплате</option>
+                </select>
+                <span class="hotkey" style="background:gold;color:black;margin-top:5px;display:inline-block;">Эксперимент</span>
+            </div>
+            <button class="btn btn-outline" onclick="openReceiptEditor()" style="margin-top:8px;width:100%;">Редактор чека</button>
+
+            <hr style="margin:20px 0;border-color:var(--border-light);">
+
+            <div class="form-group" style="flex-direction:row;align-items:center;gap:10px;">
+                <input type="checkbox" id="toggleGradient" onchange="toggleGradientAccent(this.checked)">
+                <label for="toggleGradient" style="margin:0;">Градиентный акцент</label>
+                <span class="hotkey" style="background:gold;color:black;">Эксперимент</span>
+            </div>
+            <div id="gradientControls" style="display:none;margin-left:30px;">
+                <div class="form-group">
+                    <label class="form-label">Второй цвет</label>
+                    <input type="color" id="gradientColor2" value="#9333ea" style="width:50px;height:50px;border:1px solid var(--border-light);border-radius:4px;cursor:pointer;padding:0;background:none;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Приоритетный цвет</label>
+                    <select id="gradientPriority" style="padding:8px;border-radius:6px;width:100%;box-sizing:border-box;">
+                        <option value="1">Цвет 1 (основной)</option>
+                        <option value="2">Цвет 2</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
         <div class="settings-content" id="content-about">
             <h2 style="margin-top:0;">О программе</h2>
             <p style="font-size:14px;line-height:1.6;">
-                «Продуктор» версии 26.10.11.0.<br><br>
+                «Продуктор» версии 26.10.11.4.<br><br>
                 • Разработчик: Морковчик.<br>
                 • Поддержка: <a href="mailto:q-acd@mail.ru" style="color:var(--primary-accent)">q-acd@mail.ru</a>
             </p>
@@ -1055,6 +1347,15 @@ body { display: flex; flex-direction: column; background-size: cover;
                 <button class="pm-tool-btn" onclick="redoPM()" id="redoBtn" disabled title="Вернуть">
                     <span class="mi mi-sm">redo</span> Вернуть
                 </button>
+                <button class="pm-tool-btn" onclick="zoomCanvas(0.1)" title="Увеличить">
+                    <span class="mi mi-sm">zoom_in</span>
+                </button>
+                <button class="pm-tool-btn" onclick="zoomCanvas(-0.1)" title="Уменьшить">
+                    <span class="mi mi-sm">zoom_out</span>
+                </button>
+                <button class="pm-tool-btn" onclick="resetCanvasZoom()" title="Сбросить масштаб">
+                    <span class="mi mi-sm">fit_screen</span>
+                </button>
                 <button class="pm-tool-btn pm-tool-btn-primary" onclick="exportPriceTagsPDF()">
                     <span class="mi mi-sm">picture_as_pdf</span> Экспорт PDF
                 </button>
@@ -1109,13 +1410,202 @@ body { display: flex; flex-direction: column; background-size: cover;
                     <option value="landscape">Альбомная (A4)</option>
                     <option value="portrait">Портретная (A4)</option>
                 </select>
+                <hr style="margin:10px 0;border-color:var(--border-light);">
+                <h3 style="font-size:14px;margin-bottom:8px;">Печать:</h3>
+                <select id="pmPrintCount" style="width:100%;padding:8px;border-radius:6px;border:1px solid var(--border-light);background:var(--bg-light);color:var(--text-dark);">
+                    <option value="1">1 ценник на странице</option>
+                    <option value="4">4 ценника на странице</option>
+                    <option value="6" selected>6 ценников на странице</option>
+                    <option value="12">12 ценников на странице</option>
+                    <option value="24">24 ценника на странице</option>
+                </select>
             </div>
             <div class="pm-canvas" id="pmCanvas">
-                <div class="pm-price-tag" id="pmPriceTag"></div>
+                <div class="pm-price-tag" id="pmPriceTag">
+                    <div class="pm-watermark">Ценник создан в Продуктор для бизнеса
+https://q-acd.github.io/prod</div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- PROGRESS MODAL FOR PRICE TAGS -->
+<div class="pm-progress-overlay" id="pmProgressOverlay">
+    <div class="pm-progress-window">
+        <h3 style="margin:0 0 10px 0;">Создаём ваши ценники...</h3>
+        <p id="pmProgressText" style="color:var(--gray-muted);font-size:14px;">0 / 0</p>
+        <div class="pm-progress-bar">
+            <div class="pm-progress-fill" id="pmProgressFill"></div>
+        </div>
+        <button class="btn btn-danger" onclick="cancelPriceTagExport()" style="width:100%;">Отменить сохранение</button>
+    </div>
+</div>
+
+<!-- RECEIPT EDITOR -->
+<div class="receipt-editor-overlay" id="receiptEditorOverlay">
+    <div class="receipt-editor-container">
+        <div class="pm-header">
+            <h2 style="margin:0;font-size:1.2rem;display:flex;align-items:center;gap:8px;">
+                <span class="mi">receipt_long</span> Редактор чека
+                <span style="background:gold;color:black;padding:2px 8px;border-radius:4px;font-size:12px;">PRO</span>
+            </h2>
+            <div class="pm-header-tools">
+                <button class="pm-tool-btn pm-tool-btn-primary" onclick="saveReceiptTemplate()">
+                    <span class="mi mi-sm">save</span> Сохранить шаблон
+                </button>
+                <button class="pm-tool-btn" onclick="resetReceiptTemplate()">
+                    <span class="mi mi-sm">restart_alt</span> Сбросить
+                </button>
+                <button class="pm-tool-btn" onclick="closeReceiptEditor()">Закрыть</button>
+            </div>
+        </div>
+        <div class="pm-body">
+            <div class="pm-sidebar">
+                <h3 style="font-size:14px;margin-bottom:8px;">Элементы чека:</h3>
+                <div class="pm-controls">
+                    <button onclick="addReceiptElement('header')"><span class="mi mi-sm">title</span> Заголовок</button>
+                    <button onclick="addReceiptElement('org')"><span class="mi mi-sm">business</span> Организация</button>
+                    <button onclick="addReceiptElement('date')"><span class="mi mi-sm">schedule</span> Дата</button>
+                    <button onclick="addReceiptElement('items')"><span class="mi mi-sm">list</span> Товары</button>
+                    <button onclick="addReceiptElement('total')"><span class="mi mi-sm">payments</span> Итого</button>
+                    <button onclick="addReceiptElement('footer')"><span class="mi mi-sm">article</span> Подвал</button>
+                    <button onclick="addReceiptElement('line')"><span class="mi mi-sm">horizontal_rule</span> Линия</button>
+                    <button onclick="addReceiptElement('custom')"><span class="mi mi-sm">text_fields</span> Свой текст</button>
+                </div>
+                <hr style="margin:10px 0;border-color:var(--border-light);">
+                <h3 style="font-size:14px;margin-bottom:8px;">Переменные:</h3>
+                <div style="display:flex;flex-wrap:wrap;gap:4px;">
+                    <span class="pm-variable-btn" onclick="insertReceiptVariable('{total}')">{total}</span>
+                    <span class="pm-variable-btn" onclick="insertReceiptVariable('{date}')">{date}</span>
+                    <span class="pm-variable-btn" onclick="insertReceiptVariable('{time}')">{time}</span>
+                    <span class="pm-variable-btn" onclick="insertReceiptVariable('{org}')">{org}</span>
+                    <span class="pm-variable-btn" onclick="insertReceiptVariable('{inn}')">{inn}</span>
+                    <span class="pm-variable-btn" onclick="insertReceiptVariable('{cashier}')">{cashier}</span>
+                    <span class="pm-variable-btn" onclick="insertReceiptVariable('{number}')">{number}</span>
+                    <span class="pm-variable-btn" onclick="insertReceiptVariable('{items}')">{items}</span>
+                </div>
+                <hr style="margin:10px 0;border-color:var(--border-light);">
+                <h3 style="font-size:14px;margin-bottom:8px;">Свойства:</h3>
+                <div class="pm-properties" id="receiptProperties">
+                    <p style="font-size:12px;color:var(--gray-muted);">Выберите элемент</p>
+                </div>
+                <hr style="margin:10px 0;border-color:var(--border-light);">
+                <h3 style="font-size:14px;margin-bottom:8px;">Предпросмотр:</h3>
+                <p style="font-size:11px;color:var(--gray-muted);">Слева — редактор, справа — предпросмотр</p>
+            </div>
+            <div class="pm-canvas" id="receiptCanvas" style="align-items:flex-start;padding-top:40px;overflow:auto;">
+                <div id="receiptPreview" style="width:380px;background:white;border:1px solid #ccc;padding:20px;font-family:monospace;font-size:12px;color:#000;box-shadow:0 4px 12px rgba(0,0,0,0.15);min-height:500px;position:relative;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SALES STATS -->
+<div class="modal-backdrop" id="salesStatsModal">
+    <div class="modal-window" style="max-width:700px;">
+        <button class="close-modal" onclick="closeAllModals()">&times;</button>
+        <h2>Статистика продаж</h2>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin:15px 0;">
+            <button class="btn btn-outline" id="statPeriodDay" onclick="setStatPeriod('day')">За день</button>
+            <button class="btn btn-outline" id="statPeriodWeek" onclick="setStatPeriod('week')">За неделю</button>
+            <button class="btn btn-outline" id="statPeriodMonth" onclick="setStatPeriod('month')">За месяц</button>
+            <button class="btn btn-primary" id="statPeriodAll" onclick="setStatPeriod('all')">За всё время</button>
+        </div>
+        <div style="display:flex;gap:15px;flex-wrap:wrap;margin:20px 0;">
+            <div class="sales-stat-card">
+                <div class="value" id="totalItemsSold">0</div>
+                <div class="label">Продано товаров</div>
+            </div>
+            <div class="sales-stat-card">
+                <div class="value" id="totalRevenue">0 ₽</div>
+                <div class="label">Выручка</div>
+            </div>
+            <div class="sales-stat-card">
+                <div class="value" id="totalProfit">0 ₽</div>
+                <div class="label">Прибыль (~30%)</div>
+            </div>
+        </div>
+        <h3 style="font-size:14px;margin:15px 0 5px 0;">Проданные товары:</h3>
+        <div style="max-height:200px;overflow-y:auto;border:1px solid var(--border-light);border-radius:8px;">
+            <table class="stats-table">
+                <thead><tr><th>Товар</th><th>Кол-во</th><th>Нач. цена</th><th>Итог</th></tr></thead>
+                <tbody id="soldItemsBody"></tbody>
+            </table>
+        </div>
+        <h3 style="font-size:14px;margin:15px 0 5px 0;">История продаж:</h3>
+        <div style="max-height:150px;overflow-y:auto;">
+            <table class="stats-table">
+                <thead><tr><th>Дата</th><th>Товаров</th><th>Сумма</th></tr></thead>
+                <tbody id="salesStatsBody"></tbody>
+            </table>
+        </div>
+        <div class="btn-group" style="margin-top:20px;">
+            <button class="btn btn-primary" onclick="exportSalesStats('txt')">Сохранить TXT</button>
+            <button class="btn btn-outline" onclick="exportSalesStats('png')">Сохранить PNG</button>
+            <button class="btn btn-outline" onclick="exportSalesStats('json')">Сохранить JSON</button>
+        </div>
+    </div>
+</div>
+
+<!-- DEVELOPER MENU -->
+<div class="modal-backdrop" id="devMenuModal">
+    <div class="modal-window" style="max-width:700px;">
+        <button class="close-modal" onclick="closeAllModals()">&times;</button>
+        <h2>Режим разработчика</h2>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin:15px 0;">
+            <button class="btn btn-outline" onclick="switchDevTab('system')">Система</button>
+            <button class="btn btn-outline" onclick="switchDevTab('device')">Устройство</button>
+            <button class="btn btn-outline" onclick="switchDevTab('experiments')">Эксперименты</button>
+        </div>
+        <div id="devTabSystem" class="dev-tab-content">
+            <h3>Системная информация</h3>
+            <table class="stats-table">
+                <tbody id="systemInfoBody"></tbody>
+            </table>
+        </div>
+        <div id="devTabDevice" class="dev-tab-content" style="display:none;">
+            <h3>Информация об устройстве</h3>
+            <table class="stats-table">
+                <tbody id="deviceInfoBody"></tbody>
+            </table>
+        </div>
+        <div id="devTabExperiments" class="dev-tab-content" style="display:none;">
+            <h3>Экспериментальные функции</h3>
+            <div class="form-group" style="flex-direction:row;align-items:center;gap:10px;">
+                <input type="checkbox" id="devExperimentsCheckbox" onchange="toggleDevExperiments(this.checked)">
+                <label for="devExperimentsCheckbox" style="margin:0;">Доступ к экспериментам</label>
+            </div>
+            <p style="font-size:12px;color:var(--gray-muted);">Если включено, в настройках появится вкладка "Эксперименты" с новыми функциями.</p>
+        </div>
+    </div>
+</div>
+
+<!-- CREDITS MODAL -->
+<div class="credits-modal" id="creditsModal" onclick="closeCredits()">
+    <div class="credits-content">
+        <h1>Продуктор для бизнеса</h1>
+        <h2>Версия 26.10.11.4</h2>
+        <p>Разработчик: Морковчик</p>
+        <p>Дизайн: Морковчик</p>
+        <p>Тестирование: Команда Продуктора</p>
+        <p>Особая благодарность: Всем пользователям</p>
+        <p style="margin-top:30px;">Поддержка: q-acd@mail.ru</p>
+        <p style="margin-top:20px;opacity:0.5;">© 2026 Все права защищены</p>
+        <p style="margin-top:30px;font-size:0.9rem;opacity:0.5;">Нажмите, чтобы закрыть</p>
+    </div>
+</div>
+
+<!-- WELCOME GREETING -->
+<div class="welcome-greeting" id="welcomeGreeting"></div>
+
+<!-- FREEZE OVERLAY -->
+<div class="freeze-overlay" id="freezeOverlay"></div>
+
+<!-- DEV MENU BUTTON -->
+<button class="dev-menu-btn" id="devMenuBtn" onclick="openDevMenu()">
+    <span class="mi">code</span>
+</button>
 
 <!-- КАСТОМНЫЕ ПРОМПТ И КОНФИРМ -->
 <div class="modal-backdrop" id="customPromptModal" style="z-index: 9999998;">
@@ -1143,17 +1633,18 @@ body { display: flex; flex-direction: column; background-size: cover;
     </div>
 </div>
 
-<div id="fps-counter"><b>Продуктор</b> | FPS: -- | v26.10.11.0</div>
+<div id="fps-counter"><b>Продуктор</b> | FPS: -- | v26.10.11.4</div>
 
 <script>
 // ============================================================
 // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
 // ============================================================
-const VERSION = "26.10.11.0";
+const VERSION = "26.10.11.4";
 let productsDB = JSON.parse(localStorage.getItem('productor_products')) || [];
 let cart = JSON.parse(localStorage.getItem('productor_cart')) || [];
 let sessionReportHistory = JSON.parse(localStorage.getItem('productor_reports')) || [];
 let actionLogs = JSON.parse(localStorage.getItem('productor_logs')) || [];
+let salesHistory = JSON.parse(localStorage.getItem('productor_sales_history')) || [];
 let currentSessionId = localStorage.getItem('productor_session_id');
 let isDarkMode = localStorage.getItem('productor_theme') === 'dark';
 let appFont = localStorage.getItem('productor_font_family') || "'Inter', system-ui, sans-serif";
@@ -1165,6 +1656,26 @@ let soundsEnabled = localStorage.getItem('productor_sounds') !== 'false';
 let hintsEnabled = localStorage.getItem('productor_hints') !== 'false';
 let editingSku = null;
 let editingImage = null;
+
+// Developer / Experiments
+let devMode = localStorage.getItem('productor_dev_mode') === 'true';
+let devClickCount = 0;
+let devClickTimer = null;
+let experimentsEnabled = localStorage.getItem('productor_experiments') === 'true';
+let newYearMode = localStorage.getItem('productor_new_year') === 'true';
+let greetingMode = localStorage.getItem('productor_greeting') === 'true';
+let receiptView = localStorage.getItem('productor_receipt_view') || 'standard';
+let gradientAccent = localStorage.getItem('productor_gradient_accent') === 'true';
+let gradientColor2 = localStorage.getItem('productor_gradient_color2') || '#9333ea';
+let gradientPriority = localStorage.getItem('productor_gradient_priority') || '1';
+
+let snowInterval = null;
+let freezeTimeout = null;
+let snowballHoldTimer = null;
+let snowballHoldStart = null;
+
+// Sales stats period
+let currentStatPeriod = 'all';
 
 const audio = document.getElementById('snd');
 function playSound(src) {
@@ -1231,6 +1742,11 @@ document.addEventListener('keydown', function(e) {
 // ЛОАДЕР + ИНИЦИАЛИЗАЦИЯ
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
+    if (greetingMode && checkLicenseStatus()) {
+        const loaderTitle = document.getElementById('loaderTitle');
+        if (loaderTitle) loaderTitle.textContent = `Здравствуйте, ${orgSettings.name || 'Пользователь'}!`;
+    }
+
     const progressFill = document.getElementById('progressFill');
     const progressText = document.getElementById('progressText');
     const loaderContainer = document.getElementById('pageLoader');
@@ -1273,6 +1789,8 @@ document.addEventListener('DOMContentLoaded', () => {
     updateAccountUI();
     updateSystemPanel();
     setInterval(updateSystemPanel, 1000);
+    loadExperimentsState();
+    initReceiptPreview();
 
     document.getElementById('mainHeader').style.display = 'flex';
     document.getElementById('mainArea').style.display = 'flex';
@@ -1346,6 +1864,45 @@ document.addEventListener('DOMContentLoaded', () => {
             if (panel) panel.innerHTML = '<p style="font-size:12px;color:var(--gray-muted);">Выберите элемент</p>';
         }
     });
+
+    // Developer clicks on session info
+    const sessionInfoEl = document.getElementById('sessionInfo');
+    if (sessionInfoEl) {
+        sessionInfoEl.addEventListener('click', () => {
+            devClickCount++;
+            clearTimeout(devClickTimer);
+            devClickTimer = setTimeout(() => { devClickCount = 0; }, 2000);
+            if (devClickCount >= 8) {
+                devClickCount = 0;
+                devMode = true;
+                localStorage.setItem('productor_dev_mode', 'true');
+                document.getElementById('devMenuBtn').classList.add('active');
+                showToast('🔧 Режим разработчика активирован!');
+                playSound('Beep2.mp3');
+            }
+        });
+    }
+
+    if (devMode) {
+        document.getElementById('devMenuBtn').classList.add('active');
+    }
+
+    document.getElementById('toggleGradient')?.addEventListener('change', function() {
+        document.getElementById('gradientControls').style.display = this.checked ? 'block' : 'none';
+    });
+
+    const rvSelect = document.getElementById('receiptViewSelect');
+    if (rvSelect) rvSelect.value = receiptView;
+
+    initExperimentsUI();
+
+    if (greetingMode && checkLicenseStatus()) {
+        setTimeout(showWelcomeGreeting, 2000);
+    }
+
+    if (newYearMode) {
+        startNewYearMode();
+    }
 });
 
 // ============================================================
@@ -1520,6 +2077,8 @@ function openModal(type) {
 function closeAllModals() {
     document.querySelectorAll('.modal-backdrop').forEach(el => { el.classList.remove('active'); el.style.display = ''; });
     document.getElementById('priceMakerOverlay')?.classList.remove('active');
+    document.getElementById('receiptEditorOverlay')?.classList.remove('active');
+    document.getElementById('creditsModal')?.classList.remove('active');
 }
 function resetForm(type) {
     if (type === 'addProduct') {
@@ -1689,9 +2248,29 @@ function openCheckoutActions() {
 function cancelPayment() { closeAllModals(); }
 function completeSale() {
     logAction('sale_complete', `Оплата. Товаров: ${cart.length}`);
+    const saleTotal = parseFloat(document.getElementById('finalSum').textContent);
+    const itemsCount = cart.reduce((sum, item) => sum + item.qty, 0);
+    
+    const saleItems = cart.map(item => ({
+        name: item.name,
+        sku: item.sku,
+        qty: item.qty,
+        price: Number(item.price),
+        discount: item.individualDiscount || 0,
+        lineTotal: calculateLineTotal(item.price, item.qty, item.individualDiscount)
+    }));
+    
+    salesHistory.push({
+        date: new Date().toISOString(),
+        items: itemsCount,
+        total: saleTotal,
+        products: saleItems
+    });
+    localStorage.setItem('productor_sales_history', JSON.stringify(salesHistory));
+    
     cart.forEach(item => { const dbProd = productsDB.find(p => p.sku === item.sku); if (dbProd) dbProd.stock = (Number(dbProd.stock) || 0) - item.qty; });
     if (document.getElementById('reportCheckbox')?.checked) {
-        sessionReportHistory.push({ id: currentSessionId, timestamp: new Date().toISOString(), items: [...cart], total: parseFloat(document.getElementById('finalSum').textContent) });
+        sessionReportHistory.push({ id: currentSessionId, timestamp: new Date().toISOString(), items: [...cart], total: saleTotal });
     }
     cart = []; saveData(); renderCart(); renderInventory(); updateTotal();
     playSound('Pay.mp3'); closeAllModals();
@@ -1699,6 +2278,15 @@ function completeSale() {
 
 function exportReceipt() {
     if (cart.length === 0) { showToast('Чек пуст.'); return; }
+    const useCustom = receiptView === 'custom' || (receiptView === 'ask' && confirm('Использовать свой шаблон чека?'));
+    if (useCustom) {
+        exportCustomReceipt();
+    } else {
+        exportStandardReceipt();
+    }
+}
+
+function exportStandardReceipt() {
     let html = `<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><title>Чек</title><style>body{font-family:sans-serif;padding:20px;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ccc;padding:8px;text-align:left;}th{background:#f3f4f6;}.right{text-align:right;}</style></head><body>`;
     html += `<h2>Чек №${new Date().getTime()}</h2><p>Дата: ${new Date().toLocaleString()}</p><hr>`;
     if (orgSettings?.name) { html += `Организация: ${orgSettings.name}`; if (orgSettings.inn) html += ` | ИНН: ${orgSettings.inn}`; html += `<br><br>`; }
@@ -1708,6 +2296,51 @@ function exportReceipt() {
     html += `<div style="margin-top:20px;text-align:right;font-size:20px;font-weight:bold;">ИТОГО: ${document.getElementById('finalSum').textContent}</div></body></html>`;
     const blob = new Blob([html], { type: 'text/html' }); const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = `cheque_${new Date().toISOString().slice(0, 10)}.html`;
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+}
+
+function exportCustomReceipt() {
+    const template = JSON.parse(localStorage.getItem('productor_receipt_template')) || getDefaultReceiptElements();
+    const total = document.getElementById('finalSum').textContent;
+    
+    let html = `<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><title>Чек</title><style>
+        body{font-family:monospace;padding:20px;background:#f5f5f5;display:flex;justify-content:center;}
+        .receipt{width:380px;background:white;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,0.1);}
+        .receipt-el{position:relative;margin:4px 0;}
+        table{width:100%;border-collapse:collapse;font-size:12px;}
+        td,th{padding:3px 0;text-align:left;border-bottom:1px dashed #ccc;}
+        .right{text-align:right;}
+    </style></head><body><div class="receipt">`;
+    
+    template.forEach(el => {
+        let text = el.label || '';
+        text = text.replace(/\{total\}/g, total);
+        text = text.replace(/\{date\}/g, new Date().toLocaleDateString('ru-RU'));
+        text = text.replace(/\{time\}/g, new Date().toLocaleTimeString('ru-RU'));
+        text = text.replace(/\{org\}/g, orgSettings.name || '');
+        text = text.replace(/\{inn\}/g, orgSettings.inn || '');
+        text = text.replace(/\{cashier\}/g, orgSettings.name || 'Кассир');
+        text = text.replace(/\{number\}/g, String(Date.now()).slice(-6));
+        
+        const styles = `font-size:${el.fontSize || '12px'};font-weight:${el.bold ? 'bold' : 'normal'};text-align:${el.align || 'left'};`;
+        
+        if (el.type === 'items') {
+            html += `<div class="receipt-el" style="${styles}"><table><thead><tr><th>Товар</th><th class="right">Кол-во</th><th class="right">Цена</th><th class="right">Сумма</th></tr></thead><tbody>`;
+            cart.forEach(item => {
+                html += `<tr><td>${item.name}</td><td class="right">${item.qty}</td><td class="right">${Number(item.price).toFixed(2)}</td><td class="right">${calculateLineTotal(item.price, item.qty, item.individualDiscount).toFixed(2)}</td></tr>`;
+            });
+            html += `</tbody></table></div>`;
+        } else if (el.type === 'line') {
+            html += `<div class="receipt-el" style="${styles}"><hr style="border:none;border-top:1px dashed #000;margin:5px 0;"></div>`;
+        } else {
+            html += `<div class="receipt-el" style="${styles}">${text}</div>`;
+        }
+    });
+    
+    html += `</div></body></html>`;
+    const blob = new Blob([html], { type: 'text/html' }); const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = `cheque_custom_${new Date().toISOString().slice(0, 10)}.html`;
     document.body.appendChild(a); a.click();
     setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
 }
@@ -1768,7 +2401,6 @@ function loadVisualSettings() {
         document.getElementById('useCustomTitleCheckbox').checked = orgSettings.useCustomTitle || false;
         toggleSessionInputs();
     }
-    // Загружаем имя в PRO-таб
     if (document.getElementById('proNameInput')) {
         document.getElementById('proNameInput').value = orgSettings.name || '';
     }
@@ -1856,7 +2488,8 @@ function updateCalcScreen() { let d = previousInput !== "" ? previousInput + " "
 function appendValue(val) {
     if (calcScreen.dataset.result === 'true') { if (!isNaN(val) || val === '.') clearCalc(); else { previousInput = calcScreen.innerText.replace(/×/g, '*').replace(/÷/g, '/').split("=")[0].trim(); currentInput = ""; calcOperator = ""; } calcScreen.dataset.result = 'false'; }
     if (val === '.' && currentInput.includes('.')) return;
-    currentInput += val; updateCalcScreen();
+    currentInput += val;
+    updateCalcScreen();
 }
 function setOperator(op) {
     if (currentInput === "" && previousInput !== "") { calcOperator = op; updateCalcScreen(); return; }
@@ -1864,6 +2497,13 @@ function setOperator(op) {
     calcOperator = op; updateCalcScreen();
 }
 function calculateResult() {
+    // Easter egg: 81626 + =
+    if (currentInput === "81626" && previousInput === "" && calcOperator === "") {
+        showCredits();
+        clearCalc();
+        return;
+    }
+    
     if (calcOperator === "" || currentInput === "") return;
     try {
         let expr = `${parseFloat(previousInput)} ${calcOperator} ${parseFloat(currentInput)}`;
@@ -1875,6 +2515,23 @@ function calculateResult() {
     } catch(e) { calcScreen.innerHTML = '<div>Ошибка</div>'; calcScreen.dataset.result = 'true'; currentInput = ""; previousInput = ""; calcOperator = ""; }
 }
 function toggleCalculator() { document.getElementById('draggableCalculator')?.classList.toggle('active'); }
+
+function showCredits() {
+    const modal = document.getElementById('creditsModal');
+    if (!modal) return;
+    modal.classList.add('active');
+    const content = modal.querySelector('.credits-content');
+    if (content) {
+        content.style.animation = 'none';
+        void content.offsetWidth;
+        content.style.animation = 'creditsScroll 20s linear forwards';
+    }
+    playSound('Beep1.mp3');
+}
+
+function closeCredits() {
+    document.getElementById('creditsModal').classList.remove('active');
+}
 
 // ============================================================
 // ЗАМЕТКИ
@@ -1980,6 +2637,7 @@ function saveData() {
     localStorage.setItem('productor_session_id', currentSessionId);
     localStorage.setItem('productor_reports', JSON.stringify(sessionReportHistory));
     localStorage.setItem('productor_logs', JSON.stringify(actionLogs));
+    localStorage.setItem('productor_sales_history', JSON.stringify(salesHistory));
 }
 function finishSession() { document.getElementById('finishModal').classList.add('active'); }
 function confirmFinish() { cart = []; localStorage.removeItem('productor_cart'); saveData(); window.location.href = 'index.html'; }
@@ -2069,7 +2727,6 @@ const LICENSE_DB = {
     "PROD-Q89155-DDA": 6, "PROD-Q91209-CFA": 7, "PROD-Q95779-DBA": 3,
 };
 
-// ИМЯ БЕЗ КОДА
 function saveNameOnly() {
     const name = document.getElementById('proNameInput').value.trim();
     if (!name) { showToast('Введите имя'); return; }
@@ -2102,7 +2759,6 @@ function updateAccountUI() {
     const proStatusText = document.getElementById('proStatusText'); const proExpiryText = document.getElementById('proExpiryText'); const proKeyMasked = document.getElementById('proKeyMasked');
     if (!nameSpan || !menuItem) return;
     const isActive = checkLicenseStatus();
-    // === ИМЯ: если задано orgSettings.name — используем его; иначе "Пользователь" ===
     let displayName = (orgSettings.name && orgSettings.name.trim()) ? orgSettings.name.trim() : "Пользователь";
     if (isActive) {
         const data = JSON.parse(localStorage.getItem('tvr_license'));
@@ -2113,7 +2769,6 @@ function updateAccountUI() {
         if (proExpiryText) proExpiryText.textContent = `Осталось: ${formatRemainingTime(diff)}`;
         if (proKeyMasked) proKeyMasked.textContent = `Ключ: ${maskSku(data.sku)}`;
     } else {
-        // Если имя задано — показываем его, иначе "АКТИВИРОВАТЬ PRO"
         if (orgSettings.name && orgSettings.name.trim()) {
             nameSpan.textContent = displayName;
         } else {
@@ -2144,6 +2799,198 @@ function resetLicense() { askConfirm('Сбросить лицензию PRO?', '
 function checkLicenseExpiry() { const saved = localStorage.getItem('tvr_license'); if (!saved) return; try { const data = JSON.parse(saved); const expiresAt = new Date(data.activatedAt).getTime() + (data.days * 24 * 60 * 60 * 1000); if (Date.now() > expiresAt) showToast("Срок действия PRO истёк."); } catch(e) {} }
 
 // ============================================================
+// ЭКСПЕРИМЕНТЫ
+// ============================================================
+function loadExperimentsState() {
+    experimentsEnabled = localStorage.getItem('productor_experiments') === 'true';
+    newYearMode = localStorage.getItem('productor_new_year') === 'true';
+    greetingMode = localStorage.getItem('productor_greeting') === 'true';
+    receiptView = localStorage.getItem('productor_receipt_view') || 'standard';
+    gradientAccent = localStorage.getItem('productor_gradient_accent') === 'true';
+    gradientColor2 = localStorage.getItem('productor_gradient_color2') || '#9333ea';
+    gradientPriority = localStorage.getItem('productor_gradient_priority') || '1';
+
+    const experimentsTab = document.getElementById('experimentsTab');
+    if (experimentsTab) experimentsTab.style.display = experimentsEnabled ? 'flex' : 'none';
+
+    const devExpCb = document.getElementById('devExperimentsCheckbox');
+    if (devExpCb) devExpCb.checked = experimentsEnabled;
+}
+
+function initExperimentsUI() {
+    const nyCb = document.getElementById('toggleNewYear');
+    if (nyCb) nyCb.checked = newYearMode;
+    const greetCb = document.getElementById('toggleGreeting');
+    if (greetCb) greetCb.checked = greetingMode;
+    const rvSelect = document.getElementById('receiptViewSelect');
+    if (rvSelect) rvSelect.value = receiptView;
+    const gradCb = document.getElementById('toggleGradient');
+    if (gradCb) {
+        gradCb.checked = gradientAccent;
+        document.getElementById('gradientControls').style.display = gradientAccent ? 'block' : 'none';
+    }
+    const gc2 = document.getElementById('gradientColor2');
+    if (gc2) gc2.value = gradientColor2;
+    const gp = document.getElementById('gradientPriority');
+    if (gp) gp.value = gradientPriority;
+}
+
+function toggleDevExperiments(enabled) {
+    experimentsEnabled = enabled;
+    localStorage.setItem('productor_experiments', enabled ? 'true' : 'false');
+    const experimentsTab = document.getElementById('experimentsTab');
+    if (experimentsTab) experimentsTab.style.display = enabled ? 'flex' : 'none';
+    showToast(enabled ? '🔬 Эксперименты доступны в настройках' : 'Эксперименты скрыты');
+}
+
+function toggleNewYearMode(enabled) {
+    newYearMode = enabled;
+    localStorage.setItem('productor_new_year', enabled ? 'true' : 'false');
+    if (enabled) startNewYearMode();
+    else stopNewYearMode();
+}
+
+function startNewYearMode() {
+    document.body.classList.add('winter-cursor');
+    
+    // Falling snowflakes from top
+    if (snowInterval) clearInterval(snowInterval);
+    snowInterval = setInterval(() => {
+        const snowflake = document.createElement('div');
+        snowflake.className = 'snowflake';
+        snowflake.textContent = ['❄', '❅', '❆', '✻', '✽'][Math.floor(Math.random() * 5)];
+        snowflake.style.left = Math.random() * 100 + 'vw';
+        snowflake.style.fontSize = (0.8 + Math.random() * 1.2) + 'em';
+        snowflake.style.animationDuration = (4 + Math.random() * 6) + 's';
+        snowflake.style.opacity = 0.4 + Math.random() * 0.6;
+        document.body.appendChild(snowflake);
+        setTimeout(() => snowflake.remove(), 12000);
+    }, 250);
+
+    // Snow trail behind cursor
+    let lastTrailTime = 0;
+    document.addEventListener('mousemove', handleSnowTrail);
+    document.addEventListener('touchmove', handleSnowTrail, { passive: true });
+
+    // Snowball on long press
+    document.addEventListener('mousedown', handleSnowballStart);
+    document.addEventListener('touchstart', handleSnowballStart, { passive: true });
+    document.addEventListener('mouseup', handleSnowballEnd);
+    document.addEventListener('touchend', handleSnowballEnd);
+}
+
+function handleSnowTrail(e) {
+    if (!newYearMode) return;
+    const now = Date.now();
+    if (now - (handleSnowTrail._last || 0) < 100) return;
+    handleSnowTrail._last = now;
+    const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+    const trail = document.createElement('div');
+    trail.className = 'trail-snowflake';
+    trail.textContent = ['❄', '❅', '❆'][Math.floor(Math.random() * 3)];
+    trail.style.left = (clientX - 6) + 'px';
+    trail.style.top = (clientY - 6) + 'px';
+    trail.style.fontSize = (0.5 + Math.random() * 0.5) + 'em';
+    document.body.appendChild(trail);
+    setTimeout(() => trail.remove(), 1500);
+}
+
+function stopNewYearMode() {
+    document.body.classList.remove('winter-cursor');
+    if (snowInterval) { clearInterval(snowInterval); snowInterval = null; }
+    if (freezeTimeout) { clearInterval(freezeTimeout); freezeTimeout = null; }
+    if (snowballHoldTimer) { clearTimeout(snowballHoldTimer); snowballHoldTimer = null; }
+    document.querySelectorAll('.snowflake, .trail-snowflake, .snowball').forEach(el => el.remove());
+    document.getElementById('freezeOverlay').classList.remove('active');
+    document.removeEventListener('mousemove', handleSnowTrail);
+    document.removeEventListener('touchmove', handleSnowTrail);
+    document.removeEventListener('mousedown', handleSnowballStart);
+    document.removeEventListener('touchstart', handleSnowballStart);
+    document.removeEventListener('mouseup', handleSnowballEnd);
+    document.removeEventListener('touchend', handleSnowballEnd);
+}
+
+function handleSnowballStart(e) {
+    if (!newYearMode) return;
+    const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+    snowballHoldStart = { x: clientX, y: clientY };
+    
+    if (snowballHoldTimer) clearTimeout(snowballHoldTimer);
+    snowballHoldTimer = setTimeout(() => {
+        if (!newYearMode || !snowballHoldStart) return;
+        // Create snowball that rolls down
+        const ball = document.createElement('div');
+        ball.className = 'snowball';
+        ball.style.left = (snowballHoldStart.x - 16) + 'px';
+        ball.style.top = (snowballHoldStart.y - 16) + 'px';
+        document.body.appendChild(ball);
+        setTimeout(() => ball.remove(), 2600);
+        playSound('Beep1.mp3');
+        snowballHoldStart = null;
+    }, 2000);
+}
+
+function handleSnowballEnd() {
+    if (snowballHoldTimer) { clearTimeout(snowballHoldTimer); snowballHoldTimer = null; }
+    snowballHoldStart = null;
+}
+
+function showFreezeAnimation() {
+    const overlay = document.getElementById('freezeOverlay');
+    if (!overlay) return;
+    overlay.classList.add('active');
+    setTimeout(() => overlay.classList.remove('active'), 2000);
+}
+
+function toggleGreetingMode(enabled) {
+    greetingMode = enabled;
+    localStorage.setItem('productor_greeting', enabled ? 'true' : 'false');
+    if (enabled && checkLicenseStatus()) {
+        showWelcomeGreeting();
+    } else if (enabled && !checkLicenseStatus()) {
+        showToast('⚠️ Для приветствия требуется PRO');
+    }
+}
+
+function showWelcomeGreeting() {
+    const greeting = document.getElementById('welcomeGreeting');
+    if (!greeting) return;
+    const name = orgSettings.name || 'Пользователь';
+    greeting.textContent = `Здравствуйте, ${name}!`;
+    greeting.classList.add('active');
+    setTimeout(() => greeting.classList.remove('active'), 4000);
+}
+
+function changeReceiptView(value) {
+    receiptView = value;
+    localStorage.setItem('productor_receipt_view', value);
+    showToast(`Вид чека: ${value === 'standard' ? 'Стандартный' : value === 'custom' ? 'Свой' : 'Спрашивать'}`);
+}
+
+function toggleGradientAccent(enabled) {
+    gradientAccent = enabled;
+    localStorage.setItem('productor_gradient_accent', enabled ? 'true' : 'false');
+    document.getElementById('gradientControls').style.display = enabled ? 'block' : 'none';
+    applyGradientAccent();
+}
+
+function applyGradientAccent() {
+    if (!gradientAccent) {
+        document.documentElement.style.removeProperty('--gradient-accent');
+        return;
+    }
+    const color1 = localStorage.getItem('custom_accent_color') || '#2563eb';
+    const c1 = gradientPriority === '2' ? gradientColor2 : color1;
+    const c2 = gradientPriority === '2' ? color1 : gradientColor2;
+    document.documentElement.style.setProperty('--gradient-accent', `linear-gradient(135deg, ${c1}, ${c2})`);
+    document.querySelectorAll('.header, .bottom-btn, .pay-button, .btn-primary').forEach(el => {
+        el.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
+    });
+}
+
+// ============================================================
 // ЦЕННИКИ — С dataset.rawText для переменных
 // ============================================================
 let pmSelectedElement = null;
@@ -2152,6 +2999,13 @@ let pmRawTemplates = [];
 let pmHistory = [];
 let pmHistoryIndex = -1;
 const PM_HISTORY_LIMIT = 50;
+let pmZoom = 1;
+let pmCanvasOffsetX = 0;
+let pmCanvasOffsetY = 0;
+let pmCanvasDragging = false;
+let pmCanvasStartX = 0;
+let pmCanvasStartY = 0;
+let pmExportCancelled = false;
 
 function pushPMHistory() {
     updateRawTemplateFromDOM();
@@ -2185,6 +3039,61 @@ function redoPM() {
     updateUndoRedoButtons();
     showToast('Возвращено');
 }
+
+function zoomCanvas(delta) {
+    pmZoom = Math.max(0.25, Math.min(3, pmZoom + delta));
+    applyCanvasTransform();
+}
+
+function resetCanvasZoom() {
+    pmZoom = 1;
+    pmCanvasOffsetX = 0;
+    pmCanvasOffsetY = 0;
+    applyCanvasTransform();
+}
+
+function applyCanvasTransform() {
+    const tag = document.getElementById('pmPriceTag');
+    if (tag) tag.style.transform = `translate(${pmCanvasOffsetX}px, ${pmCanvasOffsetY}px) scale(${pmZoom})`;
+}
+
+// Canvas panning
+document.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('pmCanvas');
+    if (canvas) {
+        canvas.addEventListener('mousedown', (e) => {
+            if (e.target === canvas || e.target.id === 'pmCanvas') {
+                pmCanvasDragging = true;
+                pmCanvasStartX = e.clientX - pmCanvasOffsetX;
+                pmCanvasStartY = e.clientY - pmCanvasOffsetY;
+                canvas.style.cursor = 'grabbing';
+            }
+        });
+        canvas.addEventListener('touchstart', (e) => {
+            if (e.target === canvas || e.target.id === 'pmCanvas') {
+                pmCanvasDragging = true;
+                pmCanvasStartX = e.touches[0].clientX - pmCanvasOffsetX;
+                pmCanvasStartY = e.touches[0].clientY - pmCanvasOffsetY;
+            }
+        }, { passive: true });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!pmCanvasDragging) return;
+            pmCanvasOffsetX = e.clientX - pmCanvasStartX;
+            pmCanvasOffsetY = e.clientY - pmCanvasStartY;
+            applyCanvasTransform();
+        });
+        document.addEventListener('touchmove', (e) => {
+            if (!pmCanvasDragging) return;
+            pmCanvasOffsetX = e.touches[0].clientX - pmCanvasStartX;
+            pmCanvasOffsetY = e.touches[0].clientY - pmCanvasStartY;
+            applyCanvasTransform();
+        }, { passive: false });
+        
+        document.addEventListener('mouseup', () => { pmCanvasDragging = false; if (canvas) canvas.style.cursor = 'grab'; });
+        document.addEventListener('touchend', () => { pmCanvasDragging = false; });
+    }
+});
 
 function initPriceMakerProducts() {
     const select = document.getElementById('pmProductSelect'); if (!select) return;
@@ -2271,7 +3180,10 @@ function updateRawTemplateFromDOM() {
 
 async function renderTagWithProduct(product) {
     const tag = document.getElementById('pmPriceTag');
+    const watermark = tag.querySelector('.pm-watermark');
     tag.innerHTML = '';
+    if (watermark) tag.appendChild(watermark);
+    
     const qrPromises = [];
 
     for (const data of pmRawTemplates) {
@@ -2335,10 +3247,8 @@ async function renderTagWithProduct(product) {
     await new Promise(r => setTimeout(r, 80));
 }
 
-// НАДЁЖНАЯ генерация QR
 function generateQRDataURL(value) {
     return new Promise(resolve => {
-        // Fallback 1: qrcode npm — window.QRCode.toDataURL
         if (typeof window.QRCode !== 'undefined' && typeof window.QRCode.toDataURL === 'function') {
             try {
                 window.QRCode.toDataURL(value, { width: 300, margin: 1, errorCorrectionLevel: 'M' }, function(err, url) {
@@ -2352,7 +3262,6 @@ function generateQRDataURL(value) {
     });
 }
 function fallbackQR(value) {
-    // Попытка через qrcode-generator (глобал qrcode)
     try {
         if (typeof window.qrcode === 'function') {
             const qr = window.qrcode(0, 'M');
@@ -2361,7 +3270,6 @@ function fallbackQR(value) {
             return qr.createDataURL(4, 0);
         }
     } catch(e) {}
-    // Совсем fallback — canvas-заглушка
     const c = document.createElement('canvas');
     c.width = 300; c.height = 300;
     const ctx = c.getContext('2d');
@@ -2381,22 +3289,40 @@ function attachElementControls(el) {
 
     const resizeHandle = document.createElement('div');
     resizeHandle.className = 'pm-resize-handle';
-    resizeHandle.addEventListener('mousedown', function(e) {
+    resizeHandle.addEventListener('mousedown', startResize);
+    resizeHandle.addEventListener('touchstart', startResize, { passive: false });
+    
+    function startResize(e) {
         e.stopPropagation(); e.preventDefault();
-        const startX = e.clientX, startY = e.clientY;
+        const isTouch = e.type === 'touchstart';
+        const startX = isTouch ? e.touches[0].clientX : e.clientX;
+        const startY = isTouch ? e.touches[0].clientY : e.clientY;
         const startW = parseInt(el.style.width) || 100;
         const startH = parseInt(el.style.height) || 40;
+        
         function onMove(ev) {
-            el.style.width = Math.max(20, startW + (ev.clientX - startX)) + 'px';
-            el.style.height = Math.max(20, startH + (ev.clientY - startY)) + 'px';
+            ev.preventDefault();
+            const cx = ev.type === 'touchmove' ? ev.touches[0].clientX : ev.clientX;
+            const cy = ev.type === 'touchmove' ? ev.touches[0].clientY : ev.clientY;
+            const newW = Math.max(20, startW + (cx - startX));
+            const newH = Math.max(20, startH + (cy - startY));
+            el.style.width = newW + 'px';
+            el.style.height = newH + 'px';
+            const span = el.querySelector('.pm-text-content');
+            if (span) { span.style.width = newW + 'px'; span.style.height = newH + 'px'; }
         }
         function onUp() {
             document.removeEventListener('mousemove', onMove);
             document.removeEventListener('mouseup', onUp);
+            document.removeEventListener('touchmove', onMove);
+            document.removeEventListener('touchend', onUp);
             updateRawTemplateFromDOM(); pushPMHistory();
         }
-        document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp);
-    });
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+        document.addEventListener('touchmove', onMove, { passive: false });
+        document.addEventListener('touchend', onUp);
+    }
     el.appendChild(resizeHandle);
 
     const deleteHandle = document.createElement('div');
@@ -2472,7 +3398,7 @@ function openPriceMaker() {
     document.getElementById('priceMakerOverlay').classList.add('active');
     initPriceMakerProducts(); loadCustomTemplates();
     const tag = document.getElementById('pmPriceTag');
-    if (tag.children.length === 0) applyTemplate('classic');
+    if (tag.querySelectorAll('.pm-element').length === 0) applyTemplate('classic');
     if (productsDB.length > 0) {
         const sel = document.getElementById('pmProductSelect');
         sel.value = productsDB[0].sku;
@@ -2481,6 +3407,8 @@ function openPriceMaker() {
     pmHistory = []; pmHistoryIndex = -1;
     updateRawTemplateFromDOM();
     pushPMHistory();
+    pmCanvasOffsetX = 0; pmCanvasOffsetY = 0; pmZoom = 1;
+    applyCanvasTransform();
 }
 function closePriceMaker() { document.getElementById('priceMakerOverlay').classList.remove('active'); }
 function changePriceTagOrientation(orientation) {
@@ -2622,7 +3550,10 @@ async function saveCurrentTemplate() {
 
 function applyTemplate(name) {
     const tag = document.getElementById('pmPriceTag');
+    const watermark = tag.querySelector('.pm-watermark');
     tag.innerHTML = '';
+    if (watermark) tag.appendChild(watermark);
+    
     let elementsData = [];
 
     if (name === 'classic') {
@@ -2686,29 +3617,39 @@ function applyTemplate(name) {
 }
 
 // ============================================================
-// ЭКСПОРТ PDF
+// ЭКСПОРТ PDF С ПРОГРЕССОМ
 // ============================================================
+function cancelPriceTagExport() {
+    pmExportCancelled = true;
+}
+
 async function exportPriceTagsPDF() {
     if (!checkLicenseStatus()) { showToast("Экспорт PDF только в PRO"); return; }
     updateRawTemplateFromDOM();
 
-    const tagsPerPage = await askPrompt('Сколько ценников на странице? (4, 6, 12, 24)', '6', 'Параметры экспорта');
-    if (tagsPerPage === null) return;
-    const count = parseInt(tagsPerPage);
-    if (![4, 6, 12, 24].includes(count)) { showToast("Выберите 4, 6, 12 или 24"); return; }
+    const count = parseInt(document.getElementById('pmPrintCount')?.value || '6');
+    if (![1, 4, 6, 12, 24].includes(count)) { showToast("Выберите корректное количество"); return; }
     if (productsDB.length === 0) { showToast("Нет товаров"); return; }
 
     if (pmRawTemplates.length === 0) captureRawTemplate();
 
     const orientation = document.getElementById('pmOrientation')?.value || 'landscape';
-    showToast("Генерация PDF...");
+    
+    pmExportCancelled = false;
+    const progressOverlay = document.getElementById('pmProgressOverlay');
+    const progressText = document.getElementById('pmProgressText');
+    const progressFill = document.getElementById('pmProgressFill');
+    progressOverlay.classList.add('active');
+    progressText.textContent = `0 / ${productsDB.length}`;
+    progressFill.style.width = '0%';
 
     try {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ orientation: orientation === 'landscape' ? 'l' : 'p', unit: 'mm', format: 'a4', compress: true });
 
         let cols, rows;
-        if (count === 4) { cols = 2; rows = 2; }
+        if (count === 1) { cols = 1; rows = 1; }
+        else if (count === 4) { cols = 2; rows = 2; }
         else if (count === 6) { cols = 3; rows = 2; }
         else if (count === 12) { cols = 4; rows = 3; }
         else { cols = 6; rows = 4; }
@@ -2720,11 +3661,18 @@ async function exportPriceTagsPDF() {
         const tagHeight = (pageHeight - margin * 2) / rows;
 
         const sourceTag = document.getElementById('pmPriceTag');
+        let processed = 0;
 
         for (let page = 0; page < Math.ceil(productsDB.length / count); page++) {
             if (page > 0) doc.addPage();
             for (let row = 0; row < rows; row++) {
                 for (let col = 0; col < cols; col++) {
+                    if (pmExportCancelled) {
+                        progressOverlay.classList.remove('active');
+                        showToast('Экспорт отменён');
+                        return;
+                    }
+                    
                     const idx = page * count + row * cols + col;
                     if (idx >= productsDB.length) break;
 
@@ -2743,15 +3691,475 @@ async function exportPriceTagsPDF() {
                     else drawW = tagHeight * canvasRatio;
 
                     doc.addImage(imgData, 'JPEG', x, y, drawW, drawH, undefined, 'FAST');
+                    
+                    processed++;
+                    progressText.textContent = `${processed} / ${productsDB.length}`;
+                    progressFill.style.width = (processed / productsDB.length * 100) + '%';
                 }
             }
+        }
+
+        if (pmExportCancelled) {
+            progressOverlay.classList.remove('active');
+            return;
         }
 
         const blob = doc.output('blob');
         const sizeMB = (blob.size / (1024 * 1024)).toFixed(2);
         doc.save(`price_tags_${count}per.pdf`);
+        progressOverlay.classList.remove('active');
+        playSound('Beep1.mp3');
         showToast(`✅ PDF сохранён (${sizeMB} МБ)`);
-    } catch(e) { console.error(e); showToast("Ошибка: " + e.message); }
+    } catch(e) { 
+        console.error(e); 
+        progressOverlay.classList.remove('active');
+        showToast("Ошибка: " + e.message); 
+    }
+}
+
+// ============================================================
+// РЕДАКТОР ЧЕКА
+// ============================================================
+let receiptElements = [];
+let receiptSelectedElement = null;
+
+function openReceiptEditor() {
+    if (!checkLicenseStatus()) { showToast("⚠️ Только в PRO."); openModal('settings'); setTimeout(() => switchTab('pro'), 100); return; }
+    closeAllModals();
+    document.getElementById('receiptEditorOverlay').classList.add('active');
+    const saved = localStorage.getItem('productor_receipt_template');
+    if (saved) {
+        try { receiptElements = JSON.parse(saved); } catch(e) { receiptElements = getDefaultReceiptElements(); }
+    } else {
+        receiptElements = getDefaultReceiptElements();
+    }
+    renderReceiptPreview();
+}
+
+function closeReceiptEditor() {
+    document.getElementById('receiptEditorOverlay').classList.remove('active');
+}
+
+function getDefaultReceiptElements() {
+    return [
+        { type: 'header', label: 'Чек №{number}', x: 0, y: 0, w: 100, h: 20, fontSize: '16px', bold: true, align: 'center' },
+        { type: 'org', label: '{org}', x: 0, y: 25, w: 100, h: 16, fontSize: '12px', bold: false, align: 'left' },
+        { type: 'date', label: 'Дата: {date} {time}', x: 0, y: 45, w: 100, h: 14, fontSize: '10px', bold: false, align: 'left' },
+        { type: 'items', label: 'Товары', x: 0, y: 65, w: 100, h: 200, fontSize: '11px', bold: false, align: 'left' },
+        { type: 'total', label: 'ИТОГО: {total}', x: 0, y: 270, w: 100, h: 20, fontSize: '16px', bold: true, align: 'right' },
+        { type: 'footer', label: 'Спасибо за покупку!', x: 0, y: 295, w: 100, h: 16, fontSize: '11px', bold: false, align: 'center' }
+    ];
+}
+
+function resetReceiptTemplate() {
+    askConfirm('Сбросить шаблон чека к стандартному?', 'Сброс шаблона').then(ok => {
+        if (ok) {
+            receiptElements = getDefaultReceiptElements();
+            renderReceiptPreview();
+            showToast('Шаблон сброшен');
+        }
+    });
+}
+
+function renderReceiptPreview() {
+    const preview = document.getElementById('receiptPreview');
+    if (!preview) return;
+    preview.innerHTML = '';
+    preview.style.position = 'relative';
+    preview.style.height = '500px';
+    
+    receiptElements.forEach((el, idx) => {
+        const div = document.createElement('div');
+        div.className = 'receipt-element' + (receiptSelectedElement === idx ? ' selected' : '');
+        div.style.position = 'absolute';
+        div.style.left = el.x + '%';
+        div.style.top = el.y + 'px';
+        div.style.width = el.w + '%';
+        div.style.height = el.h + 'px';
+        div.style.fontSize = el.fontSize || '12px';
+        div.style.fontWeight = el.bold ? 'bold' : 'normal';
+        div.style.textAlign = el.align || 'left';
+        div.style.overflow = 'hidden';
+        
+        let text = el.label || '';
+        text = text.replace(/\{number\}/g, '12345');
+        text = text.replace(/\{org\}/g, orgSettings.name || 'ООО Продуктор');
+        text = text.replace(/\{date\}/g, new Date().toLocaleDateString('ru-RU'));
+        text = text.replace(/\{time\}/g, new Date().toLocaleTimeString('ru-RU'));
+        text = text.replace(/\{total\}/g, '1 234.56 ₽');
+        text = text.replace(/\{cashier\}/g, orgSettings.name || 'Кассир');
+        text = text.replace(/\{inn\}/g, orgSettings.inn || '1234567890');
+        
+        if (el.type === 'items') {
+            div.innerHTML = `<div style="border-bottom:1px solid #ccc;margin-bottom:5px;">Товары:</div><div style="font-size:10px;">1. Товар 1 x 2 = 200 ₽<br>2. Товар 2 x 1 = 150 ₽<br>3. Товар 3 x 3 = 450 ₽</div>`;
+        } else if (el.type === 'line') {
+            div.innerHTML = '<hr style="border:none;border-top:1px dashed #000;margin:5px 0;">';
+        } else {
+            div.textContent = text;
+        }
+        
+        div.onclick = (e) => { e.stopPropagation(); selectReceiptElement(idx); };
+        preview.appendChild(div);
+    });
+}
+
+function selectReceiptElement(idx) {
+    receiptSelectedElement = idx;
+    renderReceiptPreview();
+    updateReceiptProperties(idx);
+}
+
+function updateReceiptProperties(idx) {
+    const panel = document.getElementById('receiptProperties');
+    if (!panel || !receiptElements[idx]) return;
+    const el = receiptElements[idx];
+    panel.innerHTML = `
+        <label>Текст:</label>
+        <input type="text" value="${(el.label || '').replace(/"/g, '&quot;')}" onchange="updateReceiptElement(${idx}, 'label', this.value)">
+        <label>Размер шрифта:</label>
+        <input type="text" value="${el.fontSize || '12px'}" onchange="updateReceiptElement(${idx}, 'fontSize', this.value)">
+        <label>Жирный:</label>
+        <select onchange="updateReceiptElement(${idx}, 'bold', this.value === 'true')">
+            <option value="false" ${!el.bold ? 'selected' : ''}>Обычный</option>
+            <option value="true" ${el.bold ? 'selected' : ''}>Жирный</option>
+        </select>
+        <label>Выравнивание:</label>
+        <select onchange="updateReceiptElement(${idx}, 'align', this.value)">
+            <option value="left" ${el.align === 'left' ? 'selected' : ''}>По левому</option>
+            <option value="center" ${el.align === 'center' ? 'selected' : ''}>По центру</option>
+            <option value="right" ${el.align === 'right' ? 'selected' : ''}>По правому</option>
+        </select>
+        <label>X (%):</label>
+        <input type="number" value="${el.x || 0}" onchange="updateReceiptElement(${idx}, 'x', parseInt(this.value))">
+        <label>Y (px):</label>
+        <input type="number" value="${el.y || 0}" onchange="updateReceiptElement(${idx}, 'y', parseInt(this.value))">
+        <label>Ширина (%):</label>
+        <input type="number" value="${el.w || 100}" onchange="updateReceiptElement(${idx}, 'w', parseInt(this.value))">
+        <label>Высота (px):</label>
+        <input type="number" value="${el.h || 20}" onchange="updateReceiptElement(${idx}, 'h', parseInt(this.value))">
+        <button class="btn btn-danger" style="margin-top:8px;width:100%;padding:6px;" onclick="deleteReceiptElement(${idx})">Удалить элемент</button>
+    `;
+}
+
+function updateReceiptElement(idx, prop, value) {
+    if (!receiptElements[idx]) return;
+    receiptElements[idx][prop] = value;
+    renderReceiptPreview();
+}
+
+function deleteReceiptElement(idx) {
+    if (!receiptElements[idx]) return;
+    receiptElements.splice(idx, 1);
+    receiptSelectedElement = null;
+    document.getElementById('receiptProperties').innerHTML = '<p style="font-size:12px;color:var(--gray-muted);">Выберите элемент</p>';
+    renderReceiptPreview();
+}
+
+function addReceiptElement(type) {
+    const labels = {
+        header: 'Чек №{number}',
+        org: '{org}',
+        date: 'Дата: {date} {time}',
+        items: 'Товары',
+        total: 'ИТОГО: {total}',
+        footer: 'Спасибо за покупку!',
+        line: '',
+        custom: 'Свой текст'
+    };
+    const newEl = {
+        type: type,
+        label: labels[type] || 'Новый элемент',
+        x: 0,
+        y: (receiptElements.length * 30) % 400,
+        w: 100,
+        h: type === 'items' ? 200 : type === 'line' ? 10 : 20,
+        fontSize: type === 'header' ? '16px' : '12px',
+        bold: type === 'header' || type === 'total',
+        align: type === 'header' || type === 'footer' ? 'center' : type === 'total' ? 'right' : 'left'
+    };
+    receiptElements.push(newEl);
+    renderReceiptPreview();
+    selectReceiptElement(receiptElements.length - 1);
+}
+
+function insertReceiptVariable(variable) {
+    if (receiptSelectedElement === null || !receiptElements[receiptSelectedElement]) {
+        showToast('Выберите элемент');
+        return;
+    }
+    receiptElements[receiptSelectedElement].label += ' ' + variable;
+    renderReceiptPreview();
+    updateReceiptProperties(receiptSelectedElement);
+}
+
+function saveReceiptTemplate() {
+    localStorage.setItem('productor_receipt_template', JSON.stringify(receiptElements));
+    showToast('Шаблон чека сохранён');
+    playSound('Beep1.mp3');
+}
+
+function initReceiptPreview() {
+    const preview = document.getElementById('receiptPreview');
+    if (preview && receiptElements.length === 0) {
+        receiptElements = getDefaultReceiptElements();
+        renderReceiptPreview();
+    }
+}
+
+// ============================================================
+// СТАТИСТИКА ПРОДАЖ
+// ============================================================
+function openSalesStats() {
+    if (!checkLicenseStatus()) { showToast("⚠️ Только в PRO."); openModal('settings'); setTimeout(() => switchTab('pro'), 100); return; }
+    closeAllModals();
+    currentStatPeriod = 'all';
+    updateStatPeriodButtons();
+    renderSalesStats();
+    document.getElementById('salesStatsModal').classList.add('active');
+}
+
+function setStatPeriod(period) {
+    currentStatPeriod = period;
+    updateStatPeriodButtons();
+    renderSalesStats();
+}
+
+function updateStatPeriodButtons() {
+    ['day','week','month','all'].forEach(p => {
+        const btn = document.getElementById('statPeriod' + p.charAt(0).toUpperCase() + p.slice(1));
+        if (btn) {
+            if (p === currentStatPeriod) {
+                btn.className = 'btn btn-primary';
+            } else {
+                btn.className = 'btn btn-outline';
+            }
+        }
+    });
+}
+
+function filterSalesByPeriod() {
+    const now = new Date();
+    let cutoff = new Date(0);
+    if (currentStatPeriod === 'day') {
+        cutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    } else if (currentStatPeriod === 'week') {
+        const day = now.getDay() || 7;
+        cutoff = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day + 1);
+    } else if (currentStatPeriod === 'month') {
+        cutoff = new Date(now.getFullYear(), now.getMonth(), 1);
+    }
+    return salesHistory.filter(s => new Date(s.date) >= cutoff);
+}
+
+function renderSalesStats() {
+    const filtered = filterSalesByPeriod();
+    
+    const totalItems = filtered.reduce((sum, s) => sum + (s.items || 0), 0);
+    const totalRevenue = filtered.reduce((sum, s) => sum + (s.total || 0), 0);
+    const totalProfit = totalRevenue * 0.3;
+
+    document.getElementById('totalItemsSold').textContent = Math.round(totalItems);
+    document.getElementById('totalRevenue').textContent = totalRevenue.toFixed(2) + ' ₽';
+    document.getElementById('totalProfit').textContent = totalProfit.toFixed(2) + ' ₽';
+
+    const productMap = {};
+    filtered.forEach(s => {
+        if (s.products && Array.isArray(s.products)) {
+            s.products.forEach(p => {
+                const key = p.sku || p.name;
+                if (!productMap[key]) {
+                    productMap[key] = { name: p.name, sku: p.sku, qty: 0, basePrice: p.price, total: 0 };
+                }
+                productMap[key].qty += p.qty;
+                productMap[key].total += p.lineTotal || (p.price * p.qty);
+            });
+        }
+    });
+
+    const soldBody = document.getElementById('soldItemsBody');
+    soldBody.innerHTML = '';
+    Object.values(productMap).sort((a,b) => b.total - a.total).forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${p.name}</td><td>${p.qty}</td><td>${p.basePrice.toFixed(2)} ₽</td><td>${p.total.toFixed(2)} ₽</td>`;
+        soldBody.appendChild(tr);
+    });
+    if (Object.keys(productMap).length === 0) {
+        soldBody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--gray-muted);">Нет данных</td></tr>';
+    }
+
+    const tbody = document.getElementById('salesStatsBody');
+    tbody.innerHTML = '';
+    [...filtered].reverse().slice(0, 50).forEach(s => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${new Date(s.date).toLocaleString('ru-RU')}</td><td>${s.items}</td><td>${s.total.toFixed(2)} ₽</td>`;
+        tbody.appendChild(tr);
+    });
+    if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--gray-muted);">Нет данных</td></tr>';
+    }
+}
+
+function exportSalesStats(format) {
+    const filtered = filterSalesByPeriod();
+    if (filtered.length === 0) { showToast('Нет данных'); return; }
+    
+    const totalItems = filtered.reduce((sum, s) => sum + (s.items || 0), 0);
+    const totalRevenue = filtered.reduce((sum, s) => sum + (s.total || 0), 0);
+    const totalProfit = totalRevenue * 0.3;
+
+    const productMap = {};
+    filtered.forEach(s => {
+        if (s.products && Array.isArray(s.products)) {
+            s.products.forEach(p => {
+                const key = p.sku || p.name;
+                if (!productMap[key]) {
+                    productMap[key] = { name: p.name, sku: p.sku, qty: 0, basePrice: p.price, total: 0 };
+                }
+                productMap[key].qty += p.qty;
+                productMap[key].total += p.lineTotal || (p.price * p.qty);
+            });
+        }
+    });
+
+    const periodNames = { day: 'за день', week: 'за неделю', month: 'за месяц', all: 'за всё время' };
+
+    if (format === 'txt') {
+        let text = `СТАТИСТИКА ПРОДАЖ (${periodNames[currentStatPeriod]})\nДата: ${new Date().toLocaleString('ru-RU')}\n\n`;
+        text += `Всего продано: ${Math.round(totalItems)} шт.\n`;
+        text += `Выручка: ${totalRevenue.toFixed(2)} ₽\n`;
+        text += `Прибыль: ${totalProfit.toFixed(2)} ₽\n\n`;
+        text += `ПРОДАННЫЕ ТОВАРЫ:\n`;
+        Object.values(productMap).forEach(p => {
+            text += `  ${p.name} | Кол-во: ${p.qty} | Нач. цена: ${p.basePrice.toFixed(2)} ₽ | Итог: ${p.total.toFixed(2)} ₽\n`;
+        });
+        text += `\nИСТОРИЯ ПРОДАЖ:\n`;
+        filtered.forEach(s => {
+            text += `${new Date(s.date).toLocaleString('ru-RU')} | ${s.items} шт. | ${s.total.toFixed(2)} ₽\n`;
+        });
+        const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `sales_stats_${currentStatPeriod}_${new Date().toISOString().slice(0,10)}.txt`;
+        a.click();
+    } else if (format === 'json') {
+        const data = { 
+            period: currentStatPeriod,
+            totalItems: Math.round(totalItems), 
+            totalRevenue, 
+            totalProfit, 
+            products: Object.values(productMap),
+            history: filtered 
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `sales_stats_${currentStatPeriod}_${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+    } else if (format === 'png') {
+        const canvas = document.createElement('canvas');
+        canvas.width = 700;
+        canvas.height = 500 + Math.min(Object.keys(productMap).length * 20, 300);
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#2563eb';
+        ctx.font = 'bold 24px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`Статистика продаж ${periodNames[currentStatPeriod]}`, 350, 40);
+        ctx.fillStyle = '#1e293b';
+        ctx.font = '18px sans-serif';
+        ctx.fillText(`Продано товаров: ${Math.round(totalItems)}`, 350, 90);
+        ctx.fillText(`Выручка: ${totalRevenue.toFixed(2)} ₽`, 350, 120);
+        ctx.fillText(`Прибыль: ${totalProfit.toFixed(2)} ₽`, 350, 150);
+        
+        ctx.font = 'bold 14px sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('Проданные товары:', 50, 190);
+        ctx.font = '12px sans-serif';
+        let y = 215;
+        Object.values(productMap).slice(0, 15).forEach(p => {
+            ctx.fillText(`${p.name.substring(0, 30)} | ${p.qty} шт. | ${p.total.toFixed(2)} ₽`, 60, y);
+            y += 20;
+        });
+        
+        ctx.textAlign = 'center';
+        ctx.font = '12px sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText(`Дата: ${new Date().toLocaleString('ru-RU')}`, 350, canvas.height - 30);
+
+        const link = document.createElement('a');
+        link.download = `sales_stats_${currentStatPeriod}_${new Date().toISOString().slice(0,10)}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    }
+    playSound('Beep1.mp3');
+}
+
+// ============================================================
+// РЕЖИМ РАЗРАБОТЧИКА
+// ============================================================
+function openDevMenu() {
+    closeAllModals();
+    populateSystemInfo();
+    populateDeviceInfo();
+    document.getElementById('devMenuModal').classList.add('active');
+}
+
+function switchDevTab(tab) {
+    document.querySelectorAll('.dev-tab-content').forEach(el => el.style.display = 'none');
+    document.getElementById('devTab' + tab.charAt(0).toUpperCase() + tab.slice(1)).style.display = 'block';
+}
+
+function populateSystemInfo() {
+    const tbody = document.getElementById('systemInfoBody');
+    if (!tbody) return;
+    const info = [
+        ['Версия приложения', VERSION],
+        ['Режим разработчика', devMode ? '✅ Включён' : '❌ Выключен'],
+        ['Эксперименты', experimentsEnabled ? '✅ Включены' : '❌ Выключены'],
+        ['Тема', isDarkMode ? 'Тёмная' : 'Светлая'],
+        ['Шрифт', appFont],
+        ['Размер шрифта', appFontSize + 'px'],
+        ['Анимации', animationsEnabled ? '✅' : '❌'],
+        ['Свечение', glowEnabled ? '✅' : '❌'],
+        ['Звуки', soundsEnabled ? '✅' : '❌'],
+        ['Подсказки', hintsEnabled ? '✅' : '❌'],
+        ['PRO статус', checkLicenseStatus() ? '✅ Активен' : '❌ Не активирован'],
+        ['Товаров в базе', productsDB.length],
+        ['Записей в логах', actionLogs.length],
+        ['Продаж в истории', salesHistory.length],
+        ['LocalStorage', (JSON.stringify(localStorage).length / 1024).toFixed(2) + ' KB'],
+        ['User Agent', navigator.userAgent.substring(0, 60) + '...']
+    ];
+    tbody.innerHTML = info.map(([k, v]) => `<tr><td><b>${k}</b></td><td>${v}</td></tr>`).join('');
+}
+
+function populateDeviceInfo() {
+    const tbody = document.getElementById('deviceInfoBody');
+    if (!tbody) return;
+    const info = [
+        ['Платформа', navigator.platform],
+        ['Язык', navigator.language],
+        ['Онлайн', navigator.onLine ? '✅ Да' : '❌ Нет'],
+        ['Ядер', navigator.hardwareConcurrency || 'N/A'],
+        ['Память', navigator.deviceMemory ? navigator.deviceMemory + ' GB' : 'N/A'],
+        ['Экран', `${screen.width}x${screen.height}`],
+        ['Окно', `${window.innerWidth}x${window.innerHeight}`],
+        ['Pixel Ratio', window.devicePixelRatio],
+        ['Touch', 'ontouchstart' in window ? '✅' : '❌'],
+        ['Cookies', navigator.cookieEnabled ? '✅' : '❌'],
+        ['Do Not Track', navigator.doNotTrack || 'N/A']
+    ];
+    if ('getBattery' in navigator) {
+        navigator.getBattery().then(b => {
+            info.push(['Батарея', Math.round(b.level * 100) + '%' + (b.charging ? ' ⚡' : '')]);
+            tbody.innerHTML = info.map(([k, v]) => `<tr><td><b>${k}</b></td><td>${v}</td></tr>`).join('');
+        }).catch(() => {
+            tbody.innerHTML = info.map(([k, v]) => `<tr><td><b>${k}</b></td><td>${v}</td></tr>`).join('');
+        });
+    } else {
+        tbody.innerHTML = info.map(([k, v]) => `<tr><td><b>${k}</b></td><td>${v}</td></tr>`).join('');
+    }
 }
 
 // ============================================================
@@ -2808,7 +4216,6 @@ function switchTab(tabId) {
     const activeTab = document.querySelector(`.tab-item[data-tab="${tabId}"]`); if (activeTab) activeTab.classList.add('active');
     document.querySelectorAll('.settings-content').forEach(el => el.classList.remove('active'));
     const content = document.getElementById('content-' + tabId); if (content) content.classList.add('active');
-    // Заполняем proNameInput актуальным именем
     if (tabId === 'pro' && document.getElementById('proNameInput')) {
         document.getElementById('proNameInput').value = orgSettings.name || '';
     }
@@ -2823,6 +4230,16 @@ function setupEventListeners() {
     document.getElementById('editFilterInput')?.addEventListener('input', renderEditTable);
     document.getElementById('sortSelect')?.addEventListener('change', renderInventory);
     document.getElementById('stockFilterSelect')?.addEventListener('change', renderInventory);
+    document.getElementById('gradientColor2')?.addEventListener('input', function(e) {
+        gradientColor2 = e.target.value;
+        localStorage.setItem('productor_gradient_color2', gradientColor2);
+        applyGradientAccent();
+    });
+    document.getElementById('gradientPriority')?.addEventListener('change', function(e) {
+        gradientPriority = e.target.value;
+        localStorage.setItem('productor_gradient_priority', gradientPriority);
+        applyGradientAccent();
+    });
 }
 
 // ============================================================
