@@ -1114,12 +1114,12 @@ dialog::backdrop { background: rgba(15,23,42,0.55); backdrop-filter: blur(8px); 
                 <i class="fa-solid fa-download"></i>
             </button>
             <div class="dropdown" id="downloadDropdown">
-                <div class="dropdown-item" onclick="startDirectDownload('prod10_10.zip')">
-                    <div><strong>Веб-приложение</strong><small>Все устройства · v.26.10.11.0</small></div>
+                <div class="dropdown-item" onclick="startDirectDownload('prod10_13.zip')">
+                    <div><strong>Веб-приложение</strong><small>Все устройства · v.26.10.13.1</small></div>
                     <i class="fa-solid fa-arrow-down"></i>
                 </div>
-                <div class="dropdown-item" onclick="alert('Beta')">
-                    <div><strong>Для Windows</strong><small>v.26.8.20.2</small></div>
+                <div class="dropdown-item" onclick="startDirectDownload('prod10_13.exe')">
+                    <div><strong>Для Windows</strong><small>v.26.10.13.1</small></div>
                     <i class="fa-solid fa-arrow-down"></i>
                 </div>
                 <div class="dropdown-item" onclick="alert('Ещё в разработке')">
@@ -1144,7 +1144,7 @@ dialog::backdrop { background: rgba(15,23,42,0.55); backdrop-filter: blur(8px); 
         <p class="lead">Полноценное рабочее место кассира без установки. Управление товарами, гибкие скидки, сохранение сессий и стильный интерфейс — всё в одном приложении.</p>
         <div class="hero-actions">
             <button class="btn btn-primary" onclick="document.getElementById('startup').showModal()">
-                <i class="fa-solid fa-play"></i> Попробовать бесплатно (26.10.11.4)
+                <i class="fa-solid fa-play"></i> Попробовать бесплатно (26.10.13.1)
             </button>
             <a class="btn btn-ghost" href="https://github.com/q-acd/prod/" target="_blank" rel="noopener">
                 <i class="fa-brands fa-github"></i> Исходный код
@@ -1384,11 +1384,27 @@ dialog::backdrop { background: rgba(15,23,42,0.55); backdrop-filter: blur(8px); 
                     </tr>
                 </thead>
                 <tbody>
+                   <tr>
+                        <td><strong>v.26.10.13.1</strong><span class="ver-tag">NEW</span></td>
+                        <td>Windows</td>
+                        <td>~840KB</td>
+                        <td>13.10.2026</td>
+                        <td style="text-align:right;"><a href="prod10_13.exe" download class="badge-dl"><i class="fa-solid fa-download"></i> Скачать</a></td>
+
+                    </tr>
+                   <tr>
+                        <td><strong>v.26.10.13.1</strong><span class="ver-tag">NEW</span></td>
+                        <td>WEB (Браузер)</td>
+                        <td>~2MB</td>
+                        <td>13.10.2026</td>
+                        <td style="text-align:right;"><a href="prod10_13.zip" download class="badge-dl"><i class="fa-solid fa-download"></i> Скачать</a></td>
+
+                    </tr>
                     <tr>
-                        <td><strong>v.26.10.11.1</strong><span class="ver-tag">NEW</span></td>
+                        <td><strong>v.26.10.11.1</strong></td>
                         <td>WEB (Браузер)</td>
                         <td>~840KB</td>
-                        <td>С 11 октября</td>
+                        <td>11.10.2026</td>
                         <td style="text-align:right;"><a href="prod10_10.zip" download class="badge-dl"><i class="fa-solid fa-download"></i> Скачать</a></td>
 
                     </tr>
