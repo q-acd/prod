@@ -1,232 +1,705 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Штаб — Помощник Продуктора</title>
+<link rel="icon" href="logo.ico" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <meta charset="UTF-8">
-    <title>Помощник Штаб</title>
-	<meta name="description" content="Продуктор - умные решения для вашего бизнеса! 16+">
-	<!-- Ключевые слова (сегодня почти не влияют на Google/Yandex, но лишними не будут) -->
-	<meta name="keywords" content="программа для магазина, учет товаров, касса в браузере, умный контроль продаж, Продуктор, бизнес софт">
-	<!-- Авторство --> <meta name="author" content="Quantum ACD">
-	<!-- Запрет индексации дублей страниц поисковиками (рекомендуется добавить) --> <link rel="canonical" href="https://q-acd.github.io/prod">
-    <style>
-	:root{
-	font-family: 'Inter', sans-serif;
-	--bg-btn: dodgerblue;
-	}
-      .header{
-	background: var(--bg-btn);
-	color:white;
-	position:fixed;
-	height:40px;
-	top:5px;
-	border-radius:40px;
-	padding:10px;
-	width: calc(100% - 30px - 10px);
-	left:5px;
-	right:5px;
-}	
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..700,0..1,-50..200" rel="stylesheet" />
+<style>
+:root{
+    --bg-light: #ffffff;
+    --text-dark: #1e293b;
+    --border-light: #e2e8f0;
+    --stat-bg: #f0f4ff;
+    --gray-muted: #64748b;
+    --primary-accent: dodgerblue;
+    --success-accent: #10b981;
+    --font-family: 'Inter', system-ui, sans-serif;
+}
+[data-theme="dark"]{
+    --bg-light: #0f172a;
+    --text-dark: #f1f5f9;
+    --border-light: #334155;
+    --stat-bg: #1e3a8a;
+    --gray-muted: #94a3b8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
+body {
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    min-height: 100vh;
+    padding-bottom: 30px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.mi {
+    font-family: 'Material Symbols Rounded';
+    font-weight: normal; font-style: normal;
+    font-size: 20px; line-height: 1;
+    display: inline-block;
+    font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+}
+
+.header{
+    background: var(--primary-accent);
+    color: white;
+    position: fixed;
+    height: 48px;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    border-radius: 40px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 0 30px var(--primary-accent);
+    z-index: 100;
+}
+.header-title { display: flex; align-items: center; gap: 12px; }
+.header-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+}
+.header .header-title .name { font-weight: 700; font-size: 15px; line-height: 1.1; }
+.header .header-title .sub { font-size: 11px; opacity: 0.85; }
+.header-actions { display: flex; gap: 6px; }
+.header-btn {
+    background: rgba(255,255,255,0.2);
+    border: none; color: white;
+    width: 34px; height: 34px; border-radius: 50%;
+    cursor: pointer; font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    transition: 0.2s;
+}
+.header-btn:hover { background: rgba(255,255,255,0.35); transform: scale(1.08); }
+
+#chat{
+    padding: 80px 15px 30px 15px;
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.msg-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    animation: msgIn 0.3s ease-out;
+}
+@keyframes msgIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.avatar {
+    width: 38px; height: 38px; min-width: 38px;
+    border-radius: 50%;
+    background: var(--primary-accent);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
 .bot-msg{
-background:#f3f3f3;
-border-radius: 12px 12px 12px 0px;
-color:black;
-padding:10px;
-display:inline-block;
-width:auto;
-max-width:460px;
-font-size:15px;
+    background: var(--stat-bg);
+    border-radius: 16px 16px 16px 4px;
+    color: var(--text-dark);
+    padding: 14px 18px;
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+    font-size: 14px;
+    line-height: 1.55;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid var(--border-light);
+}
+.bot-msg b, .bot-msg strong { color: var(--primary-accent); }
+.bot-msg h3 {
+    color: var(--primary-accent);
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+.bot-msg h1 {
+    color: var(--primary-accent);
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+.bot-msg i { color: var(--gray-muted); }
+
+.msg-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-width: 100%;
 }
 .bot-btn{
-border-radius:12px;
-width:100%;
-max-width:600px;
-border:none;
-padding:10px;
-background: var(--bg-btn);
-color:white;
-margin:4px;
-text-align:center;
-margin-left:0px;
-font-family: 'Inter', sans-serif;
-cursor:pointer;
-} 
-a{
-color: var(--bg-btn);
-} 
-img{
-width:100%;
-border-radius:15px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 100%;
+    border: 1px solid var(--border-light);
+    padding: 12px 16px;
+    background: var(--bg-light);
+    color: var(--text-dark);
+    text-align: left;
+    font-family: var(--font-family);
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 500;
 }
-    </style>
+.bot-btn:hover {
+    background: var(--primary-accent);
+    color: white;
+    border-color: var(--primary-accent);
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.bot-btn:hover .bot-btn-icon { background: rgba(255,255,255,0.25); color: white; }
+.bot-btn-icon {
+    width: 30px; height: 30px; min-width: 30px;
+    border-radius: 8px;
+    background: var(--stat-bg);
+    color: var(--primary-accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    transition: 0.2s;
+}
+.bot-btn.primary {
+    background: var(--primary-accent);
+    color: white;
+    border-color: var(--primary-accent);
+    justify-content: center;
+    text-align: center;
+    font-weight: 600;
+}
+.bot-btn.primary:hover { transform: scale(1.02); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+.bot-btn.primary .bot-btn-icon { background: rgba(255,255,255,0.25); color: white; }
+
+a { color: var(--primary-accent); text-decoration: none; font-weight: 500; }
+a:hover { text-decoration: underline; }
+
+.version-tag {
+    float: right;
+    color: var(--gray-muted);
+    font-size: 11px;
+    margin-top: 12px;
+}
+.new-tag {
+    display: inline-block;
+    background: gold;
+    color: black;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.footer-note {
+    text-align: center;
+    color: var(--gray-muted);
+    font-size: 11px;
+    margin-top: 20px;
+    padding: 0 15px;
+}
+
+.thinking {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+}
+.thinking span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--primary-accent);
+    animation: think 1.2s infinite ease-in-out;
+}
+.thinking span:nth-child(2) { animation-delay: 0.15s; }
+.thinking span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes think {
+    0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1.15); }
+}
+</style>
 </head>
-<body onload="bq()">
+<body>
+
 <div class="header">
-<div style="margin-left:15px;"><span>Штаб</span><br><small>Бот-помощник</small></div>
+    <div class="header-title">
+        <div class="header-avatar"><span class="mi">support_agent</span></div>
+        <div>
+            <div class="name">Штаб</div>
+            <div class="sub">Бот-помощник · v26.10.13.1</div>
+        </div>
+    </div>
+    <div class="header-actions">
+        <button class="header-btn" onclick="toggleTheme()" title="Сменить тему"><span class="mi">contrast</span></button>
+        <button class="header-btn" onclick="location.href='beta.html'" title="Назад в приложение"><span class="mi">close</span></button>
+    </div>
 </div>
-<br><br><br><br>
-<div id="chat">
-<div class="bot-msg">
-<div class="bot">
-<img src="stab.png"></img>
-Сайт не может быть загружен из-за ошибки JavaScript, которая позволяет работаь программе и боту. Если это не устраняется, напишите нам: <a href="mailto:q-acd@mail.com">q-acd@mail.com</a>
 
-</div><br>
+<div id="chat"></div>
 
-</div>
-</div>
+<div class="footer-note">© 2026 Морковчик · Если что-то не так — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a></div>
+
 <script>
-function howadd(){
-document.getElementById("chat").innerHTML = `<div class="bot-msg"><div class="bot"><i>Штаб думает...</i></div></div>`;
-
-setTimeout(() => {
-document.getElementById("chat").innerHTML = `<div class="bot-msg">
-<div class="bot">
-<img onclick="window.location.href = this.src" style="cursor: pointer" src="fr1.png"></img>
-<h3>Как добавить/изменить товар?</h3><b>Добавление товара:</b><br>1. Нажмите на кнопку "Добавить товар" снизу слева или нажмите на клавиатуре Alt+C.<br>2. Введите данные о товаре (Имя, Артикул, Цена и кол-во на складе - обязательно; Остальное - по желанию)<br>3. Нажмите "Сохранить" внизу.<br><b>Изменение товара:</b><br>1. Нажмите на кнопку "Изменить товар" снизу слева или нажмите на клавиатуре Alt+E.<br>2. Выберите товар из списка или введите название/артикул вручную.<br>3. Нажмите на карандаш слева от товара<br>4. Введит новые данные о товаре.<br><b>Удаление товаров:</b><br>1. Нажмите "Изменить товар"<br>2. Выберите товары галочкой и нажмите "Удалить выбранные". (Можно удалить вручную по одному, нажав на мусорное ведро справа от товара).<br><br> Если вопрос не решен, напишите на почту: <a href="mailto:q-acd@mail.com">q-acd@mail.com</a>
-
-</div><br>
-
-<button class="bot-btn" onclick="bq()">Назад к вопросам</button>
-</div>`
-}, 1500);
-
+// ============================================================
+// ТЕМА
+// ============================================================
+function toggleTheme() {
+    const cur = localStorage.getItem('stab_theme') || 'light';
+    const next = cur === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('stab_theme', next);
+    document.documentElement.setAttribute('data-theme', next);
 }
-function bq(){
-document.getElementById("chat").innerHTML = `<div class="bot-msg"><div class="bot"><i>Загрузка списка вопросов...</i></div></div>`;
-setTimeout(() => {
-document.getElementById("chat").innerHTML = `<div class="bot-msg">
-<div class="bot">
-<img src="stab.png"></img>
-<b>Приветствую!</b><br>Меня зовут Штаб - ваш цифровой помощник по приложения "Продуктор для бизнеса".<br><br>Ниже представлен список часто задаваемых вопросов. Если вашего вопроса нет в списке, напишите на почту: <a href="mailto:q-acd@mail.com">q-acd@mail.com</a>
+(function initTheme() {
+    const saved = localStorage.getItem('stab_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+})();
 
-</div><br>
-<button class="bot-btn" onclick="howadd()">Как добавить/изменить товар?</button>
-<button class="bot-btn" onclick="howtheme()">Как сменить тему?</button>
-<button class="bot-btn" onclick="howdata()">Как поменять данные об организации?</button>
-<button class="bot-btn" onclick="howstate()">Как смотреть статистику?</button>
-<button class="bot-btn" onclick="appbugs()">Приложение зависает/не работает!</button>
-<button class="bot-btn" onclick="offanim()">Как отключить анимации?</button>
-<button class="bot-btn" onclick="otherq()">У меня другой вопрос</button>
-<button class="bot-btn" onclick="idk()">Как загрузить/сохранить список товаров?</button>
-<p><small style="float:right;color:gray;font-size:12px;">Версия бота 26.9.8.1</small></p>
-</div>`
-}, 500);
-
+// ============================================================
+// ОБЩИЕ ХЕЛПЕРЫ
+// ============================================================
+function render(html) {
+    document.getElementById('chat').innerHTML = html;
 }
-function howtheme(){
-document.getElementById("chat").innerHTML = `<div class="bot-msg"><div class="bot"><i>Штаб думает...</i></div></div>`;
-
-setTimeout(() => {
-document.getElementById("chat").innerHTML = `<div class="bot-msg">
-<div class="bot">
-<img onclick="window.location.href = this.src" style="cursor: pointer" src="fr2.png"></img>
-<h3>Как сменить тему?</h3><br>1. Нажмите на три точки сверху справа, откроется меню.<br>2. Выберите "Настройки" (нажмите).<br>3. Нажмите на вкладку "Тема оформления".<br>4. Выберите тему/цвет.<br>5. Нажмите "Применить".<br><br> Если вопрос не решен, напишите на почту: <a href="mailto:q-acd@mail.com">q-acd@mail.com</a>
-
-</div><br>
-
-<button class="bot-btn" onclick="bq()">Назад к вопросам</button>
-</div>`
-}, 1500);
-
+function thinking(label) {
+    return '<div class="msg-row">' +
+        '<div class="avatar"><span class="mi">support_agent</span></div>' +
+        '<div class="bot-msg">' +
+            '<div class="thinking"><i>' + label + '</i><span></span><span></span><span></span></div>' +
+        '</div>' +
+    '</div>';
 }
-function howdata(){
-document.getElementById("chat").innerHTML = `<div class="bot-msg"><div class="bot"><i>Штаб думает...</i></div></div>`;
-
-setTimeout(() => {
-document.getElementById("chat").innerHTML = `<div class="bot-msg">
-<div class="bot">
-<img onclick="window.location.href = this.src" style="cursor: pointer" src="fr4.png"></img>
-Конечно! Чтобы поменять данные об организации зайдите в настройки (находится в правом верхнем меню). Выберите вкладку "Персональные данные" и укажите данные согласно изображению. Затем обязательно нажмите "Применить"<br><br> Если вопрос не решен, напишите на почту: <a href="mailto:q-acd@mail.com">q-acd@mail.com</a>
-
-</div><br>
-
-<button class="bot-btn" onclick="bq()">Назад к вопросам</button>
-</div>`
-}, 1500);
-
+function botBlock(inner, extraButtons) {
+    extraButtons = extraButtons || '';
+    return '<div class="msg-row">' +
+        '<div class="avatar"><span class="mi">support_agent</span></div>' +
+        '<div class="msg-block">' +
+            '<div class="bot-msg">' + inner + '</div>' +
+            extraButtons +
+        '</div>' +
+    '</div>';
 }
-function howstate(){
-document.getElementById("chat").innerHTML = `<div class="bot-msg"><div class="bot"><i>Штаб думает...</i></div></div>`;
-
-setTimeout(() => {
-document.getElementById("chat").innerHTML = `<div class="bot-msg">
-<div class="bot">
-<img onclick="window.location.href = this.src" style="cursor: pointer" src="fr3.png"></img>
-<h3>Как смотреть статистику?</h3><br>1. Нажмите на три точки сверху справа, откроется меню.<br>2. Выберите "Статистика" (нажмите).<br><br> Если вопрос не решен, напишите на почту: <a href="mailto:q-acd@mail.com">q-acd@mail.com</a>
-
-</div><br>
-
-<button class="bot-btn" onclick="bq()">Назад к вопросам</button>
-</div>`
-}, 1500);
-
+function backBtn() {
+    return '<button type="button" class="bot-btn" onclick="bq()">' +
+        '<span class="bot-btn-icon"><span class="mi">arrow_back</span></span> Назад к вопросам' +
+    '</button>';
 }
-function appbugs(){
-document.getElementById("chat").innerHTML = `<div class="bot-msg"><div class="bot"><i>Штаб думает...</i></div></div>`;
-
-setTimeout(() => {
-document.getElementById("chat").innerHTML = `<div class="bot-msg">
-<div class="bot">
-
-Понимаем ваше недоразумение. Если вы заметили ошибки в работе приложения - немедленно сообщите нам на почту (указана ниже). Если ваше приложение сильно тормозит - проблема кроется в производительности вашего браузера. Рассказали об этом в статье ниже.<br><br> Если вопрос не решен, напишите на почту: <a href="mailto:q-acd@mail.com">q-acd@mail.com</a>
-
-</div><br>
-<button class="bot-btn" onclick="offanim()">Как отключить анимации?</button>
-<button class="bot-btn" onclick="bq()">Назад к вопросам</button>
-</div>`
-}, 1500);
-
+function askBtn(handler, icon, label) {
+    return '<button type="button" class="bot-btn" onclick="' + handler + '">' +
+        '<span class="bot-btn-icon"><span class="mi">' + icon + '</span></span> ' + label +
+    '</button>';
 }
-function offanim(){
-document.getElementById("chat").innerHTML = `<div class="bot-msg"><div class="bot"><i>Штаб думает...</i></div></div>`;
-
-setTimeout(() => {
-document.getElementById("chat").innerHTML = `<div class="bot-msg">
-<div class="bot">
-
-<h1>Как отключить анимации?</h1>Понимаем, анимации могут замедлять ваше устройство. В программе <b>нельзя</b> убрать анимации вручную. Для этого воспользуйтесь <a href="lite.html">Lite-версией</a>, в ней нет анимаций и инструментов, зато программа не зависнет в один миг.<br><br> Если вопрос не решен, напишите на почту: <a href="mailto:q-acd@mail.com">q-acd@mail.com</a>
-
-</div><br>
-
-<button class="bot-btn" onclick="bq()">Назад к вопросам</button>
-</div>`
-}, 1500);
-
+function questionBtn(handler, icon, label, isNew) {
+    return '<button type="button" class="bot-btn" onclick="' + handler + '()">' +
+        '<span class="bot-btn-icon"><span class="mi">' + icon + '</span></span> ' + label +
+        (isNew ? '<span class="new-tag">NEW</span>' : '') +
+    '</button>';
 }
-function otherq(){
-document.getElementById("chat").innerHTML = `<div class="bot-msg"><div class="bot"><i>Штаб думает...</i></div></div>`;
 
-setTimeout(() => {
-document.getElementById("chat").innerHTML = `<div class="bot-msg">
-<div class="bot">
-
-<h1>Другой вопрос</h1>Если вашего вопроса нет в списке, попробуйте найти его в нашем <a href="https://max.ru/channel_productor">MAX-канале</a><br><br><img src="logo.png"></img><br> Если вопрос не решен, напишите на почту: <a href="mailto:q-acd@mail.com">q-acd@mail.com</a>
-
-</div><br>
-
-<button class="bot-btn" onclick="bq()">Назад к вопросам</button>
-</div>`
-}, 1500);
-
+// ============================================================
+// ГЛАВНОЕ МЕНЮ
+// ============================================================
+function bq() {
+    render(thinking('Загрузка списка вопросов...'));
+    setTimeout(function() {
+        var html = botBlock(
+            '<b>Приветствую!</b><br>' +
+            'Меня зовут <b>Штаб</b> — цифровой помощник приложения «Продуктор для бизнеса».<br><br>' +
+            'Выберите вопрос из списка ниже — я постараюсь помочь.<br><br>' +
+            '<b>Стал гораздо умнее!</b>' +
+            '<div class="version-tag">Бот v26.10.13.1</div>',
+            questionBtn('howadd', 'inventory_2', 'Как добавить/изменить товар?') +
+            questionBtn('howtheme', 'palette', 'Как сменить тему?') +
+            questionBtn('howdata', 'business', 'Как поменять данные об организации?') +
+            questionBtn('howstate', 'bar_chart', 'Как смотреть статистику?') +
+            questionBtn('appbugs', 'bug_report', 'Приложение зависает/не работает!') +
+            questionBtn('offanim', 'bolt', 'Как отключить анимации?') +
+            questionBtn('howreceipt', 'receipt_long', 'Как настроить шаблон чека?', true) +
+            questionBtn('howpro', 'star', 'Как активировать PRO?', true) +
+            questionBtn('howwatermark', 'water_drop', 'Что за водяной знак на чеке?', true) +
+            questionBtn('howpricemaker', 'sell', 'Как создать ценник?', true) +
+            questionBtn('howscanner', 'qr_code_scanner', 'Как работает сканер штрих-кодов?', true) +
+            questionBtn('howexport', 'download', 'Как сохранить/загрузить товары?') +
+            questionBtn('howhotkeys', 'keyboard', 'Горячие клавиши приложения', true) +
+            questionBtn('howfont', 'text_fields', 'Как поменять шрифт?', true) +
+            questionBtn('howreceiptprint', 'print', 'Как распечатать чек/ценник?', true) +
+            questionBtn('howbackup', 'backup', 'Как сделать резервную копию?', true) +
+            questionBtn('howupdate', 'update', 'Как обновить приложение?', true) +
+            questionBtn('otherq', 'help', 'У меня другой вопрос') +
+            questionBtn('idk', 'contact_support', 'Не нашел ответа')
+        );
+        render(html);
+    }, 400);
 }
-function idk(){
-document.getElementById("chat").innerHTML = `<div class="bot-msg"><div class="bot"><i>Штаб думает...</i></div></div>`;
 
-setTimeout(() => {
-document.getElementById("chat").innerHTML = `<div class="bot-msg">
-<div class="bot">
-
-Штаб пока не знает ответа на ваш вопрос. Может быть этот вопрос есть в нашем MAX-канале?<br><br> Если вопрос не решен, напишите на почту: <a href="mailto:q-acd@mail.com">q-acd@mail.com</a>
-
-</div><br>
-<button class="bot-btn" onclick="window.location.href = 'https://max.ru/channel_productor'">Перейти в канал</button>
-<button class="bot-btn" onclick="bq()">Назад к вопросам</button>
-</div>`
-}, 1500);
-
+// ============================================================
+// СУЩЕСТВУЮЩИЕ ВОПРОСЫ
+// ============================================================
+function howadd() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Как добавить/изменить товар?</h3>' +
+            '<b>Добавление товара:</b><br>' +
+            '1. Нажмите «Добавить» снизу слева или клавиши <b>Alt+C</b>.<br>' +
+            '2. Введите данные о товаре: Имя, Артикул, Цена, Кол-во на складе — обязательно. Описание, скидка, место — по желанию.<br>' +
+            '3. Нажмите «Сохранить» внизу.<br><br>' +
+            '<b>Изменение товара:</b><br>' +
+            '1. Нажмите «Изменить» или <b>Alt+E</b>.<br>' +
+            '2. Найдите товар через фильтр.<br>' +
+            '3. Нажмите на карандаш слева от товара.<br>' +
+            '4. Введите новые данные и сохраните.<br><br>' +
+            '<b>Удаление товаров:</b><br>' +
+            '1. Откройте «Изменить» (Alt+E).<br>' +
+            '2. Отметьте товары галочкой и нажмите «Удалить выбранные».<br>' +
+            '3. Или удалите по одному кнопкой с мусорным ведром.<br><br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            backBtn()
+        ));
+    }, 700);
 }
+
+function howtheme() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Как сменить тему?</h3><br>' +
+            '1. Нажмите на три точки справа сверху — откроется меню.<br>' +
+            '2. Выберите «Настройки».<br>' +
+            '3. Перейдите на вкладку «Тема».<br>' +
+            '4. Выберите светлую/тёмную тему и цвет акцента.<br>' +
+            '5. Нажмите «Применить».<br><br>' +
+            '<b>Совет:</b> цвет акцента можно задать любой — от чёрного до неонового.<br><br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            backBtn()
+        ));
+    }, 700);
+}
+
+function howdata() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Как поменять данные об организации?</h3><br>' +
+            '1. Откройте настройки (⋮ → Настройки).<br>' +
+            '2. Вкладка «Персональные».<br>' +
+            '3. Заполните: Название, ИНН, ОГРН, Имя директора.<br>' +
+            '4. Обязательно нажмите «Применить».<br><br>' +
+            'Эти данные попадут в чек и используются в шаблонах.<br><br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            backBtn()
+        ));
+    }, 700);
+}
+
+function howstate() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Как смотреть статистику?</h3><br>' +
+            '<b>Статистика операций:</b><br>' +
+            '1. Меню ⋮ → «Статистика» (или <b>Alt+U</b>).<br>' +
+            '2. Смотрите последние продажи, добавления, редактирования, пополнения.<br><br>' +
+            '<b>Статистика продаж (PRO):</b><br>' +
+            '1. Меню ⋮ → «Инструменты» → «Статистика продаж».<br>' +
+            '2. Можно выбрать период: день, неделя, месяц, всё время.<br>' +
+            '3. Экспорт в TXT / PNG / JSON.<br><br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            backBtn()
+        ));
+    }, 700);
+}
+
+function appbugs() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Приложение зависает / не работает!</h3>' +
+            'Понимаем ваше недоразумение. Вот что можно попробовать:<br><br>' +
+            '1. Нажмите <b>Ctrl+F5</b> — жёсткое обновление страницы.<br>' +
+            '2. Проверьте, не открыто ли слишком много вкладок.<br>' +
+            '3. Отключите анимации (см. вопрос ниже).<br>' +
+            '4. Если проблема повторяется — напишите нам, мы обязательно поможем.<br><br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            askBtn('offanim()', 'bolt', 'Как отключить анимации?') + backBtn()
+        ));
+    }, 700);
+}
+
+function offanim() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Как отключить анимации?</h3><br>' +
+            '1. Откройте Настройки.<br>' +
+            '2. Вкладка «Скорость».<br>' +
+            '3. Снимите галочку «Анимации».<br>' +
+            '4. Там же можно отключить «Свечение» и «Подсказки».<br><br>' +
+           
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            backBtn()
+        ));
+    }, 700);
+}
+
+function otherq() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Другой вопрос</h3>' +
+            'Если вашего вопроса нет в списке, попробуйте найти его в нашем канале:<br>' +
+            '<a href="https://max.ru/channel_productor" target="_blank">MAX-канал Продуктора</a><br><br>' +
+            'Там публикуются новости, гайды и ответы на частые вопросы.<br><br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            askBtn("window.open('https://max.ru/channel_productor','_blank')", 'open_in_new', 'Перейти в канал') + backBtn()
+        ));
+    }, 700);
+}
+
+function idk() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Не нашел ответа</h3>' +
+            'Штаб пока не знает ответа на этот вопрос. Загляните в наш канал — возможно, там есть ответ.<br><br>' +
+            'Если не найдёте — напишите нам: <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            askBtn("window.open('https://max.ru/channel_productor','_blank')", 'open_in_new', 'Перейти в канал') + backBtn()
+        ));
+    }, 700);
+}
+
+// ============================================================
+// НОВЫЕ ВОПРОСЫ
+// ============================================================
+function howreceipt() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Как настроить шаблон чека? <span class="new-tag">NEW</span></h3><br>' +
+            '1. Откройте Настройки (⋮ → Настройки).<br>' +
+            '2. Вкладка <b>«Чек»</b>.<br>' +
+            '3. Выберите один из <b>25 шаблонов</b> — они отличаются стилем: классический, минимал, терминал, неон, ретро и другие.<br>' +
+            '4. <b>12 шаблонов</b> — бесплатно, <b>13</b> — доступны с PRO.<br>' +
+            '5. Можно задать <b>цвет акцента</b>: из темы, предустановленный или свой.<br>' +
+            '6. Отключить/включить водяной знак.<br>' +
+            '7. Выбрать вид чека по умолчанию: «Стандартный» или «Свой».<br>' +
+            '8. Кнопка <b>«Предпросмотр»</b> внизу покажет, как чек будет выглядеть.<br><br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            askBtn('howpro()', 'star', 'Как активировать PRO?') +
+            askBtn('howreceiptprint()', 'print', 'Как распечатать чек?') +
+            backBtn()
+        ));
+    }, 700);
+}
+
+function howpro() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Как активировать PRO? <span class="new-tag">NEW</span></h3><br>' +
+            '1. Откройте Настройки → вкладка <b>«PRO»</b>.<br>' +
+            '2. Введите <b>имя</b> в поле сверху — оно появится в меню вместо «Пользователь».<br>' +
+            '3. Введите <b>Код доступа (SKU)</b> в формате <code>PROD-QXXXXX-XXX</code>.<br>' +
+            '4. Нажмите <b>«Активировать PRO»</b>.<br><br>' +
+            '<b>Что даёт PRO:</b><br>' +
+            '• Все 25 шаблонов чека.<br>' +
+            '• Создатель ценников и экспорт в PDF.<br>' +
+            '• Статистика продаж с экспортом.<br>' +
+            '• Приветствие по имени при входе.<br><br>' +
+            'Сбросить лицензию можно там же кнопкой «Сбросить».<br><br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            backBtn()
+        ));
+    }, 700);
+}
+
+function howwatermark() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Что за водяной знак на чеке? <span class="new-tag">NEW</span></h3><br>' +
+            'Водяной знак — это аккуратная подпись в углу чека или ценника:<br>' +
+            '<i>«Чек создан в Продуктор для бизнеса»</i> + ссылка.<br><br>' +
+            'Он показывает, что чек создан в нашей программе, и не мешает содержимому.<br><br>' +
+            '<b>Можно ли отключить?</b><br>' +
+            'Нет, к сожалению нельзя.<br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            askBtn('howreceipt()', 'receipt_long', 'Как настроить шаблон чека?') + backBtn()
+        ));
+    }, 700);
+}
+
+function howpricemaker() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Как создать ценник? <span class="new-tag">NEW</span></h3><br>' +
+            'Доступно только с PRO.<br><br>' +
+            '1. Меню ⋮ → «Инструменты» → «Создать ценник».<br>' +
+            '2. Слева — панель редактирования, в центре — макет A4.<br>' +
+            '3. Можно добавить: текст, штрих-код, QR, картинку, фигуру.<br>' +
+            '4. Переменные <code>{name}</code>, <code>{price}</code>, <code>{sku}</code> подставляют данные товара.<br>' +
+            '5. Выберите товар в списке слева и нажмите «Применить».<br>' +
+            '6. Настройте ориентацию и количество ценников на странице.<br>' +
+            '7. Кнопка «Экспорт PDF» сохранит готовый файл.<br><br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            askBtn('howpro()', 'star', 'Как активировать PRO?') +
+            askBtn('howreceiptprint()', 'print', 'Как распечатать ценник?') +
+            backBtn()
+        ));
+    }, 700);
+}
+
+function howscanner() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Как работает сканер штрих-кодов? <span class="new-tag">NEW</span></h3><br>' +
+            '1. В левой панели нажмите на иконку QR-сканера.<br>' +
+            '2. Разрешите доступ к камере, если браузер спросит.<br>' +
+            '3. Наведите камеру на штрих-код (CODE128, EAN-13) или QR.<br>' +
+            '4. Как только код распознан — товар автоматически добавится в чек.<br><br>' +
+            '<b>Важно:</b> артикул товара должен совпадать с содержимым штрих-кода.<br><br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            backBtn()
+        ));
+    }, 700);
+}
+
+function howexport() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Как сохранить/загрузить товары?</h3><br>' +
+            '<b>Сохранить:</b><br>' +
+            '1. Меню ⋮ → «Работа с товарами».<br>' +
+            '2. Нажмите «Сохранить список» (или <b>Alt+Z</b>).<br>' +
+            '3. Скачается JSON-файл со всеми товарами.<br><br>' +
+            '<b>Загрузить:</b><br>' +
+            '1. Там же — «Загрузить список» (или <b>Alt+I</b>).<br>' +
+            '2. Вставьте JSON в поле и нажмите «Загрузить».<br>' +
+            '3. Дубликаты по артикулу не добавятся.<br><br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            askBtn('howbackup()', 'backup', 'Как сделать резервную копию?') + backBtn()
+        ));
+    }, 700);
+}
+
+function howhotkeys() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Горячие клавиши приложения <span class="new-tag">NEW</span></h3><br>' +
+            '<b>Alt+C</b> — добавить товар<br>' +
+            '<b>Alt+E</b> — изменить товар<br>' +
+            '<b>Alt+U</b> — статистика<br>' +
+            '<b>Alt+A</b> — о программе<br>' +
+            '<b>Alt+R</b> — очистить чек<br>' +
+            '<b>Alt+Z</b> — сохранить список товаров<br>' +
+            '<b>Alt+I</b> — загрузить список товаров<br>' +
+            '<b>Ctrl+Q</b> — завершить сессию<br>' +
+            '<b>Esc</b> — закрыть открытые окна<br><br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            backBtn()
+        ));
+    }, 700);
+}
+
+function howfont() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Как поменять шрифт? <span class="new-tag">NEW</span></h3><br>' +
+            '1. Настройки → вкладка «Тема».<br>' +
+            '2. Блок «Шрифт» — выберите из списка:<br>' +
+            '&nbsp;&nbsp;• Inter (по умолчанию)<br>' +
+            '&nbsp;&nbsp;• Arial, Times New Roman, Courier New, Verdana, Georgia<br>' +
+            '&nbsp;&nbsp;• Или <b>«Свой шрифт»</b> — введите название вручную (например: <code>Comic Sans MS, cursive</code>).<br>' +
+            '3. Нажмите «Применить свой шрифт» или внизу «Применить».<br><br>' +
+            'Шрифт применится во всём приложении.<br><br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            backBtn()
+        ));
+    }, 700);
+}
+
+function howreceiptprint() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Как распечатать чек / ценник? <span class="new-tag">NEW</span></h3><br>' +
+            '<b>Чек:</b><br>' +
+            '1. Добавьте товары в чек.<br>' +
+            '2. Нажмите кнопку «Оплата».<br>' +
+            '3. В окне оплаты нажмите «ОК» — чек сохранится в HTML-файл.<br>' +
+            '4. Откройте файл в браузере и нажмите Ctrl+P для печати.<br><br>' +
+            '<b>Ценник:</b><br>' +
+            '1. Создайте ценник через «Инструменты» (PRO).<br>' +
+            '2. Нажмите «Экспорт PDF» — сохранится PDF с сеткой ценников.<br>' +
+            '3. Откройте PDF и распечатайте.<br><br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            askBtn('howreceipt()', 'receipt_long', 'Как настроить шаблон чека?') +
+            askBtn('howpricemaker()', 'sell', 'Как создать ценник?') +
+            backBtn()
+        ));
+    }, 700);
+}
+
+function howbackup() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Как сделать резервную копию? <span class="new-tag">NEW</span></h3><br>' +
+            'Все данные приложения хранятся в <b>localStorage</b> браузера. Это значит:<br><br>' +
+            '• Очистка кэша браузера удалит все товары.<br>' +
+            '• Если открыть программу в другом браузере — данных там не будет.<br><br>' +
+            '<b>Что делать:</b><br>' +
+            '1. Регулярно экспортируйте список товаров (Alt+Z).<br>' +
+            '2. Сохраняйте чеки при оплате.<br>' +
+            '3. Для резервной копии «всего» — откройте консоль браузера (F12) и выполните:<br>' +
+            '<code style="display:block;background:rgba(0,0,0,0.05);padding:6px;border-radius:6px;margin-top:6px;font-size:11px;">copy(JSON.stringify(localStorage))</code><br>' +
+            'Скопированную строку сохраните в текстовом файле.<br><br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            askBtn('howexport()', 'download', 'Как сохранить/загрузить товары?') + backBtn()
+        ));
+    }, 700);
+}
+
+function howupdate() {
+    render(thinking('Штаб думает...'));
+    setTimeout(function() {
+        render(botBlock(
+            '<h3>Как обновить приложение? <span class="new-tag">NEW</span></h3><br>' +
+            '1. Обновления выходят регулярно — следите за нашим <a href="https://max.ru/channel_productor" target="_blank">MAX-каналом</a>.<br>' +
+            '2. Когда выйдет новая версия — просто обновите страницу (Ctrl+F5).<br>' +
+            '3. Если приложение установлено как PWA — новая версия подгрузится при следующем запуске.<br><br>' +
+            'Версию приложения можно увидеть:<br>' +
+            '• В шапке справа.<br>' +
+            '• В меню ⋮ → «О Продукторе».<br><br>' +
+            'Если вопрос не решён — <a href="mailto:q-acd@mail.ru">q-acd@mail.ru</a>',
+            askBtn("window.open('https://max.ru/channel_productor','_blank')", 'open_in_new', 'Перейти в канал') + backBtn()
+        ));
+    }, 700);
+}
+
+// ============================================================
+// СТАРТ
+// ============================================================
+window.addEventListener('DOMContentLoaded', function() {
+    bq();
+});
 </script>
 </body>
 </html>
